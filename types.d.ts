@@ -3,9 +3,19 @@ type LatLngLiteral = {
     lng: number
 }
 
+type Bounds = {
+    northeast: LatLngLiteral,
+    southwest: LatLngLiteral
+}
+
+type Geometry = {
+    location: LatLngLiteral,
+    viewport: Bounds
+}
+
 type Place = {
     formatted_address: string,
-    location: LatLngLiteral
+    geometry: Geometry
 }
 
 type Toll = {

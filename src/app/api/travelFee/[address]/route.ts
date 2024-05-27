@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import Script from "next/script";
+import { useLoadScript } from "@react-google-maps/api";
+import axios from 'axios';
 
+const MAP_SOURCE_URL = 'https://maps.googleapis.com/maps/api/place/queryautocomplete/output?'
 const key = process.env.GOOGLE_KEY;
 const katieLat = process.env.KATIE_LAT;
 const katieLong = process.env.KATIE_LONG;
@@ -14,14 +18,14 @@ export async function GET(
 ) {
     const clientAddress: Place = await getClientAddress(params.address);
 
-    const routeThere: Route = await getRoute(owner, clientAddress.location);
+    const routeThere: Route = await getRoute(owner, clientAddress.geometry.location);
     let routeBack: Route;
     let fee: Number;
 
     //When altered for broader use, this will need to be revisited to calculate tolls both directions every time. 
 
     if (routeThere.estimatedTolls != null) {
-        routeBack = await getRoute(clientAddress.location, owner);
+        routeBack = await getRoute(clientAddress.geometry.location, owner);
         fee = calculateFee(routeThere, routeBack);
 
     } else {
@@ -39,7 +43,7 @@ async function getClientAddress(address: string): Promise<Place> {
     let url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${address}&inputtype=textquery&fields=formatted_address%2Cgeometry&key=${encodeURIComponent(key)}`;
     const res = await fetch(url);
     const addressFormatted = await res.json();
-    return { formatted_address: addressFormatted.candidates[0].formatted_address, location: addressFormatted.candidates[0].geometry.location};
+    return { formatted_address: addressFormatted.candidates[0].formatted_address, geometry: addressFormatted.candidates[0].geometry };
 }
 
 async function getRoute(start: LatLngLiteral, end: LatLngLiteral): Promise<Route> {
