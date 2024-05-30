@@ -13,7 +13,6 @@ export async function GET(
     { params }: { params: { address: string } }
 ) {
     const clientAddress: Place = await getClientAddress(params.address);
-
     const routeThere: Route = await getRoute(owner, clientAddress.location);
     let routeBack: Route;
     let fee: Number;
@@ -36,7 +35,7 @@ async function getClientAddress(address: string): Promise<Place> {
     if (key == null) {
         throw new Error('Missing Google API Key')
     }
-    let url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${address}&inputtype=textquery&fields=formatted_address%2Cgeometry&key=${encodeURIComponent(key)}`;
+    const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${address}&inputtype=textquery&fields=formatted_address%2Cgeometry&key=${encodeURIComponent(key)}`;
     const res = await fetch(url);
     const addressFormatted = await res.json();
     return { formatted_address: addressFormatted.candidates[0].formatted_address, location: addressFormatted.candidates[0].geometry.location};
@@ -89,18 +88,18 @@ function calculateFee(routeThere: Route, routeBack?: Route): number {
     if (miles > 30 && miles <= 50) {
         fee += (miles - 30);
     } else if (miles > 50) {
-        let largeMiles = miles - 50;
-        fee += 20 + (largeMiles * 2);
+        let milesGTFifty = miles - 50;
+        fee += 20 + (milesGTFifty * 2);
     }
 
     if (routeThere.estimatedTolls.length > 0) {
         routeThere.estimatedTolls.forEach(toll => {
-            fee += parseInt(toll.units)
+            fee += parseFloat(toll.units)
         });
 
         if (routeBack?.estimatedTolls.length) {
             routeBack.estimatedTolls.forEach(toll => {
-                fee += parseInt(toll.units);
+                fee += parseFloat(toll.units);
             })
         }
     }
