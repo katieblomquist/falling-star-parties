@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const key = process.env.GOOGLE_KEY;
-const katieLat = process.env.KATIE_LAT;
-const katieLong = process.env.KATIE_LONG;
+const katieLat = process.env.KATIE_LAT!;
+const katieLong = process.env.KATIE_LONG!;
 if (katieLat == null || katieLong == null) {
     throw new Error('Missing owner lat or long');
 }
-const owner: LatLngLiteral = { lat: parseFloat(katieLat), lng: parseFloat(katieLong) };
+const owner: LatLng = { lat: parseFloat(katieLat), lng: parseFloat(katieLong) };
+
+const METERS_IN_MILE = 1609.344;
 
 export async function GET(
     _: NextRequest,
@@ -14,13 +16,12 @@ export async function GET(
 ) {
     const clientAddress: Place = await getClientAddress(params.address);
     const routeThere: Route = await getRoute(owner, clientAddress.location);
-    let routeBack: Route;
     let fee: Number;
 
     //When altered for broader use, this will need to be revisited to calculate tolls both directions every time. 
 
     if (routeThere.estimatedTolls != null) {
-        routeBack = await getRoute(clientAddress.location, owner);
+        const routeBack = await getRoute(clientAddress.location, owner);
         fee = calculateFee(routeThere, routeBack);
 
     } else {
@@ -38,10 +39,10 @@ async function getClientAddress(address: string): Promise<Place> {
     const url = `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${address}&inputtype=textquery&fields=formatted_address%2Cgeometry&key=${encodeURIComponent(key)}`;
     const res = await fetch(url);
     const addressFormatted = await res.json();
-    return { formatted_address: addressFormatted.candidates[0].formatted_address, location: addressFormatted.candidates[0].geometry.location};
+    return { formatted_address: addressFormatted.candidates[0].formatted_address, location: addressFormatted.candidates[0].geometry.location };
 }
 
-async function getRoute(start: LatLngLiteral, end: LatLngLiteral): Promise<Route> {
+async function getRoute(start: LatLng, end: LatLng): Promise<Route> {
     const url = `https://routes.googleapis.com/directions/v2:computeRoutes`
     const res = await fetch(url, {
         method: 'POST',
@@ -67,7 +68,8 @@ async function getRoute(start: LatLngLiteral, end: LatLngLiteral): Promise<Route
             "routeModifiers": {
                 "vehicleInfo": {
                     "emissionType": "GASOLINE"
-                }}
+                }
+            }
         }),
         headers: {
             'Content-Type': 'application/json',
@@ -81,27 +83,26 @@ async function getRoute(start: LatLngLiteral, end: LatLngLiteral): Promise<Route
 
 }
 
-function calculateFee(routeThere: Route, routeBack?: Route): number {
-    const miles = routeThere.distanceMeters / 1609.344;
+export function calculateFee(routeThere: Route, routeBack?: Route): number {
+    const miles = routeThere.distanceMeters / METERS_IN_MILE;
+
     let fee = 0;
 
-    if (miles > 30 && miles <= 50) {
-        fee += (miles - 30);
-    } else if (miles > 50) {
-        let milesGTFifty = miles - 50;
-        fee += 20 + (milesGTFifty * 2);
+    if (miles > 30) {
+        fee += miles - 30;
     }
 
-    if (routeThere.estimatedTolls.length > 0) {
-        routeThere.estimatedTolls.forEach(toll => {
-            fee += parseFloat(toll.units)
-        });
-
-        if (routeBack?.estimatedTolls.length) {
-            routeBack.estimatedTolls.forEach(toll => {
-                fee += parseFloat(toll.units);
-            })
-        }
+    if (miles > 50) {
+        fee += miles - 50;
     }
+
+    fee = routeThere.estimatedTolls.reduce((acc, next) => {
+        return acc + parseFloat(next.units);
+    }, fee);
+
+    fee = routeBack?.estimatedTolls.reduce((acc, next) => {
+        return acc + parseFloat(next.units);
+    }, fee) ?? fee;
+
     return Math.ceil(fee);
 }

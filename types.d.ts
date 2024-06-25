@@ -1,11 +1,11 @@
-type LatLngLiteral = {
+type LatLng = {
     lat: number,
     lng: number
 }
 
 type Place = {
     formatted_address: string,
-    location: LatLngLiteral
+    location: LatLng
 }
 
 type Toll = {
