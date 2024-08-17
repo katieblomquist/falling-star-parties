@@ -1,0 +1,45 @@
+.header {
+    color: #FFF;
+    font-family: var(--formal-script);
+    font-size: 50px;
+    font-weight: 400;
+    position: absolute;
+    top: 5vw;
+    left: 50%;
+    transform: translate(-50%);
+    text-align: center;
+}
+
+@media screen and (max-width: 975px) {
+    .header {
+        font-size: 35px;
+    }
+}
+
+@media screen and (max-width: 690px) {
+    .headerExtender {
+        height: 10vw;
+        background-color: #343B95;
+    }
+}
+
+@media screen and (max-width: 545px) {
+    .headerExtender {
+        height: 15vw;
+        background-color: #343B95;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .headerExtender {
+        height: 20vw;
+        background-color: #343B95;
+    }
+}
+
+@media screen and (max-width: 370px) {
+    .headerExtender {
+        height: 30vw;
+        background-color: #343B95;
+    }
+}

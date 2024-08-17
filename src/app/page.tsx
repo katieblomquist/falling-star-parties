@@ -1,5 +1,8 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import { Open_Sans } from "next/font/google";
+
+export const open_Sans = Open_Sans({weight: "400", subsets:["latin"], variable: '--open-sans', preload:false})
 
 export default function Home() {
   return (
