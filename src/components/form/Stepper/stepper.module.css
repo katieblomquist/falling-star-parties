@@ -1,0 +1,19 @@
+.header {
+    color: #343B95;
+    font-size: 35px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .title{
+        padding-left: 10px;
+    }
+}
+
+.step{
+    padding-bottom: 15px;
+    margin-left: 35px;
+}
