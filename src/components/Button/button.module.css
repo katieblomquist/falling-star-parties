@@ -1,0 +1,37 @@
+.primary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 40px;
+    width: fit-content;
+    border-radius: 15px;
+    background: #343B95;
+    color: white;
+
+    .icon{
+        padding-left: 25px;
+    }
+}
+
+.primary:hover{
+    cursor: pointer;
+}
+
+.secondary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 40px;
+    width: fit-content;
+    border-radius: 15px;
+    border: 1px solid #343B95;
+    color: #343B95;
+
+    .icon{
+        padding-left: 25px;
+    }
+}
+
+.secondary:hover{
+    cursor: pointer;
+}
