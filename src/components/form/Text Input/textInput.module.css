@@ -1,0 +1,13 @@
+.textInput {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.input {
+    border-radius: 15px;
+    border: 1px solid #A4A8B0;
+    /* width: fit-content; */
+    padding: 10px 20px;
+    align-items: center;
+}
