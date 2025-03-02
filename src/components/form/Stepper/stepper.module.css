@@ -12,8 +12,37 @@
         padding-left: 10px;
     }
 }
+.number{
+    font-size: 20px;
+    text-align: center;
+    font-weight: 400;
+    padding: 5px 12px;
+    outline: 1px solid #343B95;
+    border-radius: 100px;
+}
 
 .step{
     padding-bottom: 15px;
     margin-left: 35px;
+}
+
+.stepContent{
+    width: 50%;
+    margin-left: 45px;
+}
+
+.stepContentInput{
+    margin-bottom: 15px;
+}
+
+.stepFiveButtons{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: flex-end;
+}
+
+.buttons{
+    display: flex;
+    justify-content: flex-end;
 }

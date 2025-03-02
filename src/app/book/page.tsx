@@ -1,21 +1,92 @@
 'use client';
 
-import Image from "next/image";
 import styles from "./book.module.css"
-import { Petit_Formal_Script } from "next/font/google";
-import { useState } from "react";
-import { title } from "process";
+import { Content, Petit_Formal_Script } from "next/font/google";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import Stepper from "@/components/form/Stepper/stepper";
+import Information from "@/components/bookingForm/Information/information";
+import TimeLocation from "@/components/bookingForm/TimeLocation/timeLocation";
+import EventOptions from "@/components/bookingForm/EventOptions/eventOptions";
+import EventDetails from "@/components/bookingForm/EventDetails/eventDetails";
+import { SubmitHandler, useForm, useWatch } from "react-hook-form";
+import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest";
+import { DateTime } from "luxon";
 
-export type StepperContent = { id: number, title: String, completed: boolean };
+export type StepperContent = { id: number, title: String, completed: boolean, content: ReactNode };
+export type SelectionCardContent = { id: number, title: String, description: String, duration: String, cost: number };
 
 export const formal_script = Petit_Formal_Script({ weight: "400", subsets: ["latin"], variable: '--formal-script', preload: false });
 
-const stepperTest = [{id: 0, title: "Your Information", completed: false}, {id:1, title: "Time and Location", completed: false}, 
-    {id: 2, title: "Event Options", completed: false}, {id: 3, title: "Event Details", completed: false}, 
-    {id: 4, title: "Review Request", completed: false}];
+export type FormValues = {
+    FirstName: string,
+    LastName: string,
+    Email: string,
+    Phone: string,
+    EventType: number,
+    Date: DateTime,
+    Hour: number,
+    Minute: number,
+    AmPm: string,
+    Location: string,
+    Package: number,
+    Extras: number[],
+    Character: string,
+    Dress: string,
+    ChildName: string,
+    ChildAge: string,
+    Attendance: string,
+    LocationPref: number,
+    PhotoPref: number,
+    AdditionalInfo?: string
+}
 
 export default function Book() {
+
+    const { handleSubmit, control } = useForm<FormValues>()
+
+    const formValues = useWatch({ control });
+
+    const InformationValues = useWatch({ control, name: ["FirstName", "LastName", "Email", "Phone", "EventType"] });
+    const InformationIsComplete = useMemo(() => {
+        return InformationValues.every(x => (x != null && x !== ''));
+    }, [InformationValues]);
+
+    const TimeLocationValues = useWatch({ control, name: ["Date", "Hour", "Minute", "AmPm", "Location"] });
+    const TimeLocationIsComplete = useMemo(() => {
+        return TimeLocationValues.every(x => (x != null && x !== ''));
+    }, [TimeLocationValues]);
+
+    const EventOptionsValues = useWatch({control, name: ["Package", "Extras", "Character", "Dress"]});
+    const EventOptionsIsComplete = useMemo(() => {
+        return EventOptionsValues.every(x => (x != null && x !== ''));
+    }, []);
+
+    const EventDetailsValues = useWatch({control, name:["ChildName", "ChildAge", "Attendance", "LocationPref", "PhotoPref", "AdditionalInfo"]});
+    const EventDetailsIsComplete = useMemo(() => {
+        return EventDetailsValues.every(x => (x != null && x !== ''));
+    }, [EventDetailsValues]);
+
+    const formIsValid = useCallback((x: unknown): x is FormValues => {
+        // TODO(@kblomquist) replace this with actual validation
+        const formIsValid = true;
+
+        return formIsValid;
+    }, []);
+
+
+    const stepperTest = [
+        { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} /> },
+        { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} /> },
+        { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} /> },
+        { id: 3, title: "Event Details", completed: EventDetailsIsComplete, content: <EventDetails controller={control} /> },
+        { id: 4, title: "Review Request", completed: false, content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
+    ];
+
+    //Eventually this will be replaced by a validate function that will set completion. 
+    function setStepperCompleted(current: number) {
+        stepperTest[current].completed = true;
+    }
+
     return (
         <>
             <div>
@@ -29,7 +100,9 @@ export default function Book() {
                     </svg>
                 </div>
             </div>
-            <Stepper content={stepperTest}/>
+            <form>
+                <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} validate={setStepperCompleted} />
+            </form>
         </>
     )
 }

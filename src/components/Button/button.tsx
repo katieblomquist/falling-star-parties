@@ -12,36 +12,37 @@ export default function Button(props: { text: string, action: () => void, varian
     }
 
     function addIcon() {
-        if(icon === 1){
-            return(
+        if (icon === 1) {
+            return (
                 <IconArrowRight />
             )
-        } 
-        if(icon === 2){
-            return(
+        }
+        if (icon === 2) {
+            return (
                 <IconSend />
             )
         }
-        return (
-            null
-        )
     }
 
     function buildButton() {
         if (variant === 1) {
             return (
-                <div className={styles.primary} onClick = {buttonAction}>
+                <div className={styles.primary} onClick={buttonAction}>
                     <p>{text}</p>
-                    <div className={styles.icon}>{addIcon()}</div>
+                    {icon > 0 ? (
+                        <div className={styles.icon}>{addIcon()}</div>
+                    ) : null}
                 </div>
             )
-        } 
-        
+        }
+
         if (variant === 2) {
             return (
                 <div className={styles.secondary} onClick={buttonAction}>
                     <p>{text}</p>
-                    <div className={styles.icon}>{addIcon()}</div>
+                    {icon > 0 ? (
+                        <div className={styles.icon}>{addIcon()}</div>
+                    ) : null}
                 </div>
             )
         }

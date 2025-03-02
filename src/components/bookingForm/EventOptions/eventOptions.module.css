@@ -1,0 +1,16 @@
+.header{
+    margin: 20px 0 10px 0;
+}
+
+.packages {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.extras {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+}

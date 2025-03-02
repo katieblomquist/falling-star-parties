@@ -1,0 +1,36 @@
+.calendar{
+    width: fit-content;
+    padding: 10px;
+    border: 1px solid #A4A8B0;
+    border-radius: 15px;
+}
+.month {
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto auto;
+    gap: 10px; 
+    justify-content: center;
+}
+
+.header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.arrow{
+    padding: 5px;
+    border-radius: 10px;
+    height: 35px;
+    width: 35px;
+}
+.arrow:hover{
+    cursor: pointer;
+    background-color: #343B9510;
+}
+.arrow:active{
+    cursor: pointer;
+    background-color: #343B95;
+    color: white;
+}
