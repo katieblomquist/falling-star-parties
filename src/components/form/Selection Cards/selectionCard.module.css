@@ -1,81 +1,27 @@
-.rectangle{
+.card{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: flex-start;
     border: 1px solid #A4A8B0;
     border-radius: 15px;
-    padding: 15px 20px;
-    max-width: 650px;
-
-
+    padding: 20px;
+    max-width: fit-content;
 }
-.rectangle:hover{
+.card:hover{
     cursor: pointer;
     transform: scale(1.01);
 }
 
-.rectangleActive{
+.cardActive{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: flex-start;
     border: 2px solid #343B95;
     border-radius: 15px;
-    padding: 15px 20px;
-    max-width: 650px;
+    padding: 20px;
+    max-width: fit-content;
 }
-.rectangleActive:hover{
+.cardActive:hover{
     cursor: pointer;
     transform: scale(1.01);
-}
-
-.header{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.time{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-}
-
-.selectionName{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-}
-
-.square{
-    width: 275px;
-    height: 175px;
-    border: 1px solid #A4A8B0;
-    border-radius: 15px;
-    padding: 20px 15px;
-}
-
-.square:hover{
-    cursor: pointer;
-    transform: scale(1.01);
-}
-
-.squareActive{
-    display: flex;
-    flex-direction: column;
-    border: 2px solid #343B95;
-    border-radius: 15px;
-    padding: 20px 15px;
-    width: 275px;
-    height: 175px;
-}
-
-.squareActive:hover{
-    cursor: pointer;
-    transform: scale(1.01);
-}
-
-.content{
-    padding-left: 30px;
 }
