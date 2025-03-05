@@ -1,13 +1,14 @@
 import { SelectionCardContent } from "@/app/book/page";
 import { IconCircle, IconCircleFilled, IconClock } from "@tabler/icons-react";
-import { useEffect, useState } from "react";
 import styles from "./selectionCard.module.css";
 import HorizontalCard from "./horizontalCard";
 import VerticleCard from "./verticleCard";
+import { ComponentType, JSXElementConstructor, ReactNode } from "react";
 
-export default function SelectionCard(props: { type: number, content: SelectionCardContent, selected: boolean, makeSelection: (id: number, selected: boolean) => void }) {
+//If Nick could explain, that would be fabulous
 
-    const type = props.type;
+export default function SelectionCard(props: { CardContent: ComponentType<{ content: SelectionCardContent }>, content: SelectionCardContent, selected: boolean, makeSelection: (id: number, selected: boolean) => void }) {
+
     const content = props.content;
     const selected = props.selected;
 
@@ -20,35 +21,14 @@ export default function SelectionCard(props: { type: number, content: SelectionC
 
     }
 
-    function buildCard() {
-        if (type === 0) {
-            return (
-                <div className={styles[`card${selected ? "Active" : ""}`]} onClick={handleClick}>
-                    <div className={styles.selectionName}>
-                        {selected ? (
-                            <IconCircleFilled stroke={1} color="#343B95" />
-                        ) : (<IconCircle stroke={1} />)}
-                    </div>
-                    <HorizontalCard content={content} />
-                </div>
-            )
-        } else if (type === 1) {
-            return (
-                <div className={styles[`card${selected ? "Active" : ""}`]} onClick={handleClick}>
-                    <div className={styles.selectionName}>
-                        {selected ? (
-                            <IconCircleFilled stroke={1} color="#343B95" />
-                        ) : (<IconCircle stroke={1} />)}
-                    </div>
-                    <VerticleCard content={content} />
-                </div>
-            )
-        } else {
-            return null;
-        }
-    }
-
     return (
-        buildCard()
+        <div className={styles[`card${selected ? "Active" : ""}`]} onClick={handleClick}>
+            <div className={styles.selectionName}>
+                {selected ? (
+                    <IconCircleFilled stroke={1} color="#343B95" />
+                ) : (<IconCircle stroke={1} />)}
+            </div>
+            <props.CardContent content={content} />
+        </div>
     )
 }

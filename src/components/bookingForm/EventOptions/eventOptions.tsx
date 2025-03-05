@@ -4,6 +4,8 @@ import { useState } from "react";
 import styles from "./eventOptions.module.css"
 import { Control, Controller } from "react-hook-form";
 import { FormValues } from "@/app/book/page";
+import HorizontalCard from "@/components/form/Selection Cards/horizontalCard";
+import VerticleCard from "@/components/form/Selection Cards/verticleCard";
 
 export const birthdayPackages = [{ id: 0, title: "Dream", description: "Our Characters will sing, tell stories, teach princess lessons, hold a royal coronation, and pose for portraits!", duration: "30 Minutes", cost: 150 },
 { id: 1, title: "Sparkle", description: "Our Characters will do everything included in the Dream Package plus play party games such as Simon Says, Hide and Go Seek, and Duck Duck Goose!", duration: "60 Minutes", cost: 220 },
@@ -41,7 +43,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                 control={props.controller}
                                 name="Package"
                                 render={({ field: { onChange, value } }) => (
-                                    <SelectionCard type={0} content={{
+                                    <SelectionCard CardContent={HorizontalCard} content={{
                                         id: item.id,
                                         title: item.title,
                                         description: item.description,
@@ -68,7 +70,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                 name="Extras"
                                 render={({ field: { onChange, value } }) => (
 
-                                    <SelectionCard type={1} content={{
+                                    <SelectionCard CardContent={VerticleCard} content={{
                                         id: item.id,
                                         title: item.title,
                                         description: item.description,
