@@ -1,13 +1,13 @@
-import { SelectionCardContent } from "@/app/book/page";
-import { IconCircle, IconCircleFilled, IconClock } from "@tabler/icons-react";
+import { Character, CharacterDress, Services } from "@/app/book/page";
+import { IconCircle, IconCircleFilled } from "@tabler/icons-react";
 import styles from "./selectionCard.module.css";
-import HorizontalCard from "./horizontalCard";
-import VerticleCard from "./verticleCard";
-import { ComponentType, JSXElementConstructor, ReactNode } from "react";
+import { ComponentType } from "react";
 
-//If Nick could explain, that would be fabulous
+type CardContentComponent<T> = ComponentType<{ content: T }>
 
-export default function SelectionCard(props: { CardContent: ComponentType<{ content: SelectionCardContent }>, content: SelectionCardContent, selected: boolean, makeSelection: (id: number, selected: boolean) => void }) {
+//If Nick could explain, that would be fabulous - Nick could have explained and it WOULD have been fabulous xD
+
+export default function SelectionCard<T extends Services | Character | CharacterDress>(props: { CardContent: CardContentComponent<T>, content: T, selected: boolean, makeSelection: (id: number, selected: boolean) => void }) {
 
     const content = props.content;
     const selected = props.selected;
@@ -28,7 +28,7 @@ export default function SelectionCard(props: { CardContent: ComponentType<{ cont
                     <IconCircleFilled stroke={1} color="#343B95" />
                 ) : (<IconCircle stroke={1} />)}
             </div>
-            <props.CardContent content={content} />
+            <props.CardContent content={props.content} />
         </div>
     )
 }

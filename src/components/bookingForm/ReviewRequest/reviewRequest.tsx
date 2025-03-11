@@ -6,8 +6,6 @@ import {event} from "@/components/bookingForm/Information/information";
 
 export default function ReviewRequest(props: {values: FormValues}){
 
-    console.log("Hello ", props.values);
-
     function getOrdinal(n: number) {
         let ord = 'th';
       

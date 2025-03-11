@@ -8,7 +8,6 @@ export default function DateSelector(props: {date: DateTime, selectDate: (date: 
     const [calendarToggle, toggleCalendar] = useState(false);
 
     function handleToggle() {
-        console.log("toggled" + calendarToggle)
         if (calendarToggle) {
             toggleCalendar(false);
         } else {
@@ -17,7 +16,6 @@ export default function DateSelector(props: {date: DateTime, selectDate: (date: 
     }
 
     function setSelection(date: DateTime){
-        console.log(date);
         props.selectDate(date);
         handleToggle();
     }

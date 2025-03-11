@@ -13,7 +13,10 @@ import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest"
 import { DateTime } from "luxon";
 
 export type StepperContent = { id: number, title: String, completed: boolean, content: ReactNode };
-export type SelectionCardContent = { id: number, title: String, description: String, duration: String, cost: number };
+export type Services = { id: number, title: String, description: String, duration: String, cost: number };
+export type CharacterDress = {id: number, name: String, img: String, characterId: number};
+export type Character = {id: number, name: String, img:String};
+export type CharacterSelection = {characterId: number, dressId: number}
 
 export const formal_script = Petit_Formal_Script({ weight: "400", subsets: ["latin"], variable: '--formal-script', preload: false });
 
@@ -30,14 +33,17 @@ export type FormValues = {
     Location: string,
     Package: number,
     Extras: number[],
-    Character: string,
-    Dress: string,
+    Character: CharacterSelection[],
     ChildName: string,
     ChildAge: string,
     Attendance: string,
     LocationPref: number,
     PhotoPref: number,
     AdditionalInfo?: string
+}
+
+const isEventOptionsComplete = () => {
+    return 
 }
 
 export default function Book() {
@@ -51,15 +57,15 @@ export default function Book() {
         return InformationValues.every(x => (x != null && x !== ''));
     }, [InformationValues]);
 
-    const TimeLocationValues = useWatch({ control, name: ["Date", "Hour", "Minute", "AmPm", "Location"] });
+    const TimeLocationValues = useWatch({ control, name: ["Date", "Hour", "Minute"] });
     const TimeLocationIsComplete = useMemo(() => {
-        return TimeLocationValues.every(x => (x != null && x !== ''));
+        return TimeLocationValues.every(x => (x != null ));
     }, [TimeLocationValues]);
 
-    const EventOptionsValues = useWatch({control, name: ["Package", "Extras", "Character", "Dress"]});
+    const EventOptionsValues = useWatch({control, name: ["Package", "Character"]});
     const EventOptionsIsComplete = useMemo(() => {
-        return EventOptionsValues.every(x => (x != null && x !== ''));
-    }, []);
+        return EventOptionsValues.every(x => ((Array.isArray(x) && x.length > 0) || (typeof(x) == 'number' && x != null  )));
+    }, [EventOptionsValues]);
 
     const EventDetailsValues = useWatch({control, name:["ChildName", "ChildAge", "Attendance", "LocationPref", "PhotoPref", "AdditionalInfo"]});
     const EventDetailsIsComplete = useMemo(() => {
@@ -101,7 +107,7 @@ export default function Book() {
                 </div>
             </div>
             <form>
-                <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} validate={setStepperCompleted} />
+                <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} />
             </form>
         </>
     )

@@ -14,3 +14,23 @@
     flex-wrap: wrap;
     gap: 15px;
 }
+
+.characters{
+    display: flex;
+    flex-direction: column;
+}
+
+.numCharacters{
+    max-width: 150px;
+}
+
+.dressSelection{
+    display: flex;
+    flex-direction: column;
+}
+
+.selections{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}

@@ -1,8 +1,7 @@
-import { SelectionCardContent } from "@/app/book/page";
-import { IconClock } from "@tabler/icons-react";
+import { Services } from "@/app/book/page";
 import styles from "./verticleCard.module.css";
 
-export default function VerticleCard(props: { content: SelectionCardContent }) {
+export default function VerticleCard(props: { content: Services }) {
 
 
     return (

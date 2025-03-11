@@ -7,7 +7,7 @@ import styles from "./stepper.module.css";
 import { IconCircleCheckFilled } from '@tabler/icons-react'
 import Button from "@/components/Button/button";
 
-export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, validate:(current: number) => void }) {
+export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string}) {
 
 
 
@@ -18,7 +18,6 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
 
     const handleNext = () => {
         if (current < stepperContent.length) {
-            props.validate(current);
             setCurrent(current + 1);
         }
         if (current === stepperContent.length - 2) {

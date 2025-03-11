@@ -1,8 +1,8 @@
-import { SelectionCardContent } from "@/app/book/page";
+import { Services } from "@/app/book/page";
 import { IconClock } from "@tabler/icons-react";
 import styles from "./horizontalCard.module.css";
 
-export default function HorizontalCard(props: { content: SelectionCardContent }) {
+export default function HorizontalCard(props: { content: Services }) {
 
 
     return (
