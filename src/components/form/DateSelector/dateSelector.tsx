@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Calendar from "./calendar";
 import { IconCalendarStar } from "@tabler/icons-react";
 import { DateTime } from "luxon";
@@ -6,6 +6,7 @@ import styles from "./dateSelector.module.css";
 
 export default function DateSelector(props: {date: DateTime, selectDate: (date: DateTime) => void}) {
     const [calendarToggle, toggleCalendar] = useState(false);
+    const calendarRef = useRef<HTMLDivElement | null>(null);
 
     function handleToggle() {
         if (calendarToggle) {
@@ -20,9 +21,14 @@ export default function DateSelector(props: {date: DateTime, selectDate: (date: 
         handleToggle();
     }
 
+    const handleClickOutside = (event: MouseEvent) => { if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) { toggleCalendar(false) } };
+
+    useEffect(() => { document.addEventListener('mousedown', handleClickOutside); return () => { document.removeEventListener('mousedown', handleClickOutside); }; }, []);
+
+
 
     return (
-        <div className={styles.selector} >
+        <div className={styles.selector} ref={calendarRef}>
             <div className={styles.input} onClick={handleToggle}>
                 <p className={styles.selected}>{props.date.month} - {props.date.day} - {props.date.year}</p>
                 <IconCalendarStar stroke={1}/>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import styles from "./dropdown.module.css";
 
@@ -9,6 +9,7 @@ export default function Dropdown(props: { options: string[], selected: number, s
     const options = props.options;
     const selected = props.selected;
     const [toggled, setToggle] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement | null>(null);
 
     function handleSelected(selected: number) {
         // TODO(ningy says) remove the internal state for selected and rely on passing data down from and up to parent component
@@ -25,9 +26,13 @@ export default function Dropdown(props: { options: string[], selected: number, s
         }
     }
 
+    const handleClickOutside = (event: MouseEvent) => { if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) { setToggle(false) } };
+
+    useEffect(() => { document.addEventListener('mousedown', handleClickOutside); return () => { document.removeEventListener('mousedown', handleClickOutside); }; }, []);
+
     return (
         <>
-            <div className={styles.dropdown}>
+            <div className={styles.dropdown} ref={dropdownRef}>
                 <div className={styles.selected} onClick={handleToggle}>
                     <p>{options[selected]}</p>
                     <div className={styles.chevron}>
