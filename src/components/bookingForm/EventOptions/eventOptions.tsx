@@ -55,6 +55,16 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             dupValue.splice(value.indexOf(id), 1)
             return dupValue;
         }
+        if ((value.indexOf(0) !== -1 && id === 1) || (value.indexOf(1) !== -1 && id === 0)){
+            const dupValue = [...value];
+            if(id === 0){
+                dupValue.splice(value.indexOf(1), 1);
+            } else {
+                dupValue.splice(value.indexOf(0), 1);
+            }
+            
+            return [...dupValue, id];
+        }
 
         return [...value, id];
     }
