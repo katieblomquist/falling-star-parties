@@ -27,12 +27,14 @@ export default function Dropdown(props: { options: string[], selected: number, s
     }
 
     const handleClickOutside = (event: MouseEvent) => { if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) { setToggle(false) } };
+    const handleEscapeKey = (event: KeyboardEvent) => {if(event.key === 'Escape' && !dropdownRef.current?.contains(event.target as Node)) {setToggle(false)}};
 
     useEffect(() => { document.addEventListener('mousedown', handleClickOutside); return () => { document.removeEventListener('mousedown', handleClickOutside); }; }, []);
+    useEffect(() => {document.addEventListener('keydown', handleEscapeKey)})
 
     return (
         <>
-            <div className={styles.dropdown} ref={dropdownRef}>
+            <div id="nick-test" className={styles.dropdown} ref={dropdownRef}>
                 <div className={styles.selected} onClick={handleToggle}>
                     <p>{options[selected]}</p>
                     <div className={styles.chevron}>
