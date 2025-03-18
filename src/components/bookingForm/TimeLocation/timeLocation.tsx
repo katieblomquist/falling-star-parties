@@ -3,6 +3,7 @@ import Dropdown from "@/components/form/Dropdown/dropdown";
 import styles from "./timeLocation.module.css";
 import { Controller } from "react-hook-form";
 import { DateTime } from "luxon";
+import PlacesAutocomplete, { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 
 export const hour = ["8", "9", "10", "11", "12", "1", "2", "3", "4", "5", "6", "7"];
 export const minute = ["00", "15", "30", "45"];
@@ -45,6 +46,14 @@ export default function TimeLocation(props: { controller: any }) {
             </div>
             <div>
                 <h4 className={styles.header}>Location</h4>
+                <Controller
+                    control={props.controller}
+                    name="Location"
+                    render={({field: {onChange, value}}) => (
+                        <PlacesAutocomplete placeSelection={onChange} />
+                    )}
+                />
+                
             </div>
         </>
     )

@@ -22,8 +22,10 @@ export default function DateSelector(props: {date: DateTime, selectDate: (date: 
     }
 
     const handleClickOutside = (event: MouseEvent) => { if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) { toggleCalendar(false) } };
+    const handleEscapeKey = (event: KeyboardEvent) => {if(event.key === 'Escape' && !calendarRef.current?.contains(event.target as Node)) {toggleCalendar(false)}};
 
     useEffect(() => { document.addEventListener('mousedown', handleClickOutside); return () => { document.removeEventListener('mousedown', handleClickOutside); }; }, []);
+    useEffect(() => {document.addEventListener('keydown', handleEscapeKey)})
 
 
 
