@@ -27,7 +27,6 @@ export default function DateSelector(props: {date: DateTime, selectDate: (date: 
     useEffect(() => { document.addEventListener('mousedown', handleClickOutside); return () => { document.removeEventListener('mousedown', handleClickOutside); }; }, []);
     useEffect(() => {document.addEventListener('keydown', handleEscapeKey)})
 
-
     return (
         <div className={styles.selector} ref={calendarRef}>
             <div className={styles.input} onClick={handleToggle}>
