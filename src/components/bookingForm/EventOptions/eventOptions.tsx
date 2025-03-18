@@ -144,7 +144,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                         description: item.description,
                                         duration: item.duration,
                                         cost: item.cost
-                                    }} selected={value?.includes(item.id)} makeSelection={(id, selected) => {
+                                    }} selected={value?.includes(item.id) ? true : false} makeSelection={(id, selected) => {
                                         onChange(setExtras(id, selected, value))
                                     }} />
                                 )}

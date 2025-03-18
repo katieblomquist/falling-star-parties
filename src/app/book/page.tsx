@@ -11,6 +11,7 @@ import EventDetails from "@/components/bookingForm/EventDetails/eventDetails";
 import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest";
 import { DateTime } from "luxon";
+import { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 
 export type StepperContent = { id: number, title: String, completed: boolean, content: ReactNode };
 export type Services = { id: number, title: String, description: String, duration: String, cost: number };
@@ -30,12 +31,15 @@ export type FormValues = {
     Hour: number,
     Minute: number,
     AmPm: string,
-    Location: string,
+    Location: Location,
     Package: number,
-    Extras: number[],
+    Duration?: number,
+    Charity?: boolean,
+    Extras?: number[],
     Character: CharacterSelection[],
-    ChildName: string,
-    ChildAge: string,
+    ChildName?: string,
+    ChildAge?: string,
+    OrganizationName?: string,
     Attendance: string,
     LocationPref: number,
     PhotoPref: number,
@@ -57,7 +61,7 @@ export default function Book() {
         return InformationValues.every(x => (x != null && x !== ''));
     }, [InformationValues]);
 
-    const TimeLocationValues = useWatch({ control, name: ["Date", "Hour", "Minute"] });
+    const TimeLocationValues = useWatch({ control, name: ["Date", "Hour", "Minute", "Location"] });
     const TimeLocationIsComplete = useMemo(() => {
         return TimeLocationValues.every(x => (x != null ));
     }, [TimeLocationValues]);
