@@ -46,3 +46,8 @@
     display: flex;
     justify-content: flex-end;
 }
+
+.stepperContent {
+    margin-left: 15px;
+    border-left: solid 1px #DADDE5;
+}
