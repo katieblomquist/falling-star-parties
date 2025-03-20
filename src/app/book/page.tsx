@@ -52,7 +52,7 @@ const isEventOptionsComplete = () => {
 
 export default function Book() {
 
-    const { handleSubmit, control } = useForm<FormValues>()
+    const { handleSubmit, control, resetField, setValue } = useForm<FormValues>()
 
     const formValues = useWatch({ control });
 
@@ -86,8 +86,8 @@ export default function Book() {
 
     const stepperTest = [
         { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} /> },
-        { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} /> },
-        { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} /> },
+        { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} setValue={setValue} /> },
+        { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} /> },
         { id: 3, title: "Event Details", completed: EventDetailsIsComplete, content: <EventDetails controller={control} /> },
         { id: 4, title: "Review Request", completed: false, content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
     ];
