@@ -7,9 +7,6 @@ export default function CharacterCard(props: { content: Character | CharacterDre
     return (
         <>
         <div className={styles.card}>
-            <div className={styles.image}>
-                <img src={props.content.img}></img>
-            </div>
             <div className={styles.header}>
                 <h5>{props.content.name}</h5>
             </div>
