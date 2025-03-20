@@ -30,12 +30,17 @@ export default function DateSelector(props: {date: DateTime, selectDate: (date: 
     return (
         <div className={styles.selector} ref={calendarRef}>
             <div className={styles.input} onClick={handleToggle}>
-                <p className={styles.selected}>{props.date.month} - {props.date.day} - {props.date.year}</p>
+                {props.date === null ? (
+                    <p className={styles.selected}>MM/DD/YYYY</p>
+                ) : (
+                    <p className={styles.selected}>{props.date.month} - {props.date.day} - {props.date.year}</p>
+                )}
+                
                 <IconCalendarStar stroke={1}/>
             </div>
             <div className={styles.calendar}>
                 {calendarToggle ? (
-                    <Calendar selected={props.date} setSelected={setSelection} />
+                    <Calendar selected={props.date === null ? DateTime.local().plus({ days: 1 }) : props.date} setSelected={setSelection} />
                 ) : null}
             </div>
 
