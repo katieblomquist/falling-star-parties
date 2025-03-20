@@ -70,7 +70,7 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
                     )}
                     <h4 className={styles.title}>{step.title}</h4>
                 </div>
-                <div>
+                <div className={styles.stepperContent}>
                     {content}
                 </div>
 
