@@ -34,3 +34,7 @@
     background-color: #343B95;
     color: white;
 }
+
+.arrowCurrentMonth{
+    visibility: hidden;
+}

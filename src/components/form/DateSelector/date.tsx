@@ -1,15 +1,15 @@
 import styles from "./date.module.css";
 
-export default function Date(props: { day: number, selected: boolean, setInput: (date: number) => void }) {
+export default function Date(props: { day: number, selected: boolean, disabled: boolean, setInput: (date: number) => void }) {
 
     const day = props.day;
     let selected = props.selected;
 
-    function handleClick(){
+    function handleClick() {
         props.setInput(day);
     }
 
-    function buildDay(){
+    function buildDay() {
         if (selected) {
             return (
                 <>
@@ -20,12 +20,22 @@ export default function Date(props: { day: number, selected: boolean, setInput: 
             );
         }
 
-        return(
+        if (props.disabled) {
+            return (
+                <>
+                    <div className={styles.disabled} onClick={handleClick}>
+                        <p>{day}</p>
+                    </div>
+                </>
+            )
+        }
+
+        return (
             <>
-            <div className={styles.unselected} onClick={handleClick}>
-                <p>{day}</p>
-            </div>
-        </>
+                <div className={styles.unselected} onClick={handleClick}>
+                    <p>{day}</p>
+                </div>
+            </>
         )
     }
 

@@ -24,3 +24,13 @@
     cursor: pointer;
     background-color: #343B9510;
 }
+
+.disabled{
+    color: #A4A8B0;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 30px;
+}

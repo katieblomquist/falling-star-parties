@@ -11,6 +11,7 @@ export default function Calendar(props: {selected: DateTime, setSelected: (date:
     const [currentDate, setCurrentDate] = useState(props.selected);
     const [dates, setDates] = useState([0]);
     const [weekStart, setWeekStart] = useState(0);
+    const today = DateTime.local();
 
     function loadDates() {
         const max = currentDate.daysInMonth;
@@ -42,7 +43,10 @@ export default function Calendar(props: {selected: DateTime, setSelected: (date:
 
     function handleSelected(day: number) {
         const next = DateTime.local(currentDate.year, currentDate.month, day);
-        props.setSelected(next);
+        if(next > today){
+            props.setSelected(next);
+        }
+        
     }
 
     function clickAway(){
@@ -57,7 +61,12 @@ export default function Calendar(props: {selected: DateTime, setSelected: (date:
         <>
             <div className={styles.calendar}>
                 <div className={styles.header}>
-                    <IconArrowNarrowLeft className={styles.arrow} onClick={handlePrevious} />
+                    {currentDate.month === today.month ? (
+                        <IconArrowNarrowLeft className={styles.arrowCurrentMonth} />
+                    ) : (
+                        <IconArrowNarrowLeft className={styles.arrow} onClick={handlePrevious} />
+                    )}
+                    
                     <h2>{currentDate.monthLong} {currentDate.year}</h2>
                     <IconArrowNarrowRight className={styles.arrow} onClick={handleNext} />
                 </div>
@@ -73,7 +82,12 @@ export default function Calendar(props: {selected: DateTime, setSelected: (date:
                     {dates.map((date, index) => {
                         return (
                             <div style={index === 0 ? { gridColumnStart: weekStart } : undefined}>
-                                <Date day={date} selected={(date == props.selected.day && currentDate.month == props.selected.month)} setInput={handleSelected} />
+                                {currentDate.month === today.month && date <= today.day ? (
+                                    <Date day={date} selected={(date == props.selected.day && currentDate.month == props.selected.month)} disabled={true} setInput={handleSelected} />
+                                ) : (
+                                    <Date day={date} selected={(date == props.selected.day && currentDate.month == props.selected.month)} disabled={false} setInput={handleSelected} />
+                                )}
+                                
                             </div>
 
                         )

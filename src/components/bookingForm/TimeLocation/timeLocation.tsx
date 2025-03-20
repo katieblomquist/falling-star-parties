@@ -29,7 +29,7 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
                     control={props.controller}
                     name="Date"
                     render={({ field: { onChange, value } }) => (
-                        <DateSelector date={value ?? DateTime.local()} selectDate={onChange} />
+                        <DateSelector date={value ?? null} selectDate={onChange} />
                     )}
                 />
             </div>
