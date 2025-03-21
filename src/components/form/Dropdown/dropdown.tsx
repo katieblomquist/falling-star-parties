@@ -38,13 +38,11 @@ export default function Dropdown(props: { options: string[], selected: number, s
             <div id="nick-test" className={styles.dropdown} ref={dropdownRef}>
                 <div className={styles.selected} onClick={handleToggle}>
                     <p>{options[selected]}</p>
-                    <div className={styles.chevron}>
                         {toggled ? (
-                            <IconChevronUp />
+                            <IconChevronUp size={20}/>
                         ) : (
-                            <IconChevronDown />
+                            <IconChevronDown size={20} />
                         )}
-                    </div>
                 </div >
                 {toggled ? (
                     <div className={styles.options}>
