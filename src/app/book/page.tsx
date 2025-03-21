@@ -14,7 +14,7 @@ import { DateTime } from "luxon";
 import { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 
 export type StepperContent = { id: number, title: String, completed: boolean, content: ReactNode };
-export type Services = { id: number, title: String, description: String, duration: String, cost: number };
+export type Services = { id: number, title: String, description: String, duration: String, cost: number, additionalCharacterCost: number};
 export type CharacterDress = {id: number, name: String, img: String, characterId: number};
 export type Character = {id: number, name: String, img:String};
 export type CharacterSelection = {characterId: number, dressId: number}
@@ -34,7 +34,6 @@ export type FormValues = {
     Location: Location,
     Package: number,
     Duration?: number,
-    Charity?: boolean,
     Extras?: number[],
     Character: CharacterSelection[],
     ChildName?: string,
@@ -61,7 +60,7 @@ export default function Book() {
         return InformationValues.every(x => (x != null && x !== ''));
     }, [InformationValues]);
 
-    const TimeLocationValues = useWatch({ control, name: ["Date", "Hour", "Minute", "Location"] });
+    const TimeLocationValues = useWatch({ control, name: ["Date", "Hour", "Minute", "AmPm", "Location"] });
     const TimeLocationIsComplete = useMemo(() => {
         return TimeLocationValues.every(x => (x != null ));
     }, [TimeLocationValues]);
@@ -71,10 +70,15 @@ export default function Book() {
         return EventOptionsValues.every(x => ((Array.isArray(x) && x.length > 0) || (typeof(x) == 'number' && x != null  )));
     }, [EventOptionsValues]);
 
-    const EventDetailsValues = useWatch({control, name:["ChildName", "ChildAge", "Attendance", "LocationPref", "PhotoPref", "AdditionalInfo"]});
-    const EventDetailsIsComplete = useMemo(() => {
-        return EventDetailsValues.every(x => (x != null && x !== ''));
-    }, [EventDetailsValues]);
+    const EventDetailsBirthdayValues = useWatch({control, name:["ChildName", "ChildAge", "Attendance", "LocationPref", "PhotoPref"]});
+    const EventDetailsBirthdayIsComplete = useMemo(() => {
+        return EventDetailsBirthdayValues.every(x => (x != null && x !== ''));
+    }, [EventDetailsBirthdayValues]);
+
+    const EventDetailsPublicValues = useWatch({control, name: ["OrganizationName", "Attendance", "LocationPref", "PhotoPref"]});
+    const EventDetailsPublicIsComplete = useMemo(() => {
+        return EventDetailsPublicValues.every(x => (x != null && x!== ''))
+    }, [EventDetailsPublicValues]);
 
     const formIsValid = useCallback((x: unknown): x is FormValues => {
         // TODO(@kblomquist) replace this with actual validation
@@ -87,8 +91,8 @@ export default function Book() {
     const stepperTest = [
         { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} /> },
         { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} setValue={setValue} /> },
-        { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} /> },
-        { id: 3, title: "Event Details", completed: EventDetailsIsComplete, content: <EventDetails controller={control} /> },
+        { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} eventType={formValues.EventType} /> },
+        { id: 3, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete , content: <EventDetails controller={control} eventType={formValues.EventType} /> },
         { id: 4, title: "Review Request", completed: false, content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
     ];
 

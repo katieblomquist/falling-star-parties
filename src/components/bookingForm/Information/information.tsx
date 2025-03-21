@@ -5,7 +5,7 @@ import styles from "./information.module.css";
 import { FormValues } from "@/app/book/page";
 import { Controller } from "react-hook-form";
 
-export const event = ["Birthday Party", "Public Event"];
+export const event = ["Birthday Party", "Public Event", "Charity Event"];
 
 export default function Information(props: { control: any }) {
 
