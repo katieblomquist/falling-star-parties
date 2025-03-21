@@ -2,7 +2,6 @@ import { Character, CharacterDress, Services } from "@/app/book/page";
 import { IconCircle, IconCircleFilled } from "@tabler/icons-react";
 import styles from "./selectionCard.module.css";
 import { ComponentType } from "react";
-import { type } from "os";
 
 type CardContentComponent<T> = ComponentType<{ content: T }>
 
@@ -39,7 +38,7 @@ export default function SelectionCard<T extends Services | Character | Character
             <div className={styles.selectionName}>
                 {selected ? (
                     <IconCircleFilled stroke={1} color="#343B95" />
-                ) : (<IconCircle stroke={1} />)}
+                ) : (<IconCircle stroke={1} color="#A4A8B0" />)}
             </div>
             <props.CardContent content={props.content} />
         </div>
