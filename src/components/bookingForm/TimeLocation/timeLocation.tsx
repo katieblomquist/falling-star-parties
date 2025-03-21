@@ -35,12 +35,14 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
             </div>
             <div>
                 <h4 className={styles.header}>Time</h4>
-                <div className={styles.timeInput}>
+                <div className={styles.timeInputContainer}>
                     <Controller
                         control={props.controller}
                         name="Hour"
                         render={({ field: { onChange, value } }) => (
+                            <div className={styles.timeInput}>
                             <Dropdown options={hour} selected={value} setData={onChange} />
+                            </div>
                         )}
                     />
                     <p>:</p>
@@ -48,7 +50,9 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
                         control={props.controller}
                         name="Minute"
                         render={({ field: { onChange, value } }) => (
+                            <div className={styles.timeInput}>
                             <Dropdown options={minute} selected={value} setData={onChange} />
+                            </div>
                         )}
                     />
                     <Controller

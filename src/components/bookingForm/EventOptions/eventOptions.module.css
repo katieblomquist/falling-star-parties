@@ -35,3 +35,7 @@
     flex-wrap: wrap;
     gap: 15px;
 }
+
+.numCharacters{
+    min-width: 100px;
+}

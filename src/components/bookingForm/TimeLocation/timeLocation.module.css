@@ -1,4 +1,4 @@
-.timeInput{
+.timeInputContainer{
     display: flex;
     gap: 15px;
     align-items: center;
@@ -21,4 +21,8 @@
 .amPmActive{
     text-decoration: underline;
     color: #343B95;
+}
+
+.timeInput{
+    min-width: 100px;
 }
