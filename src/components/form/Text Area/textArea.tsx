@@ -8,8 +8,8 @@ export default function TextArea(props: { placeholder: string, required: boolean
     const id = props.id;
     const label = props.label;
 
-    const htmlInput = document.getElementById(id);
-    htmlInput?.addEventListener("change", updateValue);
+    // const htmlInput = document.getElementById(id);
+    // htmlInput?.addEventListener("change", updateValue);
 
     function updateValue(e: any) {
         props.setInput(e.target.value);
@@ -29,7 +29,7 @@ export default function TextArea(props: { placeholder: string, required: boolean
         }
         return (
             <>
-                <textarea className={styles.input} id={id} name={id} placeholder={placeholder} value={props.input}></textarea>
+                <textarea className={styles.input} id={id} name={id} placeholder={placeholder} value={props.input} onChange={updateValue}></textarea>
             </>
         );
     }
