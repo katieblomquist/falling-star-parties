@@ -16,6 +16,20 @@
     cursor: pointer;
 }
 
+.inputActive{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+    border: 1px solid #343B95;
+    width: fit-content;
+    border-radius: 15px;
+}
+
+.inputActive:hover{
+    cursor: pointer;
+}
+
 .calendar{
     position: absolute;
     background-color: white;
@@ -23,5 +37,10 @@
 }
 
 .selected{
+    margin-right: 20px;
+}
+
+.nonSelected{
+    color: #A4A8B0;
     margin-right: 20px;
 }

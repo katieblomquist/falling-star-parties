@@ -29,14 +29,14 @@ export default function DateSelector(props: {date: DateTime, selectDate: (date: 
 
     return (
         <div className={styles.selector} ref={calendarRef}>
-            <div className={styles.input} onClick={handleToggle}>
+            <div className={styles[`input${calendarToggle ? "Active" : ""}`]} onClick={handleToggle}>
                 {props.date === null ? (
-                    <p className={styles.selected}>MM/DD/YYYY</p>
+                    <p className={styles.nonSelected}>MM/DD/YYYY</p>
                 ) : (
                     <p className={styles.selected}>{props.date.month} - {props.date.day} - {props.date.year}</p>
                 )}
                 
-                <IconCalendarStar stroke={1}/>
+                <IconCalendarStar stroke={1} color="#A4A8B0"/>
             </div>
             <div className={styles.calendar}>
                 {calendarToggle ? (

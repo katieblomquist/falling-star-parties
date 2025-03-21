@@ -340,7 +340,9 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                             <div>
                                 <div>
                                     <h5>Number of Characters</h5>
+                                    <div className={styles.numCharacters}>
                                     <Dropdown options={numCharacters} selected={characterMax} setData={setMax} />
+                                    </div>
                                 </div>
                                 <div>
                                     <h5>Characters</h5>
