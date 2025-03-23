@@ -19,7 +19,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
             {props.eventType === 0 ? (
                 <div>
                     <div>
-                        <h4 className={styles.header}>Child's Name and Age</h4>
+                        <h3 className={styles.header}>Child's Name and Age</h3>
                         <div className={styles.nameAge}>
                             <Controller
                                 control={props.controller}
@@ -42,7 +42,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
             ) : (
                 <div>
                     <div>
-                        <h4 className={styles.header}>Organization Name</h4>
+                        <h3 className={styles.header}>Organization Name</h3>
                         <div className={styles.nameAge}>
                             <Controller
                                 control={props.controller}
@@ -57,7 +57,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
         )}
 
 <div>
-                        <h4 className={styles.header}>Number of Children in Attendance</h4>
+                        <h3 className={styles.header}>Number of Children in Attendance</h3>
                         <Controller
                             control={props.controller}
                             name="Attendance"
@@ -67,7 +67,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                         />
                     </div>
                     <div>
-                        <h4 className={styles.header}>Location Preference</h4>
+                        <h3 className={styles.header}>Location Preference</h3>
                         <Controller
                             control={props.controller}
                             name="LocationPref"
@@ -77,7 +77,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                         />
                     </div>
                     <div>
-                        <h4 className={styles.header}>May we take photos of your event for our social media and website?</h4>
+                        <h3 className={styles.header}>May we take photos of your event for our social media and website?</h3>
                         <Controller
                             control={props.controller}
                             name="PhotoPref"
@@ -87,7 +87,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                         />
                     </div>
                     <div>
-                        <h4 className={styles.header}>Additional Comments (Optional)</h4>
+                        <h3 className={styles.header}>Additional Comments (Optional)</h3>
                         <Controller
                             control={props.controller}
                             name="AdditionalInfo"

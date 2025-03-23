@@ -12,7 +12,7 @@ export default function Information(props: { control: any }) {
     return (
         <>
             <div>
-                <h4 className={styles.header}>Name</h4>
+                <h3 className={styles.header}>Name</h3>
                 <div className={styles.nameInput}>
                     <Controller
                         control={props.control}
@@ -32,7 +32,7 @@ export default function Information(props: { control: any }) {
             </div>
 
             <div>
-                <h4 className={styles.header}>Email</h4>
+                <h3 className={styles.header}>Email</h3>
                 <Controller
                     control={props.control}
                     name="Email"
@@ -43,7 +43,7 @@ export default function Information(props: { control: any }) {
             </div>
 
             <div>
-                <h4 className={styles.header}>Phone</h4>
+                <h3 className={styles.header}>Phone</h3>
                 <Controller
                     control={props.control}
                     name="Phone"
@@ -54,7 +54,7 @@ export default function Information(props: { control: any }) {
             </div>
 
             <div>
-                <h4 className={styles.header}>Event Type</h4>
+                <h3 className={styles.header}>Event Type</h3>
                 <Controller
                     control={props.control}
                     name="EventType"
