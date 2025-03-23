@@ -134,7 +134,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             return (
                 <>
                     <div>
-                        <h4 className={styles.header}>Select Your Event Package</h4>
+                        <h3 className={styles.header}>Select Your Event Package</h3>
                         <div className={styles.packages}>
                             {birthdayPackages.map((item) => {
                                 return (
@@ -157,7 +157,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                     </div>
 
                     <div>
-                        <h4 className={styles.header}>Select Your Enchanting Extras (Optional)</h4>
+                        <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
                         <div className={styles.extras}>
                             {birthdayExtras.map((item) => {
                                 return (
@@ -188,7 +188,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             return(
             <>
                 <div>
-                <h4 className={styles.header}>Select Your Event Package</h4>
+                <h3 className={styles.header}>Select Your Event Package</h3>
                 <div className={styles.packages}>
                     {publicPackages.map((item) => {
                         return (
@@ -211,7 +211,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             </div>
 
             <div>
-                <h4 className={styles.header}>Select Your Enchanting Extras (Optional)</h4>
+                <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
                 <div className={styles.extras}>
                     {publicExtras.map((item) => {
                         return (
@@ -242,7 +242,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             return(
                 <>
                 <div>
-                <h4 className={styles.header}>Select Your Event Package</h4>
+                <h3 className={styles.header}>Select Your Event Package</h3>
                 <div className={styles.packages}>
                     {charityPackages.map((item) => {
                         return (
@@ -265,7 +265,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             </div>
 
             <div>
-                <h4 className={styles.header}>Select Your Enchanting Extras (Optional)</h4>
+                <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
                 <div className={styles.extras}>
                     {publicExtras.map((item) => {
                         return (
@@ -300,12 +300,12 @@ export default function EventOptions(props: { controller: Control<FormValues, an
         <>
             {buildOptions()}
             <div>
-                <h4 className={styles.header}>Select Your Preferred Character</h4>
+                <h3 className={styles.header}>Select Your Preferred Character</h3>
                 <div className={styles.characters}>
                     {
                         charactersDone ? (
                             <div>
-                                <h5>Characters</h5>
+                                <h4 className={styles.subheader}>Characters</h4>
                                 <div className={styles.selections}>
                                     {selectedCharacters.map((item) => {
                                         return (
@@ -331,7 +331,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                     control={props.controller}
                                     name="Character"
                                     render={({ field: { onChange, value } }) => (
-                                        <h5 onClick={handleChangeCharacters} >Change Selection</h5>
+                                        <h4 className={styles.changeSelection} onClick={handleChangeCharacters} >Change Selection</h4>
                                     )}
                                 />
 
@@ -339,13 +339,13 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                         ) : (
                             <div>
                                 <div>
-                                    <h5>Number of Characters</h5>
+                                    <h4 className={styles.subheader}>Number of Characters</h4>
                                     <div className={styles.numCharacters}>
                                     <Dropdown options={numCharacters} selected={characterMax} setData={setMax} />
                                     </div>
                                 </div>
                                 <div>
-                                    <h5>Characters</h5>
+                                    <h4 className={styles.subheader}>Characters</h4>
                                     <div className={styles.selections}>
                                         {characters.map((item) => {
                                             return (
@@ -378,7 +378,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                     <div>
                         {
                             selectedCharacters?.length === parseInt(numCharacters[characterMax]) ? (
-                                <h4 className={styles.header}>Select Preferred Attire</h4>
+                                <h3 className={styles.header}>Select Preferred Attire</h3>
 
                             ) : null
                         }
@@ -390,7 +390,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                     selectedCharacters.map((character) => {
                                         return (
                                             <div>
-                                                <h5>{characters[character.characterId].name}</h5>
+                                                <h4 className={styles.subheader}>{characters[character.characterId].name}</h4>
                                                 <div className={styles.selections}>
                                                     {dresses.filter((item) => item.characterId === character.characterId).map((dress) => {
                                                         return (

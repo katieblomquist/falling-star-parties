@@ -39,3 +39,18 @@
 .numCharacters{
     min-width: 100px;
 }
+
+.subheader{
+    margin: 15px 0 15px 0;
+}
+
+.changeSelection{
+    color: #343B95;
+    text-decoration: underline;
+    margin-top: 10px;
+}
+
+.changeSelection:hover {
+    cursor: pointer;
+    
+}
