@@ -1,14 +1,16 @@
 import { FormValues } from "@/app/book/page";
-import { birthdayPackages, birthdayExtras, characters, dresses } from "@/components/bookingForm/EventOptions/eventOptions";
-import { hour, minute } from "@/components/bookingForm/TimeLocation/timeLocation";
+import { packages, extras, characters, dresses } from "@/components/bookingForm/EventOptions/eventOptions";
+import { time } from "@/components/bookingForm/TimeLocation/timeLocation";
 import { event } from "@/components/bookingForm/Information/information";
 import { useEffect, useState } from "react";
 import styles from "./reviewRequest.module.css";
+import { useWatch } from "react-hook-form";
 
 
 export default function ReviewRequest(props: { values: FormValues }) {
 
-  const [characterList, setList] = useState("")
+  const [characterList, setList] = useState("");
+  const eventType = props.values.EventType;
 
   function getOrdinal(n: number) {
     let ord = 'th';
@@ -24,6 +26,84 @@ export default function ReviewRequest(props: { values: FormValues }) {
     }
 
     return ord;
+  }
+
+  function buildReview() {
+    if (eventType === 0) {
+      return (
+        <>
+          <div>
+            <h3 className={styles.header}>Contact Info for {props.values.FirstName}</h3>
+            <p className={styles.subline}><b>Full Name: </b>{props.values.FirstName} {props.values.LastName}</p>
+            <p className={styles.subline}><b>Email: </b>{props.values.Email}</p>
+            <p className={styles.subline}><b>Phone: </b>{props.values.Phone}</p>
+          </div>
+          <br></br>
+          <div>
+            <h3 className={styles.header}> {props.values.ChildAge
+              ? `${props.values.ChildAge}${getOrdinal(parseInt(props.values.ChildAge))} `
+              : ''} {event[props.values.EventType]} for {props.values.ChildName}</h3>
+            <p className={styles.subline}><b>When:</b> {props.values.Date.monthLong} {props.values.Date.day}{getOrdinal(props.values.Date?.day)}, {props.values.Date.year} at {time[props.values.Time]} </p>
+            <p className={styles.subline}><b>Where:</b> {props.values.Location.address}</p>
+            <p className={styles.subline}><b>Event Package: </b>{packages[props.values.Package].title} - {packages[props.values.Package].duration}</p>
+            <p className={styles.subline}><b>Event Extras: </b></p>
+            <ul>
+              {props.values.Extras ? props.values.Extras.map((item) => {
+                return(
+                  <li>{extras[item].title}</li>
+                )
+              }) : null}
+            </ul>
+            <p className={styles.subline}><b>Characters:</b> {characterList}</p>
+            <p className={styles.subline}><b>Number of Children: </b>{props.values.Attendance}</p>
+            <p className={styles.subline}><b>Additional Comments: </b>{props.values?.AdditionalInfo}</p>
+          </div>
+        </>
+      )
+    } else if (eventType === 1) {
+      return (
+        <>
+          <div>
+            <h3 className={styles.header}>Contact Info for {props.values.FirstName}</h3>
+            <p className={styles.subline}><b>Full Name: </b>{props.values.FirstName} {props.values.LastName}</p>
+            <p className={styles.subline}><b>Email: </b>{props.values.Email}</p>
+            <p className={styles.subline}><b>Phone: </b>{props.values.Phone}</p>
+          </div>
+          <br></br>
+          <div>
+            <h3 className={styles.header}> {event[props.values.EventType]} for {props.values.OrganizationName}</h3>
+            <p className={styles.subline}><b>When:</b> {props.values.Date.monthLong} {props.values.Date.day}{getOrdinal(props.values.Date?.day)}, {props.values.Date.year} at {time[props.values.Time]} </p>
+            <p className={styles.subline}><b>Where:</b> {props.values.Location.address}</p>
+            <p className={styles.subline}><b>Event Package: </b>{packages[props.values.Package].title}</p>
+            <p className={styles.subline}><b>Characters:</b> {characterList}</p>
+            <p className={styles.subline}><b>Number of Children: </b>{props.values.Attendance}</p>
+            <p className={styles.subline}><b>Additional Comments: </b>{props.values?.AdditionalInfo}</p>
+          </div>
+        </>
+      )
+
+    } else{
+      return (
+        <>
+          <div>
+            <h3 className={styles.header}>Contact Info for {props.values.FirstName}</h3>
+            <p className={styles.subline}><b>Full Name: </b>{props.values.FirstName} {props.values.LastName}</p>
+            <p className={styles.subline}><b>Email: </b>{props.values.Email}</p>
+            <p className={styles.subline}><b>Phone: </b>{props.values.Phone}</p>
+          </div>
+          <br></br>
+          <div>
+            <h3 className={styles.header}> {event[props.values.EventType]} for {props.values.OrganizationName}</h3>
+            <p className={styles.subline}><b>When:</b> {props.values.Date.monthLong} {props.values.Date.day}{getOrdinal(props.values.Date?.day)}, {props.values.Date.year} at {time[props.values.Time]} </p>
+            <p className={styles.subline}><b>Where:</b> {props.values.Location.address}</p>
+            <p className={styles.subline}><b>Event Package: </b>{packages[props.values.Package].title}</p>
+            <p className={styles.subline}><b>Characters:</b> {characterList}</p>
+            <p className={styles.subline}><b>Number of Children: </b>{props.values.Attendance}</p>
+            <p className={styles.subline}><b>Additional Comments: </b>{props.values?.AdditionalInfo}</p>
+          </div>
+        </>
+      )
+    }
   }
 
   useEffect(() => {
@@ -42,25 +122,6 @@ export default function ReviewRequest(props: { values: FormValues }) {
   }, [props.values.Character]);
 
   return (
-    <>
-      <div>
-        <h3 className={styles.header}>Contact Info for {props.values.FirstName}</h3>
-        <p className={styles.subline}><b>Full Name: </b>{props.values.FirstName} {props.values.LastName}</p>
-        <p className={styles.subline}><b>Email: </b>{props.values.Email}</p>
-        <p className={styles.subline}><b>Phone: </b>{props.values.Phone}</p>
-      </div>
-      <br></br>
-      <div>
-        <h3 className={styles.header}> {props.values.ChildAge
-          ? `${props.values.ChildAge}${getOrdinal(parseInt(props.values.ChildAge))} `
-          : ''} {event[props.values.EventType]} for {props.values.ChildName}</h3>
-        <p className={styles.subline}><b>When:</b> {props.values.Date.monthLong} {props.values.Date.day}{getOrdinal(props.values.Date?.day)}, {props.values.Date.year} at {hour[props.values.Hour]}:{minute[props.values.Minute]} {props.values.AmPm} </p>
-        <p className={styles.subline}><b>Where:</b> {props.values.Location.address}</p>
-        <p className={styles.subline}><b>Event Package: </b>{birthdayPackages[props.values.Package].title} - {birthdayPackages[props.values.Package].duration}</p>
-        <p className={styles.subline}><b>Characters:</b> {characterList}</p>
-        <p className={styles.subline}><b>Number of Children: </b>{props.values.Attendance}</p>
-        <p className={styles.subline}><b>Additional Comments: </b>{props.values?.AdditionalInfo}</p>
-      </div>
-    </>
+    buildReview()
   )
 }

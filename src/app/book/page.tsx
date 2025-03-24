@@ -14,7 +14,7 @@ import { DateTime } from "luxon";
 import { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 
 export type StepperContent = { id: number, title: String, completed: boolean, content: ReactNode };
-export type Services = { id: number, title: String, description: String, duration: String, cost: number, additionalCharacterCost: number};
+export type Services = { id: number, type: string, title: String, description: String, duration: String, cost: number, additionalCharacterCost: number};
 export type CharacterDress = {id: number, name: String, img: String, characterId: number};
 export type Character = {id: number, name: String, img:String};
 export type CharacterSelection = {characterId: number, dressId: number}
@@ -28,13 +28,12 @@ export type FormValues = {
     Phone: string,
     EventType: number,
     Date: DateTime,
-    Hour: number,
-    Minute: number,
-    AmPm: string,
+    Time: number,
     Location: Location,
     Package: number,
     Duration?: number,
     Extras?: number[],
+    NumCharacters: number,
     Character: CharacterSelection[],
     ChildName?: string,
     ChildAge?: string,
@@ -60,7 +59,7 @@ export default function Book() {
         return InformationValues.every(x => (x != null && x !== ''));
     }, [InformationValues]);
 
-    const TimeLocationValues = useWatch({ control, name: ["Date", "Hour", "Minute", "AmPm", "Location"] });
+    const TimeLocationValues = useWatch({ control, name: ["Date", "Time", "Location"] });
     const TimeLocationIsComplete = useMemo(() => {
         return TimeLocationValues.every(x => (x != null ));
     }, [TimeLocationValues]);
@@ -91,16 +90,10 @@ export default function Book() {
     const stepperTest = [
         { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} /> },
         { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} setValue={setValue} /> },
-        { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} eventType={formValues.EventType} /> },
+        { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} /> },
         { id: 3, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete , content: <EventDetails controller={control} eventType={formValues.EventType} /> },
         { id: 4, title: "Review Request", completed: false, content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
     ];
-
-    //Eventually this will be replaced by a validate function that will set completion. 
-    function setStepperCompleted(current: number) {
-        stepperTest[current].completed = true;
-    }
-
     return (
         <>
             <div>
