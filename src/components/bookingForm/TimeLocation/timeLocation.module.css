@@ -8,21 +8,6 @@
     margin: 20px 0 10px 0;
 }
 
-.amPmContainer{
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
-}
-
-.amPm{
-    cursor: pointer;
-}
-
-.amPmActive{
-    text-decoration: underline;
-    color: #343B95;
-}
-
 .timeInput{
-    min-width: 100px;
+    min-width: 200px;
 }

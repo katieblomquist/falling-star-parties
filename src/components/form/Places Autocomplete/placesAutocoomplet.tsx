@@ -10,7 +10,7 @@ export type Location = {
     lng: number;
 }
 
-export default function PlacesAutocomplete(props: { placeSelection: (location: Location) => void }) {
+export default function PlacesAutocomplete(props: { value: Location | undefined, placeSelection: (location: Location) => void }) {
 
     if (!apiKey) {
         console.error('Google Maps API key is missing');
@@ -41,8 +41,12 @@ export default function PlacesAutocomplete(props: { placeSelection: (location: L
                     props.placeSelection(location);
                 }
             });
+
+            if (props.value) {
+                inputRef.current.value = props.value.address;
+              }
         }
-    }, [isLoaded, props.placeSelection]);
+    }, [isLoaded, props.placeSelection, props.value?.address]);
 
     if (loadError) return <div>Error loading maps</div>;
     if (!isLoaded) return <div>Loading...</div>;

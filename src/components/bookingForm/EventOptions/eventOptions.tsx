@@ -8,28 +8,22 @@ import VerticleCard from "@/components/form/Selection Cards/verticleCard";
 import CharacterCard from "@/components/form/Selection Cards/characterCard";
 import Dropdown from "@/components/form/Dropdown/dropdown";
 
-export const birthdayPackages = [{ id: 0, title: "Dream", description: "Our Characters will sing, tell stories, teach princess lessons, hold a royal coronation, and pose for portraits!", duration: "30 Minutes", cost: 150, additionalCharacterCost: 75 },
-{ id: 1, title: "Sparkle", description: "Our Characters will do everything included in the Dream Package plus play party games such as Simon Says, Hide and Go Seek, and Duck Duck Goose!", duration: "60 Minutes", cost: 220, additionalCharacterCost: 120 },
-{ id: 2, title: "Shine", description: "Our Characters will do everything included in the Sparkle Package plus face paint with your guests!", duration: "90 Minutes", cost: 300, additionalCharacterCost: 180 }
-];
+export const packages = [{ id: 0, type: "Birthday Party", title: "Dream", description: "Our Characters will sing, tell stories, teach princess lessons, hold a royal coronation, and pose for portraits!", duration: "30 Minutes", cost: 150, additionalCharacterCost: 75 },
+{ id: 1, type:"Birthday Party", title: "Sparkle", description: "Our Characters will do everything included in the Dream Package plus play party games such as Simon Says, Hide and Go Seek, and Duck Duck Goose!", duration: "60 Minutes", cost: 220, additionalCharacterCost: 120 },
+{ id: 2, type: "Birthday Party", title: "Shine", description: "Our Characters will do everything included in the Sparkle Package plus face paint with your guests!", duration: "90 Minutes", cost: 300, additionalCharacterCost: 180 },
+{ id: 3, type: "Public Event", title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 250, additionalCharacterCost: 150 },
+{ id: 4, type: "Public Event", title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "120 Minutes", cost: 350, additionalCharacterCost: 300 },
+{ id: 4, type: "Charity Event", title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 175, additionalCharacterCost: 75 },
+{ id: 5, type: "Charity Event", title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "120 Minutes", cost: 300, additionalCharacterCost: 150 }
 
-export const publicPackages = [{ id: 3, title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 250, additionalCharacterCost: 150 },
-{ id: 4, title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "120 MInutes", cost: 350, additionalCharacterCost: 300 }
 ];
-
-export const charityPackages = [{ id: 4, title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 175, additionalCharacterCost: 75 },
-{ id: 5, title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "120 MInutes", cost: 300, additionalCharacterCost: 150 }
-];
-
-export const birthdayExtras = [{ id: 0, title: "Storybook Keepsake", description: "Includes a storybook signed by your character that she will present at the end of story time!", duration: "", cost: 15, additionalCharacterCost: 0 },
-{ id: 1, title: "Deluxe Storybook Keepsake", description: "Includes a storybook, with over 10 princess stories, signed by your character that she will present at the end of story time!", duration: "", cost: 30, additionalCharacterCost: 0 },
-{ id: 2, title: "Deluxe Princess Set", description: "Includes an upgraded rhinestone crown and a themed princess sash.", duration: "", cost: 30, additionalCharacterCost: 0 },
-{ id: 3, title: "Gift Bags", description: "Includes a gift bag for each child. We offer both princess themed and superhero themed bags so that every child is included!", duration: "", cost: 10, additionalCharacterCost: 0 }
-];
-
-export const publicExtras = [{ id: 4, title: "Storytime", description: "Includes a musical story time for your guests", duration: "", cost: 0, additionalCharacterCost: 0 },
-{ id: 5, title: "Interactive Storytime", description: "Your guests get to become a part of the story through props and lines of their own!", duration: "", cost: 75, additionalCharacterCost: 0 },
-{ id: 6, title: "Signature Cards", description: "Your guests will get to take a little piece of the magic with them through our signed photo cards!", duration: "", cost: 30, additionalCharacterCost: 0 }
+export const extras = [{ id: 0, type: "Birthday Party", title: "Storybook Keepsake", description: "Includes a storybook signed by your character that she will present at the end of story time!", duration: "", cost: 15, additionalCharacterCost: 0 },
+{ id: 1, type: "Birthday Party", title: "Deluxe Storybook Keepsake", description: "Includes a storybook, with over 10 princess stories, signed by your character that she will present at the end of story time!", duration: "", cost: 30, additionalCharacterCost: 0 },
+{ id: 2, type: "Birthday Party", title: "Deluxe Princess Set", description: "Includes an upgraded rhinestone crown and a themed princess sash.", duration: "", cost: 30, additionalCharacterCost: 0 },
+{ id: 3, type: "Birthday Party", title: "Gift Bags", description: "Includes a gift bag for each child. We offer both princess themed and superhero themed bags so that every child is included!", duration: "", cost: 10, additionalCharacterCost: 0 },
+{ id: 4, type: "Public Event", title: "Storytime", description: "Includes a musical story time for your guests", duration: "", cost: 0, additionalCharacterCost: 0 },
+{ id: 5, type: "Public Event", title: "Interactive Storytime", description: "Your guests get to become a part of the story through props and lines of their own!", duration: "", cost: 75, additionalCharacterCost: 0 },
+{ id: 6, type: "Public Event", title: "Signature Cards", description: "Your guests will get to take a little piece of the magic with them through our signed photo cards!", duration: "", cost: 30, additionalCharacterCost: 0 }
 ];
 
 export const characters = [{ id: 0, name: "Ice Queen", img: "/IMG_4976.jpg" },
@@ -50,17 +44,17 @@ export const dresses = [{ id: 0, name: "Ice Dress", img: "/IMG_4976.jpg", charac
 { id: 12, name: "Ballgown", img: "/IMG_4976.jpg", characterId: 4 }, { id: 13, name: "Ballgown", img: "/IMG_4976.jpg", characterId: 5 },
 { id: 14, name: "Adventure Dress", img: "/IMG_4976.jpg", characterId: 6 }]
 
-export const numCharacters = ["1", "2", "3", "4", "5", "6"];
+export const numberCharacters = ["1", "2", "3", "4", "5", "6"];
 
 //Need to create and Add Character cards and Costume Cards
 
-export default function EventOptions(props: { controller: Control<FormValues, any>, resetField: UseFormResetField<FormValues>, eventType: number | undefined }) {
+export default function EventOptions(props: { controller: Control<FormValues, any>, resetField: UseFormResetField<FormValues> }) {
 
     const control = props.controller
-
-    const [characterMax, setMax] = useState(0);
-    const [charactersDone, setDone] = useState(false);
     const selectedCharacters = useWatch({ control, name: "Character" });
+    const eventType = useWatch({control, name: "EventType"});
+    const numCharacters = useWatch({control, name: "NumCharacters"});
+    
 
     function setExtras(id: number, selectedState: boolean, value: number[] = []): number[] {
         if (!selectedState) {
@@ -74,9 +68,9 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                 dupValue.splice(value.indexOf(1), 1);
             } else if (id === 1) {
                 dupValue.splice(value.indexOf(0), 1);
-            } else if (id === 4){
+            } else if (id === 4) {
                 dupValue.splice(value.indexOf(5), 1);
-            } else if(id === 5){
+            } else if (id === 5) {
                 dupValue.splice(value.indexOf(4), 1)
             }
 
@@ -93,13 +87,12 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             return dupValue;
         }
 
-        if (value != null && value.length >= characterMax + 1) {
+        if (value != null && value.length >= numCharacters + 1) {
             return value;
             //TO DO: set up error state informing them they've already selected their max number of characters
         }
         const selected = [...value, { dressId: -1, characterId: id }];
-        if (selected.length === characterMax + 1) {
-            setDone(true);
+        if (selected.length === numCharacters + 1) {
         }
 
         return selected
@@ -107,7 +100,6 @@ export default function EventOptions(props: { controller: Control<FormValues, an
 
     function handleChangeCharacters() {
         props.resetField('Character')
-        setDone(false);
     }
 
 
@@ -130,13 +122,13 @@ export default function EventOptions(props: { controller: Control<FormValues, an
     }
 
     function buildOptions() {
-        if (props.eventType === 0) {
+        if (eventType === 0) {
             return (
                 <>
                     <div>
                         <h3 className={styles.header}>Select Your Event Package</h3>
                         <div className={styles.packages}>
-                            {birthdayPackages.map((item) => {
+                            {packages.filter(item => item.type === "Birthday Party").map((item) => {
                                 return (
                                     <Controller
                                         control={props.controller}
@@ -144,6 +136,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                         render={({ field: { onChange, value } }) => (
                                             <SelectionCard CardContent={HorizontalCard} content={{
                                                 id: item.id,
+                                                type: item.type,
                                                 title: item.title,
                                                 description: item.description,
                                                 duration: item.duration,
@@ -159,7 +152,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                     <div>
                         <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
                         <div className={styles.extras}>
-                            {birthdayExtras.map((item) => {
+                            {extras.filter(item => item.type === "Birthday Party").map((item) => {
                                 return (
                                     <Controller
                                         control={props.controller}
@@ -168,6 +161,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
 
                                             <SelectionCard CardContent={VerticleCard} content={{
                                                 id: item.id,
+                                                type: item.type,
                                                 title: item.title,
                                                 description: item.description,
                                                 duration: item.duration,
@@ -184,113 +178,117 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                     </div>
                 </>
             )
-        } else if (props.eventType === 1){
-            return(
-            <>
-                <div>
-                <h3 className={styles.header}>Select Your Event Package</h3>
-                <div className={styles.packages}>
-                    {publicPackages.map((item) => {
-                        return (
-                            <Controller
-                                control={props.controller}
-                                name="Package"
-                                render={({ field: { onChange, value } }) => (
-                                    <SelectionCard CardContent={HorizontalCard} content={{
-                                        id: item.id,
-                                        title: item.title,
-                                        description: item.description,
-                                        duration: item.duration,
-                                        cost: item.cost,
-                                        additionalCharacterCost: item.additionalCharacterCost
-                                    }} selected={value === item.id ? true : false} makeSelection={onChange} />
-                                )} />
-                        )
-                    })}
-                </div>
-            </div>
+        } else if (eventType === 1) {
+            return (
+                <>
+                    <div>
+                        <h3 className={styles.header}>Select Your Event Package</h3>
+                        <div className={styles.packages}>
+                            {packages.filter(item => item.type === "Public Event").map((item) => {
+                                return (
+                                    <Controller
+                                        control={props.controller}
+                                        name="Package"
+                                        render={({ field: { onChange, value } }) => (
+                                            <SelectionCard CardContent={HorizontalCard} content={{
+                                                id: item.id,
+                                                type: item.type,
+                                                title: item.title,
+                                                description: item.description,
+                                                duration: item.duration,
+                                                cost: item.cost,
+                                                additionalCharacterCost: item.additionalCharacterCost
+                                            }} selected={value === item.id ? true : false} makeSelection={onChange} />
+                                        )} />
+                                )
+                            })}
+                        </div>
+                    </div>
 
-            <div>
-                <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
-                <div className={styles.extras}>
-                    {publicExtras.map((item) => {
-                        return (
-                            <Controller
-                                control={props.controller}
-                                name="Extras"
-                                render={({ field: { onChange, value } }) => (
+                    <div>
+                        <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
+                        <div className={styles.extras}>
+                            {extras.filter(item => item.type === "Public Event").map((item) => {
+                                return (
+                                    <Controller
+                                        control={props.controller}
+                                        name="Extras"
+                                        render={({ field: { onChange, value } }) => (
 
-                                    <SelectionCard CardContent={VerticleCard} content={{
-                                        id: item.id,
-                                        title: item.title,
-                                        description: item.description,
-                                        duration: item.duration,
-                                        cost: item.cost,
-                                        additionalCharacterCost: item.additionalCharacterCost
-                                    }} selected={value?.includes(item.id) ? true : false} makeSelection={(id, selected) => {
-                                        onChange(setExtras(id, selected, value))
-                                    }} />
-                                )}
-                            />
-                        )
-                    })}
-                </div>
-            </div>
-            </>
+                                            <SelectionCard CardContent={VerticleCard} content={{
+                                                id: item.id,
+                                                type: item.type,
+                                                title: item.title,
+                                                description: item.description,
+                                                duration: item.duration,
+                                                cost: item.cost,
+                                                additionalCharacterCost: item.additionalCharacterCost
+                                            }} selected={value?.includes(item.id) ? true : false} makeSelection={(id, selected) => {
+                                                onChange(setExtras(id, selected, value))
+                                            }} />
+                                        )}
+                                    />
+                                )
+                            })}
+                        </div>
+                    </div>
+                </>
             )
         } else {
-            return(
+            return (
                 <>
-                <div>
-                <h3 className={styles.header}>Select Your Event Package</h3>
-                <div className={styles.packages}>
-                    {charityPackages.map((item) => {
-                        return (
-                            <Controller
-                                control={props.controller}
-                                name="Package"
-                                render={({ field: { onChange, value } }) => (
-                                    <SelectionCard CardContent={HorizontalCard} content={{
-                                        id: item.id,
-                                        title: item.title,
-                                        description: item.description,
-                                        duration: item.duration,
-                                        cost: item.cost, 
-                                        additionalCharacterCost: item.additionalCharacterCost
-                                    }} selected={value === item.id ? true : false} makeSelection={onChange} />
-                                )} />
-                        )
-                    })}
-                </div>
-            </div>
+                    <div>
+                        <h3 className={styles.header}>Select Your Event Package</h3>
+                        <div className={styles.packages}>
+                            {packages.filter(item => item.type === "Charity Event").map((item) => {
+                                return (
+                                    <Controller
+                                        control={props.controller}
+                                        name="Package"
+                                        render={({ field: { onChange, value } }) => (
+                                            <SelectionCard CardContent={HorizontalCard} content={{
+                                                id: item.id,
+                                                type: item.type,
+                                                title: item.title,
+                                                description: item.description,
+                                                duration: item.duration,
+                                                cost: item.cost,
+                                                additionalCharacterCost: item.additionalCharacterCost
+                                            }} selected={value === item.id ? true : false} makeSelection={onChange} />
+                                        )} />
+                                )
+                            })}
+                        </div>
+                    </div>
 
-            <div>
-                <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
-                <div className={styles.extras}>
-                    {publicExtras.map((item) => {
-                        return (
-                            <Controller
-                                control={props.controller}
-                                name="Extras"
-                                render={({ field: { onChange, value } }) => (
+                    <div>
+                        <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
+                        <div className={styles.extras}>
+                            {extras.filter(item => item.type === "Public Event").map((item) => {
+                                return (
+                                    <Controller
+                                        control={props.controller}
+                                        name="Extras"
+                                        render={({ field: { onChange, value } }) => (
 
-                                    <SelectionCard CardContent={VerticleCard} content={{
-                                        id: item.id,
-                                        title: item.title,
-                                        description: item.description,
-                                        duration: item.duration,
-                                        cost: item.cost,
-                                        additionalCharacterCost: item.additionalCharacterCost
-                                    }} selected={value?.includes(item.id) ? true : false} makeSelection={(id, selected) => {
-                                        onChange(setExtras(id, selected, value))
-                                    }} />
-                                )}
-                            />
-                        )
-                    })}
-                </div>
-            </div>
-            </>
+                                            <SelectionCard CardContent={VerticleCard} content={{
+                                                id: item.id,
+                                                type: item.type,
+                                                title: item.title,
+                                                description: item.description,
+                                                duration: item.duration,
+                                                cost: item.cost,
+                                                additionalCharacterCost: item.additionalCharacterCost
+                                            }} selected={value?.includes(item.id) ? true : false} makeSelection={(id, selected) => {
+                                                onChange(setExtras(id, selected, value))
+                                            }} />
+                                        )}
+                                    />
+                                )
+                            })}
+                        </div>
+                    </div>
+                </>
             )
         }
     }
@@ -301,53 +299,30 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             {buildOptions()}
             <div>
                 <h3 className={styles.header}>Select Your Preferred Character</h3>
-                <div className={styles.characters}>
-                    {
-                        charactersDone ? (
-                            <div>
-                                <h4 className={styles.subheader}>Characters</h4>
-                                <div className={styles.selections}>
-                                    {selectedCharacters.map((item) => {
-                                        return (
-                                            <Controller
-                                                control={props.controller}
-                                                name="Character"
-                                                render={({ field: { onChange, value } }) => (
-
-                                                    <SelectionCard CardContent={CharacterCard} content={{
-                                                        id: characters[item.characterId].id,
-                                                        name: characters[item.characterId].name,
-                                                        img: characters[item.characterId].img
-
-                                                    }} selected={value?.map((selected) => selected.characterId).includes(item.characterId)} makeSelection={(id, selected) => {
-                                                        onChange(setCharacters(id, selected, value))
-                                                    }} />
-                                                )}
-                                            />
-                                        )
-                                    })}
-                                </div>
-                                <Controller
-                                    control={props.controller}
-                                    name="Character"
-                                    render={({ field: { onChange, value } }) => (
-                                        <h4 className={styles.changeSelection} onClick={handleChangeCharacters} >Change Selection</h4>
-                                    )}
-                                />
-
-                            </div>
-                        ) : (
-                            <div>
+                <div>
+                    <h4 className={styles.subheader}>Number of Characters</h4>
+                    <div className={styles.numCharacters}>
+                        <Controller
+                            control={props.controller}
+                            name="NumCharacters"
+                            render={({ field: { onChange, value } }) => (
                                 <div>
-                                    <h4 className={styles.subheader}>Number of Characters</h4>
-                                    <div className={styles.numCharacters}>
-                                    <Dropdown options={numCharacters} selected={characterMax} setData={setMax} />
-                                    </div>
+                                <Dropdown options={numberCharacters} selected={value} setData={onChange} />
                                 </div>
+                            )}
+                        />
+
+                    </div>
+                </div>
+
+                {numCharacters ? (
+                    <div className={styles.characters}>
+                        {
+                            selectedCharacters?.length === numCharacters + 1 ? (
                                 <div>
                                     <h4 className={styles.subheader}>Characters</h4>
                                     <div className={styles.selections}>
-                                        {characters.map((item) => {
+                                        {selectedCharacters.map((item) => {
                                             return (
                                                 <Controller
                                                     control={props.controller}
@@ -355,11 +330,11 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                                     render={({ field: { onChange, value } }) => (
 
                                                         <SelectionCard CardContent={CharacterCard} content={{
-                                                            id: item.id,
-                                                            name: item.name,
-                                                            img: item.img
+                                                            id: characters[item.characterId].id,
+                                                            name: characters[item.characterId].name,
+                                                            img: characters[item.characterId].img
 
-                                                        }} selected={value?.map((selected) => selected.characterId).includes(item.id)} makeSelection={(id, selected) => {
+                                                        }} selected={value?.map((selected) => selected.characterId).includes(item.characterId)} makeSelection={(id, selected) => {
                                                             onChange(setCharacters(id, selected, value))
                                                         }} />
                                                     )}
@@ -367,66 +342,103 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                             )
                                         })}
                                     </div>
+                                    <Controller
+                                        control={props.controller}
+                                        name="Character"
+                                        render={({ field: { onChange, value } }) => (
+                                            <h4 className={styles.changeSelection} onClick={handleChangeCharacters} >Change Selection</h4>
+                                        )}
+                                    />
 
                                 </div>
-                            </div>
-                        )
-                    }
+                            ) : (
+                                <div>
+                                    <div>
+                                        <h4 className={styles.subheader}>Characters</h4>
+                                        <div className={styles.selections}>
+                                            {characters.map((item) => {
+                                                return (
+                                                    <Controller
+                                                        control={props.controller}
+                                                        name="Character"
+                                                        render={({ field: { onChange, value } }) => (
 
+                                                            <SelectionCard CardContent={CharacterCard} content={{
+                                                                id: item.id,
+                                                                name: item.name,
+                                                                img: item.img
 
+                                                            }} selected={value?.map((selected) => selected.characterId).includes(item.id)} makeSelection={(id, selected) => {
+                                                                onChange(setCharacters(id, selected, value))
+                                                            }} />
+                                                        )}
+                                                    />
+                                                )
+                                            })}
+                                        </div>
 
-                    <div>
-                        {
-                            selectedCharacters?.length === parseInt(numCharacters[characterMax]) ? (
-                                <h3 className={styles.header}>Select Preferred Attire</h3>
-
-                            ) : null
+                                    </div>
+                                </div>
+                            )
                         }
 
-                        <div className={styles.dressSelection}>
+
+
+                        <div>
                             {
-                                selectedCharacters?.length === parseInt(numCharacters[characterMax]) ? (
+                                selectedCharacters?.length === numCharacters + 1 ? (
+                                    <h3 className={styles.header}>Select Preferred Attire</h3>
 
-                                    selectedCharacters.map((character) => {
-                                        return (
-                                            <div>
-                                                <h4 className={styles.subheader}>{characters[character.characterId].name}</h4>
-                                                <div className={styles.selections}>
-                                                    {dresses.filter((item) => item.characterId === character.characterId).map((dress) => {
-                                                        return (
-                                                            <Controller
-                                                                control={props.controller}
-                                                                name="Character"
-                                                                render={({ field: { onChange, value } }) => (
-
-                                                                    <SelectionCard CardContent={CharacterCard} content={{
-                                                                        id: dress.id,
-                                                                        name: dress.name,
-                                                                        img: dress.img,
-                                                                        characterId: dress.characterId
-
-                                                                    }} selected={value?.map((selected) => selected.dressId).includes(dress.id)} makeSelection={(id, selected) => {
-                                                                        onChange(setDress(id, selected, dress.characterId, value))
-                                                                    }} />
-                                                                )}
-                                                            />
-                                                        )
-
-                                                    })}
-                                                </div>
-
-                                            </div>
-                                        )
-                                    })
                                 ) : null
                             }
 
+                            <div className={styles.dressSelection}>
+                                {
+                                    selectedCharacters?.length === numCharacters + 1 ? (
+
+                                        selectedCharacters.map((character) => {
+                                            return (
+                                                <div>
+                                                    <h4 className={styles.subheader}>{characters[character.characterId].name}</h4>
+                                                    <div className={styles.selections}>
+                                                        {dresses.filter((item) => item.characterId === character.characterId).map((dress) => {
+                                                            return (
+                                                                <Controller
+                                                                    control={props.controller}
+                                                                    name="Character"
+                                                                    render={({ field: { onChange, value } }) => (
+
+                                                                        <SelectionCard CardContent={CharacterCard} content={{
+                                                                            id: dress.id,
+                                                                            name: dress.name,
+                                                                            img: dress.img,
+                                                                            characterId: dress.characterId
+
+                                                                        }} selected={value?.map((selected) => selected.dressId).includes(dress.id)} makeSelection={(id, selected) => {
+                                                                            onChange(setDress(id, selected, dress.characterId, value))
+                                                                        }} />
+                                                                    )}
+                                                                />
+                                                            )
+
+                                                        })}
+                                                    </div>
+
+                                                </div>
+                                            )
+                                        })
+                                    ) : null
+                                }
+
+
+                            </div>
 
                         </div>
 
                     </div>
+                ) : null}
 
-                </div>
+
             </div>
 
             {
