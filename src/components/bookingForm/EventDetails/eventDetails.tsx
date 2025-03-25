@@ -6,9 +6,7 @@ import { useState } from "react";
 import styles from "./eventDetails.module.css"
 import { Control, Controller } from "react-hook-form";
 import { FormValues } from "@/app/book/page";
-
-export const location = ["Indoor", "Outdoor", "No Preference"];
-export const photos = ["Yes", "No"];
+import { photos, location } from "@/app/mockData";
 
 export default function EventDetails(props: { controller: Control<FormValues, any>, eventType: number | undefined }) {
 
