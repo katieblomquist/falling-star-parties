@@ -6,15 +6,15 @@ import { useState } from "react";
 import styles from "./eventDetails.module.css"
 import { Control, Controller } from "react-hook-form";
 import { FormValues } from "@/app/book/page";
-import { photos, location } from "@/app/mockData";
+import { photos, location, event } from "@/app/mockData";
 
-export default function EventDetails(props: { controller: Control<FormValues, any>, eventType: number | undefined }) {
+export default function EventDetails(props: { controller: Control<FormValues, any>, eventType: string | undefined }) {
 
 
 
     return (
         <>
-            {props.eventType === 0 ? (
+            {props.eventType === "Birthday Party" ? (
                 <div>
                     <div>
                         <h3 className={styles.header}>Child's Name and Age</h3>
@@ -52,48 +52,48 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                         </div>
                     </div>
                 </div>
-        )}
+            )}
 
-<div>
-                        <h3 className={styles.header}>Number of Children in Attendance</h3>
-                        <Controller
-                            control={props.controller}
-                            name="Attendance"
-                            render={({ field: { onChange, value } }) => (
-                                <TextInput type={"number"} placeholder={"Children in Attendance"} required={true} id={"attendance"} label={"Number of Children in Attendance"} input={value} onChange={onChange} />
-                            )}
-                        />
-                    </div>
-                    <div>
-                        <h3 className={styles.header}>Location Preference</h3>
-                        <Controller
-                            control={props.controller}
-                            name="LocationPref"
-                            render={({ field: { onChange, value } }) => (
-                                <Dropdown options={location} selected={value} setData={onChange} />
-                            )}
-                        />
-                    </div>
-                    <div>
-                        <h3 className={styles.header}>May we take photos of your event for our social media and website?</h3>
-                        <Controller
-                            control={props.controller}
-                            name="PhotoPref"
-                            render={({ field: { onChange, value } }) => (
-                                <Dropdown options={photos} selected={value} setData={onChange} />
-                            )}
-                        />
-                    </div>
-                    <div>
-                        <h3 className={styles.header}>Additional Comments (Optional)</h3>
-                        <Controller
-                            control={props.controller}
-                            name="AdditionalInfo"
-                            render={({ field: { onChange, value } }) => (
-                                <TextArea placeholder={"Anything else we should know?"} required={false} id={"additionalInfo"} label={"Additional Info"} input={value ? value : ''} setInput={onChange} />
-                            )}
-                        />
-                    </div>
+            <div>
+                <h3 className={styles.header}>Number of Children in Attendance</h3>
+                <Controller
+                    control={props.controller}
+                    name="Attendance"
+                    render={({ field: { onChange, value } }) => (
+                        <TextInput type={"number"} placeholder={"Children in Attendance"} required={true} id={"attendance"} label={"Number of Children in Attendance"} input={value} onChange={onChange} />
+                    )}
+                />
+            </div>
+            <div>
+                <h3 className={styles.header}>Location Preference</h3>
+                <Controller
+                    control={props.controller}
+                    name="LocationPref"
+                    render={({ field: { onChange, value } }) => (
+                        <Dropdown options={location} selected={value} setData={onChange} />
+                    )}
+                />
+            </div>
+            <div>
+                <h3 className={styles.header}>May we take photos of your event for our social media and website?</h3>
+                <Controller
+                    control={props.controller}
+                    name="PhotoPref"
+                    render={({ field: { onChange, value } }) => (
+                        <Dropdown options={photos} selected={value} setData={onChange} />
+                    )}
+                />
+            </div>
+            <div>
+                <h3 className={styles.header}>Additional Comments (Optional)</h3>
+                <Controller
+                    control={props.controller}
+                    name="AdditionalInfo"
+                    render={({ field: { onChange, value } }) => (
+                        <TextArea placeholder={"Anything else we should know?"} required={false} id={"additionalInfo"} label={"Additional Info"} input={value ? value : ''} setInput={onChange} />
+                    )}
+                />
+            </div>
 
         </>
     )

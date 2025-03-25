@@ -15,7 +15,6 @@ export default function EventOptions(props: { controller: Control<FormValues, an
 
     const control = props.controller
     const selectedCharacters = useWatch({ control, name: "Character" });
-    // const eventType = useWatch({control, name: "EventType"});
     const numCharacters = useWatch({ control, name: "NumCharacters" });
 
     const packageOptions = getPackages();
@@ -28,12 +27,12 @@ export default function EventOptions(props: { controller: Control<FormValues, an
 
         const selectedEventType = useWatch({ control, name: "EventType" });
 
-        return (packages.filter(item => item.type === event[selectedEventType]));
+        return (packages.filter(item => item.type === selectedEventType));
     }
 
     function getExtras() {
         const selectedEventType = useWatch({ control, name: "EventType" });
-        return (extras.filter(item => item.type === event[selectedEventType]));
+        return (extras.filter(item => item.type === selectedEventType));
     }
 
 
@@ -68,12 +67,12 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             return dupValue;
         }
 
-        if (value != null && value.length >= numCharacters + 1) {
+        if (value != null && value.length >= parseInt(numCharacters)) {
             return value;
             //TO DO: set up error state informing them they've already selected their max number of characters
         }
         const selected = [...value, { dressId: -1, characterId: id }];
-        if (selected.length === numCharacters + 1) {
+        if (selected.length === parseInt(numCharacters)) {
         }
 
         return selected
@@ -173,10 +172,10 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                     </div>
                 </div>
 
-                {numCharacters > -1 ? (
+                {parseInt(numCharacters) ? (
                     <div className={styles.characters}>
                         {
-                            selectedCharacters?.length === numCharacters + 1 ? (
+                            selectedCharacters?.length === parseInt(numCharacters) ? (
                                 <div>
                                     <h4 className={styles.subheader}>Characters</h4>
                                     <div className={styles.selections}>
@@ -244,7 +243,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
 
                         <div>
                             {
-                                selectedCharacters?.length === numCharacters + 1 ? (
+                                selectedCharacters?.length === parseInt(numCharacters) ? (
                                     <h3 className={styles.header}>Select Preferred Attire</h3>
 
                                 ) : null
@@ -252,7 +251,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
 
                             <div className={styles.dressSelection}>
                                 {
-                                    selectedCharacters?.length === numCharacters + 1 ? (
+                                    selectedCharacters?.length === parseInt(numCharacters) ? (
 
                                         selectedCharacters.map((character) => {
                                             return (

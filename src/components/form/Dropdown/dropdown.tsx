@@ -4,14 +4,14 @@ import { useEffect, useRef, useState } from "react";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import styles from "./dropdown.module.css";
 
-export default function Dropdown(props: { options: string[], selected: number, setData: (data: number) => void }) {
+export default function Dropdown(props: { options: string[], selected: string, setData: (data: string) => void }) {
 
     const options = props.options;
     const selected = props.selected;
     const [toggled, setToggle] = useState(false);
     const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-    function handleSelected(selected: number) {
+    function handleSelected(selected: string) {
         // TODO(ningy says) remove the internal state for selected and rely on passing data down from and up to parent component
         setToggle(false);
         props.setData(selected);
@@ -37,7 +37,7 @@ export default function Dropdown(props: { options: string[], selected: number, s
         <>
             <div id="nick-test" className={styles.dropdown} ref={dropdownRef}>
                 <div className={styles.selected} onClick={handleToggle}>
-                    <p>{options[selected]}</p>
+                    <p>{selected}</p>
                         {toggled ? (
                             <IconChevronUp size={20}/>
                         ) : (
@@ -48,7 +48,7 @@ export default function Dropdown(props: { options: string[], selected: number, s
                     <div className={styles.options}>
                         {options.map((option, index) => {
                             return (
-                                <p className={styles.option} onClick={() => handleSelected(index)}>{option}</p>
+                                <p className={styles.option} onClick={() => handleSelected(option)}>{option}</p>
                             )
                         })}
                     </div>

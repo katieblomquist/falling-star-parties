@@ -26,21 +26,20 @@ export type FormValues = {
     LastName: string,
     Email: string,
     Phone: string,
-    EventType: number,
+    EventType: string,
     Date: DateTime,
-    Time: number,
+    Time: string,
     Location: Location,
     Package: number,
-    Duration?: number,
     Extras?: number[],
-    NumCharacters: number,
+    NumCharacters: string,
     Character: CharacterSelection[],
     ChildName?: string,
     ChildAge?: string,
     OrganizationName?: string,
     Attendance: string,
-    LocationPref: number,
-    PhotoPref: number,
+    LocationPref: string,
+    PhotoPref: string,
     AdditionalInfo?: string
 }
 
@@ -56,7 +55,7 @@ export default function Book() {
 
     const InformationValues = useWatch({ control, name: ["FirstName", "LastName", "Email", "Phone", "EventType"] });
     const InformationIsComplete = useMemo(() => {
-        return InformationValues.every(x => (x != null && x !== ''));
+        return InformationValues.every(x => (x != null));
     }, [InformationValues]);
 
     const TimeLocationValues = useWatch({ control, name: ["Date", "Time", "Location"] });
@@ -71,12 +70,12 @@ export default function Book() {
 
     const EventDetailsBirthdayValues = useWatch({control, name:["ChildName", "ChildAge", "Attendance", "LocationPref", "PhotoPref"]});
     const EventDetailsBirthdayIsComplete = useMemo(() => {
-        return EventDetailsBirthdayValues.every(x => (x != null && x !== ''));
+        return EventDetailsBirthdayValues.every(x => (x != null));
     }, [EventDetailsBirthdayValues]);
 
     const EventDetailsPublicValues = useWatch({control, name: ["OrganizationName", "Attendance", "LocationPref", "PhotoPref"]});
     const EventDetailsPublicIsComplete = useMemo(() => {
-        return EventDetailsPublicValues.every(x => (x != null && x!== ''))
+        return EventDetailsPublicValues.every(x => (x != null));
     }, [EventDetailsPublicValues]);
 
     const formIsValid = useCallback((x: unknown): x is FormValues => {
