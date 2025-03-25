@@ -1,10 +1,7 @@
 import { FormValues } from "@/app/book/page";
-import { packages, extras, characters, dresses } from "@/components/bookingForm/EventOptions/eventOptions";
-import { time } from "@/components/bookingForm/TimeLocation/timeLocation";
-import { event } from "@/components/bookingForm/Information/information";
+import { packages, extras, characters, dresses, event, time } from "@/app/mockData";
 import { useEffect, useState } from "react";
 import styles from "./reviewRequest.module.css";
-import { useWatch } from "react-hook-form";
 
 
 export default function ReviewRequest(props: { values: FormValues }) {

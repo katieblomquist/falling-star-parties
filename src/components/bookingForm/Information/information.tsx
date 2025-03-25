@@ -1,11 +1,9 @@
 import Dropdown from "@/components/form/Dropdown/dropdown";
 import TextInput from "@/components/form/Text Input/textInput";
-import { useState } from "react";
 import styles from "./information.module.css";
-import { FormValues } from "@/app/book/page";
 import { Controller } from "react-hook-form";
+import { event } from "@/app/mockData";
 
-export const event = ["Birthday Party", "Public Event", "Charity Event"];
 
 export default function Information(props: { control: any }) {
 
