@@ -31,7 +31,10 @@ export default function ReviewRequest(props: { values: FormValues }) {
       const characterList = props.values.Character.map(char => {
         const character = characters.find(character => character.id === char.characterId)?.name;
         const dress = dresses.find(dress => dress.id === char.dressId)?.name;
-        return `${character} (${dress})`
+        if(dress !== undefined){
+          return `${character} (${dress})`
+        }
+        return `${character} (No Preference)`
       }).filter(Boolean).join(', ');
 
       return characterList;
