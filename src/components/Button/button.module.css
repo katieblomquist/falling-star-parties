@@ -17,6 +17,21 @@
     cursor: pointer;
 }
 
+.primaryDisabled {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 40px;
+    width: fit-content;
+    border-radius: 15px;
+    background: #DADDE5;
+    color: #A4A8B0;
+
+    .icon{
+        padding-left: 25px;
+    }
+}
+
 .secondary {
     display: flex;
     flex-direction: row;

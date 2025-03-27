@@ -244,7 +244,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                         <div>
                             {
                                 selectedCharacters?.length === parseInt(numCharacters) ? (
-                                    <h3 className={styles.header}>Select Preferred Attire</h3>
+                                    <h3 className={styles.header}>Select Preferred Attire (Optional)</h3>
 
                                 ) : null
                             }

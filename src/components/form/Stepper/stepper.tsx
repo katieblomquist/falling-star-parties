@@ -53,10 +53,10 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
                     {/* This needs to be refactored to make it generic.  */}
                     {step.id === last ? (
                         <div className={styles.stepFiveButtons}>
-                            <Button text={props.secondaryFinalStepButton} action={handleEdit} variant={2} icon={0} />
-                            <Button text={props.primaryFinalStepButton} action={handleSubmit} variant={1} icon={2} />
+                            <Button text={props.secondaryFinalStepButton} action={handleEdit} variant={2} icon={0} enabled={true} />
+                            <Button text={props.primaryFinalStepButton} action={handleSubmit} variant={1} icon={2} enabled={stepperContent.every((x) => x.completed)} />
                         </div>
-                    ) : (<div className={styles.buttons}><Button text={props.nextButtonText} action={handleNext} variant={1} icon={1} /></div>)}
+                    ) : (<div className={styles.buttons}><Button text={props.nextButtonText} action={handleNext} variant={1} icon={1} enabled={stepperContent[stepperContent.map(item => item.id).indexOf(current)].completed} /></div>)}
                 </div>
         }
         
@@ -80,7 +80,7 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
     };
 
     return (
-        <div id="stepper">{stepperContent.map((step) => {
+        <div id="stepper" className={styles.stepper}>{stepperContent.map((step) => {
             return buildStepper(step)
         })}</div>
     )

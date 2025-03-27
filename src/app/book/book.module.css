@@ -16,6 +16,21 @@
     height: 0px;
 }
 
+.stepper{
+
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+
+}
+
+.booking{
+
+    display: flex;
+    position: relative;
+
+}
+
 @media screen and (max-width: 925px) {
     .headerBackground {
         height: 50px;
