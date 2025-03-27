@@ -12,6 +12,7 @@ import { SubmitHandler, useForm, useWatch } from "react-hook-form";
 import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest";
 import { DateTime } from "luxon";
 import { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
+import PriceEstimate from "@/components/PriceEstimate/priceEstimate";
 
 export type StepperContent = { id: number, title: String, completed: boolean, content: ReactNode };
 export type Services = { id: number, type: string, title: String, description: String, duration: String, cost: number, additionalCharacterCost: number};
@@ -43,10 +44,6 @@ export type FormValues = {
     AdditionalInfo?: string
 }
 
-const isEventOptionsComplete = () => {
-    return 
-}
-
 export default function Book() {
 
     const { handleSubmit, control, resetField, setValue } = useForm<FormValues>()
@@ -55,12 +52,12 @@ export default function Book() {
 
     const InformationValues = useWatch({ control, name: ["FirstName", "LastName", "Email", "Phone", "EventType"] });
     const InformationIsComplete = useMemo(() => {
-        return InformationValues.every(x => (x != null));
+        return InformationValues.every(x => (x != null && x != ''));
     }, [InformationValues]);
 
     const TimeLocationValues = useWatch({ control, name: ["Date", "Time", "Location"] });
     const TimeLocationIsComplete = useMemo(() => {
-        return TimeLocationValues.every(x => (x != null ));
+        return TimeLocationValues.every(x => (x != null && x != ''));
     }, [TimeLocationValues]);
 
     const EventOptionsValues = useWatch({control, name: ["Package", "Character"]});
@@ -70,12 +67,12 @@ export default function Book() {
 
     const EventDetailsBirthdayValues = useWatch({control, name:["ChildName", "ChildAge", "Attendance", "LocationPref", "PhotoPref"]});
     const EventDetailsBirthdayIsComplete = useMemo(() => {
-        return EventDetailsBirthdayValues.every(x => (x != null));
+        return EventDetailsBirthdayValues.every(x => (x != null && x !=  ''));
     }, [EventDetailsBirthdayValues]);
 
     const EventDetailsPublicValues = useWatch({control, name: ["OrganizationName", "Attendance", "LocationPref", "PhotoPref"]});
     const EventDetailsPublicIsComplete = useMemo(() => {
-        return EventDetailsPublicValues.every(x => (x != null));
+        return EventDetailsPublicValues.every(x => (x != null && x != ''));
     }, [EventDetailsPublicValues]);
 
     const formIsValid = useCallback((x: unknown): x is FormValues => {
@@ -91,7 +88,7 @@ export default function Book() {
         { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} setValue={setValue} /> },
         { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} /> },
         { id: 3, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete , content: <EventDetails controller={control} eventType={formValues.EventType} /> },
-        { id: 4, title: "Review Request", completed: false, content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
+        { id: 4, title: "Review Request", completed: InformationIsComplete && TimeLocationIsComplete && EventOptionsIsComplete && (EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete), content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
     ];
     return (
         <>
@@ -107,7 +104,13 @@ export default function Book() {
                 </div>
             </div>
             <form>
-                <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} />
+                <div className={styles.booking}>
+                    <div className={styles.stepper}>
+                        <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} />
+                    </div>
+                
+                <PriceEstimate controller={control} />
+                </div>
             </form>
         </>
     )
