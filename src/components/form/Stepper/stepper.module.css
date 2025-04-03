@@ -8,11 +8,12 @@
     flex-direction: row;
     align-items: center;
 
-    .title{
+    .title {
         padding-left: 10px;
     }
 }
-.number{
+
+.number {
     font-size: 20px;
     text-align: center;
     font-weight: 400;
@@ -21,27 +22,27 @@
     border-radius: 100px;
 }
 
-.step{
+.step {
     padding-bottom: 15px;
     margin-left: 35px;
 }
 
-.stepContent{
+.stepContent {
     margin-left: 45px;
 }
 
-.stepContentInput{
+.stepContentInput {
     margin-bottom: 15px;
 }
 
-.stepFiveButtons{
+.stepFiveButtons {
     display: flex;
     flex-direction: row;
     gap: 20px;
     justify-content: flex-end;
 }
 
-.buttons{
+.buttons {
     display: flex;
     justify-content: flex-end;
 }
@@ -49,4 +50,24 @@
 .stepperContent {
     margin-left: 15px;
     border-left: solid 1px #DADDE5;
+}
+
+@media screen and (max-width: 1100px) {
+    .stepContent {
+        margin-right: 50px;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .stepContent{
+        margin-left: 0px;
+    }
+    .stepperContent {
+        margin-left: 0px;
+        border: none;
+    }
+    .buttons {
+        justify-content: center;
+        width: 100%;
+    }
 }

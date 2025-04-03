@@ -42,17 +42,21 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             dupValue.splice(value.indexOf(id), 1)
             return dupValue;
         }
-        if ((value.indexOf(0) !== -1 && id === 1) || (value.indexOf(1) !== -1 && id === 0) || (value.indexOf(4) !== -1 && id === 5) || (value.indexOf(5) !== -1 && id === 4)) {
+        if ((value.indexOf(0) !== -1 && id === 1) || (value.indexOf(1) !== -1 && id === 0) || (value.indexOf(4) !== -1 && id === 5) || (value.indexOf(5) !== -1 && id === 4) || (value.indexOf(2) !== -1 && id === 3) || (value.indexOf(3) !== -1 && id === 2)) {
             const dupValue = [...value];
             if (id === 0) {
                 dupValue.splice(value.indexOf(1), 1);
             } else if (id === 1) {
                 dupValue.splice(value.indexOf(0), 1);
+            } else if(id ===2){
+                dupValue.splice(value.indexOf(3), 1)
+            } else if(id === 3){
+                dupValue.splice(value.indexOf(2), 1)
             } else if (id === 4) {
                 dupValue.splice(value.indexOf(5), 1);
             } else if (id === 5) {
                 dupValue.splice(value.indexOf(4), 1)
-            }
+            } 
 
             return [...dupValue, id];
         }
