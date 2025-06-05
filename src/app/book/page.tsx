@@ -13,6 +13,7 @@ import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest"
 import { DateTime } from "luxon";
 import { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 import PriceEstimate from "@/components/PriceEstimate/priceEstimate";
+import NavBsr from "@/components/navbar/navbar";
 
 export type StepperContent = { id: number, title: String, completed: boolean, content: ReactNode };
 export type Services = { id: number, type: string, title: String, description: String, duration: String, cost: number, additionalCharacterCost: number};
@@ -92,6 +93,8 @@ export default function Book() {
     ];
     return (
         <>
+        <NavBsr />
+        <div>
             <div>
                 <div>
                     <h1 className={styles.header}><span className={formal_script.className}>Enchant</span> Your Event</h1>
@@ -112,6 +115,8 @@ export default function Book() {
                 <PriceEstimate controller={control} />
                 </div>
             </form>
+        </div>
+            
         </>
     )
 }
