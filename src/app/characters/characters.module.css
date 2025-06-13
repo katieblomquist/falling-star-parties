@@ -1,0 +1,83 @@
+.header {
+    background-color: #DADDE5;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.swoop {
+    width: 100%;
+}
+
+.blurb {
+    padding: 50px 0;
+}
+
+.buttonBlue {
+    width: fit-content;
+    padding: 15px 60px;
+    background-color: #343B95;
+    border-radius: 15px;
+    color: white;
+}
+
+.headerRight{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 50%;
+    padding-right: 100px;
+}
+
+.katie {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 150px 0;
+}
+
+.contentLeft{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 50%;
+    padding-left: 100px;
+}
+
+.faqBlock{
+    background-color: #343B95;
+    display: flex;
+    justify-content: center;
+}
+
+.faqContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    max-width: 1300px;
+    padding: 100px 0;
+}
+
+.enchantment{
+    padding-bottom: 25px;
+}
+
+.enchantmentBlurb{
+    max-width: 1300px;
+    padding-bottom: 100px;
+}
+
+.princesses{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.characterHeader{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 100px 50px 50px 50px;
+}
