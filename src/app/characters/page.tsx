@@ -6,7 +6,7 @@ import styles from "./characters.module.css";
 import { Petit_Formal_Script } from "next/font/google";
 import { use } from "react";
 import CarouselCard from "../components/carouselCard/carouselCard";
-import { iceQueen, mermaidPrincess, rosePrincess, snowPrincess } from "../mockdata";
+import { iceQueen, mermaidPrincess, rosePrincess, snowPrincess } from  "../mockData";
 
 
 export const formal_script = Petit_Formal_Script({ weight: "400", subsets: ["latin"], variable: '--formal-script', preload: false });
