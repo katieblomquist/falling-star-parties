@@ -6,6 +6,7 @@ import NavBsr from "@/components/navbar/navbar";
 export const open_Sans = Open_Sans({ weight: "400", subsets: ["latin"], variable: '--open-sans', preload: false })
 
 export default function Home() {
+
   return (
     <main className={styles.main}>
       <NavBsr />

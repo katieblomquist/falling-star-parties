@@ -1,0 +1,40 @@
+.dropdown {
+    width: 100%;
+    position: relative;
+}
+
+.selected {
+    display: flex;
+    flex-direction: row;
+    border-radius: 15px;
+    border: 1px solid #A4A8B0;
+    width: 100%;
+    padding: 10px 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.selected:hover {
+    cursor: pointer;
+}
+
+.options {
+
+    border-radius: 15px;
+    border: 1px solid #A4A8B0;
+    position: absolute;
+    background-color: white;
+    width: 100%;
+    z-index: 1;
+    max-height: 300px;
+    overflow: scroll;
+
+    .option {
+        padding: 10px 20px;
+    }
+
+    .option:hover {
+        background-color: #343B9510;
+        cursor: pointer;
+    }
+}

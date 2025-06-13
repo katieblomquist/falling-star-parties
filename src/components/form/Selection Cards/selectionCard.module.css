@@ -1,0 +1,27 @@
+.card{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    border: 1px solid #A4A8B0;
+    border-radius: 15px;
+    padding: 20px;
+    width: fit-content;
+}
+.card:hover{
+    cursor: pointer;
+    transform: scale(1.01);
+}
+
+.cardActive{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    border: 2px solid #343B95;
+    border-radius: 15px;
+    padding: 20px;
+    max-width: fit-content;
+}
+.cardActive:hover{
+    cursor: pointer;
+    transform: scale(1.01);
+}

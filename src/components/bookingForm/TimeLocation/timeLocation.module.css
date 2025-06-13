@@ -1,0 +1,13 @@
+.timeInputContainer{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.header{
+    margin: 20px 0 10px 0;
+}
+
+.timeInput{
+    min-width: 200px;
+}

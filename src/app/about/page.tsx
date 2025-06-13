@@ -5,7 +5,7 @@ import Tabs from "@/components/tabs/tabs";
 import Link from "next/link";
 import styles from "./about.module.css";
 import Accordian from "@/components/accordian/accordian";
-import { booking, tabs } from "@/mocdata";
+import { booking, tabs } from "../mockData";
 import { Petit_Formal_Script } from "next/font/google";
 import { use } from "react";
 
