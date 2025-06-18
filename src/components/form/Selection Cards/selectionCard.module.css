@@ -1,11 +1,11 @@
 .card{
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
+    flex-direction: column;
     border: 1px solid #A4A8B0;
     border-radius: 15px;
     padding: 20px;
     width: fit-content;
+    min-width: 175px;
 }
 .card:hover{
     cursor: pointer;
@@ -14,12 +14,12 @@
 
 .cardActive{
     display: flex;
-    flex-direction: row;
-    align-items: flex-start;
+    flex-direction: column;
     border: 2px solid #343B95;
     border-radius: 15px;
     padding: 20px;
-    max-width: fit-content;
+    width: fit-content;
+    min-width: 175px;
 }
 .cardActive:hover{
     cursor: pointer;

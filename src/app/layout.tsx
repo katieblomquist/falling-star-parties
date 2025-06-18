@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { dhyana } from "./fonts";
+
 
 
 export const metadata: Metadata = {
@@ -13,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={dhyana.className}>
       <body>
         {children}
       </body>

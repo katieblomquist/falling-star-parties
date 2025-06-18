@@ -1,12 +1,12 @@
 import SelectionCard from "@/components/form/Selection Cards/selectionCard";
 import styles from "./eventOptions.module.css"
 import { Control, Controller, UseFormResetField, useWatch } from "react-hook-form";
-import { CharacterSelection, FormValues } from "@/app/book/page";
+import { FormValues } from "@/app/book/page";
 import HorizontalCard from "@/components/form/Selection Cards/horizontalCard";
 import VerticleCard from "@/components/form/Selection Cards/verticleCard";
 import CharacterCard from "@/components/form/Selection Cards/characterCard";
 import Dropdown from "@/components/form/Dropdown/dropdown";
-import { packages, extras, characters, dresses, numberCharacters, event } from "@/app/mockData";
+import { packages, extras, characters, dresses, numberCharacters, event, CharacterSelection } from "@/app/mockData";
 
 
 //Need to create and Add Character cards and Costume Cards

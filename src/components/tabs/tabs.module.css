@@ -2,10 +2,17 @@
     width: 100%;
   }
   
-  .tabList {
+  .tabListWhite {
     display: flex;
     gap: 1rem;
     border-bottom: 2px solid white;
+    align-items: flex-end;
+  }
+
+  .tabListBlue{
+    display: flex;
+    gap: 1rem;
+    border-bottom: 2px solid #343B954D;
     align-items: flex-end;
   }
   
@@ -19,8 +26,12 @@
   }
   
   /* Active tab style */
-  .tabButtonActive {
+  .tabButtonActiveWhite {
     border-bottom: 2px solid white;
+  }
+
+  .tabButtonActiveBlue{
+    border-bottom: 2px solid #343B95;
   }
   
   .tabContent {

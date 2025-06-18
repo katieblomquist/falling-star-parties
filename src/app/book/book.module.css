@@ -3,12 +3,10 @@
     font-family: var(--formal-script);
     font-size: 50px;
     font-weight: 400;
-    position: absolute;
-    top: 150px;
-    left: 50%;
-    transform: translate(-50%);
     text-align: center;
-    width: 75%;
+    background-color: #343B95;
+    padding: 60px 0;
+    text-align: center;
 }
 
 .headerBackground {

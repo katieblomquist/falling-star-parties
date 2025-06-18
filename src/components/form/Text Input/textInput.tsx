@@ -1,3 +1,5 @@
+'use client';
+
 import { ChangeEvent, useState } from "react";
 import styles from "./textInput.module.css";
 

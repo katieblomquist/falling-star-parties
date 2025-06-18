@@ -1,15 +1,13 @@
 .card{
     display: flex;
-    flex-direction: column;
-    width: 100px;
+    flex-direction: column-reverse;
     height: 200px;
-    padding-left: 10px;
+    text-align: center;
 }
 
 .header{
     display: flex;
     flex-direction: row;
-    margin-bottom: 10px;
-    padding-top: 3px;
     color: #1D1E1F;
+    justify-content: center;
 }

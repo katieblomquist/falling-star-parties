@@ -1,7 +1,9 @@
-import { Character, CharacterDress, Services } from "@/app/book/page";
+'use client';
+
 import { IconCircle, IconCircleFilled } from "@tabler/icons-react";
 import styles from "./selectionCard.module.css";
 import { ComponentType } from "react";
+import { Services, Character, CharacterDress } from "@/app/mockData";
 
 type CardContentComponent<T> = ComponentType<{ content: T }>
 
@@ -19,7 +21,7 @@ export default function SelectionCard<T extends Services | Character | Character
     
     const cardBackground = isCharacterOrDress(content) 
     ? { 
-        backgroundImage: `linear-gradient(0, rgba(255, 255, 255, 0.00) 25%, #FFF 100%), url(${content.img})`,
+        backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.00) 50%, #FFF 100%), url(${content.img})`,
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat'
       } 

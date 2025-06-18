@@ -1,7 +1,6 @@
 'use client';
 
 import styles from "./book.module.css"
-import { Content, Petit_Formal_Script } from "next/font/google";
 import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import Stepper from "@/components/form/Stepper/stepper";
 import Information from "@/components/bookingForm/Information/information";
@@ -13,15 +12,10 @@ import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest"
 import { DateTime } from "luxon";
 import { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 import PriceEstimate from "@/components/PriceEstimate/priceEstimate";
-import NavBsr from "@/components/navbar/navbar";
-
-export type StepperContent = { id: number, title: String, completed: boolean, content: ReactNode };
-export type Services = { id: number, type: string, title: String, description: String, duration: String, cost: number, additionalCharacterCost: number};
-export type CharacterDress = {id: number, name: String, img: String, characterId: number};
-export type Character = {id: number, name: String, img:String};
-export type CharacterSelection = {characterId: number, dressId: number}
-
-export const formal_script = Petit_Formal_Script({ weight: "400", subsets: ["latin"], variable: '--formal-script', preload: false });
+import NavBar from "@/components/navbar/navbar";
+import { CharacterSelection, formal_script } from "../mockData";
+import Swoop from "@/components/swoop/swoop";
+import Footer from "@/components/footer/footer";
 
 export type FormValues = {
     FirstName: string,
@@ -61,17 +55,17 @@ export default function Book() {
         return TimeLocationValues.every(x => (x != null && x != ''));
     }, [TimeLocationValues]);
 
-    const EventOptionsValues = useWatch({control, name: ["Package", "Character"]});
+    const EventOptionsValues = useWatch({ control, name: ["Package", "Character"] });
     const EventOptionsIsComplete = useMemo(() => {
-        return EventOptionsValues.every(x => ((Array.isArray(x) && x.length > 0) || (typeof(x) == 'number' && x != null  )));
+        return EventOptionsValues.every(x => ((Array.isArray(x) && x.length > 0) || (typeof (x) == 'number' && x != null)));
     }, [EventOptionsValues]);
 
-    const EventDetailsBirthdayValues = useWatch({control, name:["ChildName", "ChildAge", "Attendance", "LocationPref", "PhotoPref"]});
+    const EventDetailsBirthdayValues = useWatch({ control, name: ["ChildName", "ChildAge", "Attendance", "LocationPref", "PhotoPref"] });
     const EventDetailsBirthdayIsComplete = useMemo(() => {
-        return EventDetailsBirthdayValues.every(x => (x != null && x !=  ''));
+        return EventDetailsBirthdayValues.every(x => (x != null && x != ''));
     }, [EventDetailsBirthdayValues]);
 
-    const EventDetailsPublicValues = useWatch({control, name: ["OrganizationName", "Attendance", "LocationPref", "PhotoPref"]});
+    const EventDetailsPublicValues = useWatch({ control, name: ["OrganizationName", "Attendance", "LocationPref", "PhotoPref"] });
     const EventDetailsPublicIsComplete = useMemo(() => {
         return EventDetailsPublicValues.every(x => (x != null && x != ''));
     }, [EventDetailsPublicValues]);
@@ -88,35 +82,30 @@ export default function Book() {
         { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} /> },
         { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} setValue={setValue} /> },
         { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} /> },
-        { id: 3, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete , content: <EventDetails controller={control} eventType={formValues.EventType} /> },
+        { id: 3, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete, content: <EventDetails controller={control} eventType={formValues.EventType} /> },
         { id: 4, title: "Review Request", completed: InformationIsComplete && TimeLocationIsComplete && EventOptionsIsComplete && (EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete), content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
     ];
     return (
         <>
-        <NavBsr />
-        <div>
+            <NavBar location={"book"} />
             <div>
                 <div>
-                    <h1 className={styles.header}><span className={formal_script.className}>Enchant</span> Your Event</h1>
-                </div>
-                <div>
-                    <div className={styles.headerBackground}></div>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="auto" viewBox="0 0 1728 297" fill="none">
-                        <path d="M0 0H1728V225.539C1569.89 225.539 1412.01 237.487 1255.71 261.282L1173.82 273.749C972.455 304.403 767.591 304.102 566.32 272.858L519.905 265.652C347.891 238.95 174.075 225.539 0 225.539V0Z" fill="#343B95" />
-                    </svg>
-                </div>
-            </div>
-            <form>
-                <div className={styles.booking}>
-                    <div className={styles.stepper}>
-                        <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} />
+                    <div>
+                        <h1 className={styles.header}><span className={formal_script.className}>Enchant</span> Your Event</h1>
                     </div>
-                
-                <PriceEstimate controller={control} />
+                    <Swoop top={false} color={'#343B95'} direction={'center'} />
                 </div>
-            </form>
-        </div>
-            
+                <form>
+                    <div className={styles.booking}>
+                        <div className={styles.stepper}>
+                            <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} />
+                        </div>
+
+                        <PriceEstimate controller={control} />
+                    </div>
+                </form>
+            </div>
+            <Footer />
         </>
     )
 }

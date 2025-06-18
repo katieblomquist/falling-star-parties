@@ -1,7 +1,9 @@
+'use client';
+
 import { useState } from "react";
 import { IconChevronLeft, IconCircleFilled, IconCircle, IconChevronRight } from '@tabler/icons-react'
 import styles from "./carouselCard.module.css"
-import { formal_script } from "@/app/characters/page";
+import { formal_script } from "@/app/mockData";
 
 export type CharacterDress = { id: number, name: String, img: String, characterId: number };
 export type CharacterDressArray = Array<CharacterDress>;
