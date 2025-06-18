@@ -1,0 +1,16 @@
+.content{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.button{
+    width: fit-content;
+    padding: 15px 60px;
+    background-color: #343B95;
+    border-radius: 15px;
+    color: white;
+}
+
+.list{
+    margin-left: 25px;
+}

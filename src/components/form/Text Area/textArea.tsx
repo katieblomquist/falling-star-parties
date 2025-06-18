@@ -1,4 +1,5 @@
-import { useState } from "react";
+'use client';
+
 import styles from "./textArea.module.css";
 
 export default function TextArea(props: { placeholder: string, required: boolean, id: string, label: string, input: string, setInput: (data: string) => void }) {

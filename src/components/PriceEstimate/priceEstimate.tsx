@@ -1,9 +1,11 @@
+'use client';
+
 import { Control, useWatch } from "react-hook-form"
 import { FormValues } from "@/app/book/page"
-import { packages, extras } from "@/app/mockData"
 import styles from "./priceEstimate.module.css"
 import { useState, useEffect } from "react"
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import { extras, packages } from "@/app/mockData";
 
 export default function PriceEstimate(props: { controller: Control<FormValues, any> }) {
 
@@ -33,12 +35,15 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     }
 
     function calculateCharacterCost() {
-        let total = 0;
-        if (numCharacters && eventPackage) {
-            total = packages[eventPackage].additionalCharacterCost * (parseInt(numCharacters) - 1);
-        }
+        console.log(numCharacters, eventPackage)
+        console.log(packages[eventPackage].additionalCharacterCost)
+        if (numCharacters && eventPackage !== undefined) {
+            
+            return packages[eventPackage].additionalCharacterCost * (parseInt(numCharacters) - 1);
 
-        return total;
+        } else {
+            return 0
+        }
     }
 
     function calculateTotal() {

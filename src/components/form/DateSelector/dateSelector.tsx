@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from "react"
 import Calendar from "./calendar";
 import { IconCalendarStar } from "@tabler/icons-react";

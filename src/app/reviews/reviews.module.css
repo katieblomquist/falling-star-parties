@@ -1,0 +1,49 @@
+.header {
+    background-color: #DADDE5;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.swoop {
+    width: 100%;
+}
+
+.blurb {
+    padding: 50px 0;
+}
+
+.buttonBlue {
+    width: fit-content;
+    padding: 15px 60px;
+    background-color: #343B95;
+    border-radius: 15px;
+    color: white;
+    text-decoration: none;
+}
+
+.headerRight {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 50%;
+    padding-right: 100px;
+}
+
+.mainReview{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.reviewsHeader{
+    text-align: center;
+    margin: 100px 0 50px 0;
+}
+
+.reviewCards{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}

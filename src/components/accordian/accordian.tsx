@@ -1,7 +1,9 @@
-import { FaqArray } from "@/mocdata";
+'use client';
+
 import { useState } from "react";
 import styles from "./accordian.module.css";
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { FaqArray } from "@/app/mockData";
 
 export default function Accordian(props: { content: FaqArray }) {
 
