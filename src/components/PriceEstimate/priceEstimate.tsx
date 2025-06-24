@@ -16,7 +16,25 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     const eventExtras = useWatch({ control, name: "Extras" });
     const numCharacters = useWatch({ control, name: "NumCharacters" });
     const numGuests = useWatch({ control, name: "Attendance" });
+    const address = useWatch({ control, name: "Location.address" });
     const [width, setWidth] = useState(window.innerWidth);
+
+    const [travelCost, setTravelCost] = useState(0);
+
+    useEffect(() => {
+        async function fetchTravelCost() {
+            if (address) {
+                const res = await fetch(`/api/travelfee/${address}`);
+                if (res.ok) {
+                    const obj = await res.json();
+                    setTravelCost(obj);
+                } else {
+                    setTravelCost(0); // or handle error
+                }
+            }
+        }
+        fetchTravelCost();
+    }, [address]);
 
     function calculateExtraCost() {
         let total = 0;
@@ -35,10 +53,8 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     }
 
     function calculateCharacterCost() {
-        console.log(numCharacters, eventPackage)
-        console.log(packages[eventPackage].additionalCharacterCost)
         if (numCharacters && eventPackage !== undefined) {
-            
+
             return packages[eventPackage].additionalCharacterCost * (parseInt(numCharacters) - 1);
 
         } else {
@@ -48,9 +64,13 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
 
     function calculateTotal() {
         let total = 0;
-        total += calculateCharacterCost();
-        total += calculateExtraCost();
-        total += packages[eventPackage].cost;
+        if (eventPackage !== undefined) {
+            total += calculateCharacterCost();
+            total += calculateExtraCost();
+            total += travelCost;
+            total += packages[eventPackage].cost;
+        }
+
 
         return total;
     }
@@ -62,7 +82,6 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
         window.addEventListener('resize', handleResize);
-        console.log(width);
         // return () => window.removeEventListener('resize', handleResize);
     }, []);
 
@@ -112,16 +131,18 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                     ) : null}
 
                     {eventPackage > -1 ? (
-                        <>
-                            <hr className={styles.equals}></hr>
-
-                            <div className={styles.lineItem}>
-                                <h4>Total: </h4>
-                                <h4>${calculateTotal()}</h4>
-                            </div>
-                        </>
-
+                        <div className={styles.lineItem}>
+                            <p>Travel Fee: </p>
+                            <p>${travelCost}</p>
+                        </div>
                     ) : null}
+
+                    <hr className={styles.equals}></hr>
+
+                    <div className={styles.lineItem}>
+                        <h4>Total: </h4>
+                        <h4>${calculateTotal()}</h4>
+                    </div>
 
 
 
@@ -184,18 +205,12 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                                         <p>${calculateCharacterCost()}</p>
                                     </div>
                                 ) : null}
+                                <hr className={styles.equals}></hr>
 
-                                {eventPackage > -1 ? (
-                                    <>
-                                        <hr className={styles.equals}></hr>
-
-                                        <div className={styles.lineItem}>
-                                            <h4>Total: </h4>
-                                            <h4>${calculateTotal()}</h4>
-                                        </div>
-                                    </>
-
-                                ) : null}
+                                <div className={styles.lineItem}>
+                                    <h4>Total: </h4>
+                                    <h4>${calculateTotal()}</h4>
+                                </div>
 
 
 

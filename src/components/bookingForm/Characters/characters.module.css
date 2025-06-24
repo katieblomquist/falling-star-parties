@@ -1,0 +1,43 @@
+.header{
+    margin: 20px 0 10px 0;
+}
+
+.characters{
+    display: flex;
+    flex-direction: column;
+}
+
+.numCharacters{
+    max-width: 150px;
+}
+
+.dressSelection{
+    display: flex;
+    flex-direction: column;
+}
+
+.selections{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.numCharacters{
+    min-width: 100px;
+}
+
+.subheader{
+    margin: 15px 0 15px 0;
+}
+
+.changeSelection{
+    color: #343B95;
+    text-decoration: underline;
+    margin-top: 10px;
+}
+
+.changeSelection:hover {
+    cursor: pointer;
+    
+}

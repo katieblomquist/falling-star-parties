@@ -18,55 +18,23 @@
   color: white;
 }
 
-.buttonWhite {
-  width: fit-content;
-  padding: 15px 60px;
-  color: #343B95;
-  border-radius: 15px;
-  background-color: white;
-  text-decoration: none;
-}
-
-.contentRight{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    max-width: 50%;
-    padding-right: 100px;
-    gap: 20px;
-}
-
-.contentLeft{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  max-width: 50%;
-  padding-left: 100px;
-  gap: 20px;
-}
-
-.content{
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.buttonBlue {
-  width: fit-content;
-  padding: 15px 60px;
-  background-color: #343B95;
-  border-radius: 15px;
-  color: white;
-}
-
-.headerCenter{
+.headerCenter {
   text-align: center;
   margin-top: 100px;
 }
 
-.reviews{
+.contentBlock {
+  display: flex;
+  justify-content: center;
+}
+
+.reviews {
   display: flex;
   flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+.textWhite{
+  color: white;
 }

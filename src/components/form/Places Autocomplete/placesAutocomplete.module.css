@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-
 }
 
 .input {
@@ -10,4 +9,5 @@
     border: 1px solid #A4A8B0;
     padding: 10px 20px;
     align-items: center;
+    font-family: var(--font-dhyana);
 }

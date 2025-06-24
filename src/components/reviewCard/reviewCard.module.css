@@ -1,24 +1,49 @@
-.card{
-    width: 350px;
-    height: 475px;
-    background-color: #343B95;
-    margin: 15px;
-    border-radius: 10px;
-}
-
-.photo{
-    width: 350px;
-    height: 200px;
-    border-radius: 10px 10px 0 0;
-}
-
-.review{
+.reviews{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    height: 275px;
-    color: white;
-    padding: 20px;
-    text-align: center;
+    margin-bottom: 50px;
+}
+
+.navigation {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 250px;
+    padding-bottom: 20px;
+}
+
+.placeholder{
+    width: 20px;
+}
+
+.navItem{
+    cursor: pointer;
+}
+
+.photo{
+    border-radius: 100%;
+    border: 3px solid #FFF;
+    background-size: cover;
+    background-position: center;
+    width: 20vw;
+    height: 20vw;
+}
+
+.content{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.blurb{
+    max-width: 50%;
+    padding-left: 50px;
+}
+
+.reviewBlock{
+    max-width: 1700px;
+    margin: 50px 0;
 }

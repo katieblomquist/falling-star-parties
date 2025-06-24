@@ -1,0 +1,25 @@
+.contentRight {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-right: 80px;
+    max-width: 50%;
+    gap: 20px;
+}
+
+.contentLeft {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 80px;
+    max-width: 50%;
+    gap: 20px;
+}
+
+.content{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 50px 0;
+    max-width: 1700px;
+  }

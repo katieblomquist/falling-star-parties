@@ -3,16 +3,12 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 65px;
-    text-decoration: none;
-}
-
-.book{
-    padding: 15px 60px;
-    background-color: #343B95;
-    border-radius: 15px;
-    color: white;
-    text-decoration: none;
+    padding: 15px 80px;
+    border-bottom: 1px solid #343B954D;
+    position: sticky;
+    top: 0px;
+    background-color: white;
+    z-index: 3;
 }
 
 .link{
@@ -26,4 +22,11 @@
     color: #343B95;
     padding: 0 10px;
     border-bottom: 2px solid #343B95;
+}
+
+.logo{
+    width: 200px;
+    height: 60px;
+    background-size: cover;
+    background-position: center;
 }

@@ -1,11 +1,22 @@
 import Dropdown from "@/components/form/Dropdown/dropdown";
 import TextInput from "@/components/form/Text Input/textInput";
 import styles from "./information.module.css";
-import { Controller } from "react-hook-form";
+import { Controller, UseFormResetField } from "react-hook-form";
 import { event } from "@/app/mockData";
+import { FormValues } from "@/app/book/page";
 
 
-export default function Information(props: { control: any }) {
+export default function Information(props: { control: any, resetField: UseFormResetField<FormValues> }) {
+
+    function handleChangeEvnetType(value: string){
+        props.resetField('ChildAge');
+        props.resetField('ChildName');
+        props.resetField('Extras');
+        props.resetField('OrganizationName');
+        props.resetField('Package');
+
+        return(value);
+    }
 
     return (
         <>
@@ -57,7 +68,9 @@ export default function Information(props: { control: any }) {
                     control={props.control}
                     name="EventType"
                     render={({ field: { onChange, value } }) => (
-                            <Dropdown options={event} selected={value} setData={onChange} />
+                            <Dropdown options={event} selected={value} setData={(value) => {
+                                onChange(handleChangeEvnetType(value))
+                            }} />
                     )}
                 />
 

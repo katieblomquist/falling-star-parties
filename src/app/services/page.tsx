@@ -1,15 +1,14 @@
 import NavBar from "@/components/navbar/navbar";
-import Link from 'next/link';
 import styles from "./services.module.css"
-import Bubbles from "@/components/bubbles/bubbles";
-import { formal_script, serviceTabs } from "../mockData";
 import ServiceTabs from "@/components/serviceTabs/serviceTabs";
 import Tabs from "@/components/tabs/tabs";
 import { MasonryPhotoAlbum } from "react-photo-album";
 import "react-photo-album/masonry.css";
-import { masonryPhotos } from "../mockData";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
+import { masonryPhotos, serviceTabs, servicesPage } from "../content";
+import { formal_script } from "../mockData";
+import ContentBlock from "@/components/contentBlock/contentBlock";
 import Button from "@/components/Button/button";
 
 export default function Service() {
@@ -28,20 +27,15 @@ export default function Service() {
     return (
         <>
             <NavBar location={"services"} />
-            <div>
-                <div className={styles.header}>
-
-                    <div className={styles.headerRight}>
-                        <h1>Something <span className={formal_script.className}>Special</span> for any Occasion</h1>
-                        <p className={styles.blurb}>Our enchanting services offer a royal touch to any occasion! Our professionally trained performers bring beloved characters to life with mesmerizing storytelling, interactive
-                            games, enchanting sing-alongs, and dazzling photo opportunities. From princess lessons to fanciful facepainting, we ensure an unforgettable experience for every little prince and princess.</p>
-                            <Button text={"VIEW SERVICES"} variant={1} icon={0} enabled={true} href="/services" />
-                    </div>
-                    <div className={styles.bubbles}>
-                        <Bubbles leftSide={false} photos={["/IMG_8921.jpg", "/IMG_8921.jpg", "/IMG_8921.jpg"]} />
-                    </div>
+            <div className={styles.splash} style={{ backgroundImage: `linear-gradient(90deg, rgba(52, 59, 149, 0.8), rgba(52, 59, 149, 0.8)), url('/IMG_4261.jpg')` }}>
+                <div className={styles.splashText}>
+                    <h1 className={styles.textWhite}>{servicesPage[0].titleStart}<span className={formal_script.className}>{servicesPage[0].emphasis}</span>{servicesPage[0].titleEnd}</h1>
+                    <p className={styles.textWhite}>{servicesPage[0].blurb}</p>
+                    <Button text={servicesPage[0].button} variant={servicesPage[0].variant} icon={0} enabled={true} href={servicesPage[0].href} />
                 </div>
-                <Swoop top={false} color={'#DADDE5'} direction={'right'} />
+                <div className={styles.swoop}>
+                    <Swoop top={true} color={'white'} direction={'right'} />
+                </div>
             </div>
             <div className={styles.servicesBlock}>
                 <div className={styles.services}>

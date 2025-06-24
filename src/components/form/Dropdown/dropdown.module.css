@@ -27,7 +27,7 @@
     width: 100%;
     z-index: 1;
     max-height: 300px;
-    overflow: scroll;
+    overflow-y: scroll;
 
     .option {
         padding: 10px 20px;

@@ -3,14 +3,20 @@
 import { useState } from "react";
 import styles from "./accordian.module.css";
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
-import { FaqArray } from "@/app/mockData";
+import { FaqArray } from "@/app/content";
+
 
 export default function Accordian(props: { content: FaqArray }) {
 
     const [open, setOpen] = useState(-1);
 
     function handleClick(index: number) {
-        setOpen(open > -1 ? -1 : index)
+        if(index === open){
+            setOpen(-1);
+        } else {
+           setOpen(index) 
+        }
+        
     }
 
     return (
@@ -25,7 +31,7 @@ export default function Accordian(props: { content: FaqArray }) {
                             <div>
                                 {item.question}
                             </div>
-                            {open > -1 ? (
+                            {open === index ? (
                                 <IconChevronUp />
                             ) : (
                                 <IconChevronDown />
