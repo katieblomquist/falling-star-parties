@@ -15,7 +15,6 @@ export default function Dropdown(props: { options: string[], selected: string, s
         // TODO(ningy says) remove the internal state for selected and rely on passing data down from and up to parent component
         setToggle(false);
         props.setData(selected);
-        console.log(selected)
         
     }
 

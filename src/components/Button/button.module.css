@@ -8,13 +8,17 @@
     background: #343B95;
     color: white;
 
-    .icon{
+    .icon {
         padding-left: 25px;
     }
 }
 
-.primary:hover{
+.primary:hover {
     cursor: pointer;
+}
+
+.primaryText {
+    color: white;
 }
 
 .primaryDisabled {
@@ -27,9 +31,14 @@
     background: #DADDE5;
     color: #A4A8B0;
 
-    .icon{
+
+    .icon {
         padding-left: 25px;
     }
+}
+
+.primaryTextDisabled {
+    color: #A4A8B0;
 }
 
 .secondary {
@@ -42,18 +51,19 @@
     border: 1px solid #343B95;
     color: #343B95;
     background-color: white;
-    
+
 }
 
-.icon{
-        padding-left: 25px;
-    }
+.icon {
+    padding-left: 25px;
+    height: 24px;
+}
 
-.secondary:hover{
+.secondary:hover {
     cursor: pointer;
 }
 
-.linkPrimary{
+.linkPrimary {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -65,7 +75,7 @@
     text-decoration: none;
 }
 
-.linkSecondary{
+.linkSecondary {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -76,4 +86,21 @@
     color: #343B95;
     background-color: white;
     text-decoration: none;
+}
+
+.terciary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 25px;
+    padding-bottom: 0;
+}
+
+.terciary:hover {
+    cursor: pointer;
+    border-bottom: 1px solid #1D1E1F;
+}
+
+.iconLeft{
+    height: 24px;
 }

@@ -1,27 +1,48 @@
-import { IconStarFilled } from '@tabler/icons-react'
+'use client';
+
+import { useState } from "react";
+import { IconCircleFilled, IconCircle, IconChevronLeft, IconChevronRight } from '@tabler/icons-react'
 import styles from "./reviewCard.module.css"
-export default function ReviewCard(props: { stars?: number, review: string, clientName: string, photo: string, title?:string }) {
-    
+import { reviews } from "@/app/content";
+import ContentBlock from "../contentBlock/contentBlock";
+export default function ReviewCard() {
+
+    const [selected, setSelected] = useState(0);
+
+    function select(index: number) {
+        setSelected(index);
+    }
+
     return (
         <>
-            <div className={styles.card}>
-                <div>
-                    <div className={styles.photo} style={{ backgroundImage: `linear-gradient(180deg, rgba(52, 59, 149, 0.00) 35.46%, #333A94 100%), url('${props.photo}')` }}></div>
+            <div className={styles.reviews}>
+                <div className={styles.reviewBlock}>
+                    <div className={styles.content}>
+                        <div className={styles.photo} style={{ backgroundImage: `url('${reviews[selected].photo}')` }} />
+                        <div className={styles.blurb}>
+                            <h2>{reviews[selected].title}</h2>
+                            <p>{reviews[selected].review}</p>
+                            <p>- {reviews[selected].client}</p>
+                        </div>
+                    </div>
+
                 </div>
-                <div className={styles.review}>
-                    {props.stars? (
-                        <div className={styles.stars}>
-                        {Array.from({ length: props.stars }).map((_, i) => (
-                            <IconStarFilled />
+                <div className={styles.navigation}>
+                    {selected === 0 ? (<div className={styles.placeholder}></div>) : (<IconChevronLeft className={styles.navItem} width="20" height="20" color="#A4A8B0" onClick={() => setSelected(selected - 1)} />)}
+                    <div>
+                        {reviews.map((review, index) => (
+                            index === selected ? (
+                                <IconCircleFilled className={styles.navItem} width="16" height="16" color="#A4A8B0" />
+                            ) : (
+                                < IconCircle className={styles.navItem} width="16" height="16" color="#A4A8B0" onClick={() => setSelected(index)} />
+                            )
                         ))}
                     </div>
-                    ): (
-                        <h3>{props.title}</h3>
-                    )}
-                    <p>{props.review}</p>
-                    <p>- {props.clientName}</p>
+
+                    {selected === reviews.length - 1 ? (<div className={styles.placeholder}></div>) : (<IconChevronRight className={styles.navItem} width="20" height="20" color="#A4A8B0" onClick={() => setSelected(selected + 1)} />)}
                 </div>
             </div>
+
         </>
     )
 }

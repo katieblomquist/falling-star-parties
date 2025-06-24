@@ -7,7 +7,7 @@ import { IconCircleCheckFilled } from '@tabler/icons-react'
 import Button from "@/components/Button/button";
 import { StepperContent } from "@/app/mockData";
 
-export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string}) {
+export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string }) {
 
 
 
@@ -22,6 +22,12 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
         }
         if (current === stepperContent.length - 2) {
             setReview(false);
+        }
+    }
+
+    const handlePrevious = () => {
+        if (current !== 0) {
+            setCurrent(current - 1);
         }
     }
 
@@ -46,20 +52,34 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
 
     function buildStepper(step: StepperContent) {
         let content;
-        if (step.id === current) {
+        if (step.id === current && step.id === last) {
             content =
                 <div className={styles.stepContent}>
                     <div className={styles.stepContentInput}>{step.content}</div>
-                    {/* This needs to be refactored to make it generic.  */}
-                    {step.id === last ? (
-                        <div className={styles.stepFiveButtons}>
-                            <Button text={props.secondaryFinalStepButton} action={handleEdit} variant={2} icon={0} enabled={true} />
-                            <Button text={props.primaryFinalStepButton} action={handleSubmit} variant={1} icon={2} enabled={stepperContent.every((x) => x.completed)} />
-                        </div>
-                    ) : (<div className={styles.buttons}><Button text={props.nextButtonText} action={handleNext} variant={1} icon={1} enabled={stepperContent[stepperContent.map(item => item.id).indexOf(current)].completed} /></div>)}
+                    <div className={styles.stepFiveButtons}>
+                        <Button text={props.secondaryFinalStepButton} action={handleEdit} variant={2} icon={0} enabled={true} />
+                        <Button text={props.primaryFinalStepButton} action={handleSubmit} variant={1} icon={2} enabled={stepperContent.every((x) => x.completed)} />
+                    </div>
+                </div>
+        } else if (step.id === current && step.id === 0) {
+            content =
+                <div className={styles.stepContent}>
+                    <div className={styles.stepContentInput}>{step.content}</div>
+                    <div className={styles.buttonsInitial}>
+                        <Button text={props.nextButtonText} action={handleNext} variant={1} icon={1} enabled={stepperContent[stepperContent.map(item => item.id).indexOf(current)].completed} />
+                    </div>
+                </div>
+        } else if(step.id === current){
+            content =
+                <div className={styles.stepContent}>
+                    <div className={styles.stepContentInput}>{step.content}</div>
+                    <div className={styles.buttons}>
+                        <Button text={props.backButtonText} action={handlePrevious} variant={3} icon={3} enabled={true} />
+                        <Button text={props.nextButtonText} action={handleNext} variant={1} icon={1} enabled={stepperContent[stepperContent.map(item => item.id).indexOf(current)].completed} />
+                    </div>
                 </div>
         }
-        
+
         return (
             <div key={step.id} className={styles.step}>
                 <div className={styles.header} onClick={() => handleClick(step.id)}>

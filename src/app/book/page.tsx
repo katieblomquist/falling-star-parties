@@ -13,9 +13,10 @@ import { DateTime } from "luxon";
 import { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 import PriceEstimate from "@/components/PriceEstimate/priceEstimate";
 import NavBar from "@/components/navbar/navbar";
-import { CharacterSelection, formal_script } from "../mockData";
+import { CharacterSelection, formal_script, numberCharacters } from "../mockData";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
+import Characters from "@/components/bookingForm/Characters/characters";
 
 export type FormValues = {
     FirstName: string,
@@ -55,7 +56,7 @@ export default function Book() {
         return TimeLocationValues.every(x => (x != null && x != ''));
     }, [TimeLocationValues]);
 
-    const EventOptionsValues = useWatch({ control, name: ["Package", "Character"] });
+    const EventOptionsValues = useWatch({ control, name: ["Package"] });
     const EventOptionsIsComplete = useMemo(() => {
         return EventOptionsValues.every(x => ((Array.isArray(x) && x.length > 0) || (typeof (x) == 'number' && x != null)));
     }, [EventOptionsValues]);
@@ -70,6 +71,17 @@ export default function Book() {
         return EventDetailsPublicValues.every(x => (x != null && x != ''));
     }, [EventDetailsPublicValues]);
 
+    const CharacterSelectionValues = useWatch({control, name: "Character"})
+    const characterNumber = useWatch({control, name: ["NumCharacters"]})
+    const CharacterSelectionIsComplete = useMemo(() => {
+        if(characterNumber !== undefined && CharacterSelectionValues !== undefined){
+            return CharacterSelectionValues.length === parseInt(characterNumber[0])
+        } else{
+            return false
+        }
+        
+    }, [CharacterSelectionValues])
+
     const formIsValid = useCallback((x: unknown): x is FormValues => {
         // TODO(@kblomquist) replace this with actual validation
         const formIsValid = true;
@@ -77,13 +89,15 @@ export default function Book() {
         return formIsValid;
     }, []);
 
+    
 
     const stepperTest = [
-        { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} /> },
+        { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} resetField={resetField} /> },
         { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} setValue={setValue} /> },
         { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} /> },
-        { id: 3, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete, content: <EventDetails controller={control} eventType={formValues.EventType} /> },
-        { id: 4, title: "Review Request", completed: InformationIsComplete && TimeLocationIsComplete && EventOptionsIsComplete && (EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete), content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
+        {id: 3, title: "Character Selection", completed:CharacterSelectionIsComplete, content: <Characters controller={control} resetField={resetField} />},
+        { id: 4, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete, content: <EventDetails controller={control} eventType={formValues.EventType} /> },
+        { id: 5, title: "Review Request", completed: InformationIsComplete && TimeLocationIsComplete && EventOptionsIsComplete && (EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete), content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
     ];
     return (
         <>
@@ -98,7 +112,7 @@ export default function Book() {
                 <form>
                     <div className={styles.booking}>
                         <div className={styles.stepper}>
-                            <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} />
+                            <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} />
                         </div>
 
                         <PriceEstimate controller={control} />

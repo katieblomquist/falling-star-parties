@@ -1,7 +1,6 @@
-.header {
+.headerBlock{
     background-color: #DADDE5;
     display: flex;
-    flex-direction: row;
     justify-content: center;
 }
 
@@ -9,39 +8,9 @@
     width: 100%;
 }
 
-.blurb {
-    padding: 50px 0;
-}
-
-.buttonBlue {
-    width: fit-content;
-    padding: 15px 60px;
-    background-color: #343B95;
-    border-radius: 15px;
-    color: white;
-}
-
-.headerRight{
+.katieBlock{
     display: flex;
-    flex-direction: column;
     justify-content: center;
-    max-width: 50%;
-    padding-right: 100px;
-}
-
-.katie {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin: 150px 0;
-}
-
-.contentLeft{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    max-width: 50%;
-    padding-left: 100px;
 }
 
 .faqBlock{
@@ -55,15 +24,42 @@
     flex-direction: column;
     align-items: center;
     color: white;
-    max-width: 1300px;
+    max-width: 1700px;
     padding: 100px 0;
 }
 
 .enchantment{
     padding-bottom: 25px;
+    color: white;
 }
 
 .enchantmentBlurb{
     max-width: 1300px;
     padding-bottom: 100px;
+    color: white;
+}
+
+.splash {
+    background-size: cover;
+    background-position: center;
+    height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: end;
+  }
+  
+  .splashText {
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    max-width: 50vw;
+    justify-content: center;
+    margin: 50px 80px 0 0;
+    color: white;
+  }
+
+.textWhite{
+    color: white;
 }

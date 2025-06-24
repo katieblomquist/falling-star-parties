@@ -14,7 +14,7 @@ export default function Date(props: { day: number, selected: boolean, disabled: 
             return (
                 <>
                     <div className={styles.selected} onClick={handleClick}>
-                        <p>{day}</p>
+                        <p className={styles.selectedText}>{day}</p>
                     </div>
                 </>
             );
@@ -24,7 +24,7 @@ export default function Date(props: { day: number, selected: boolean, disabled: 
             return (
                 <>
                     <div className={styles.disabled} onClick={handleClick}>
-                        <p>{day}</p>
+                        <p className={styles.disabledText}>{day}</p>
                     </div>
                 </>
             )

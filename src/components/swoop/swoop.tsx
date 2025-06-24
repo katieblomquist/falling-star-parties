@@ -8,6 +8,16 @@ function LeftBottom(props: { color: string }) {
     )
 }
 
+function LeftTop(props: { color: string }) {
+    return (
+        <div style={{ marginBottom: '-7px' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1728 108" fill="none">
+                <path d="M0 145.124H464H1214H1728V54.9424L1701.05 60.5158C1431.49 116.253 1153.03 112.648 885.01 49.952C598.387 -17.0951 300.092 -16.5062 13.7357 51.6721L0 54.9424V145.124Z" fill={props.color} />
+            </svg>
+        </div>
+    )
+}
+
 function RightBottom(props: { color: string }) {
     return (
         <div style={{ marginTop: '-2px' }}>
@@ -39,13 +49,28 @@ function Center(props: { color: string }) {
     )
 }
 
+function CenterTop(props: { color: string }) {
+    return (
+        <div style={{ marginBottom: '-7px' }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1728 182" fill="none">
+                <path d="M0 4.5V4.5C100.129 -2.48575 200.684 -0.423957 300.443 10.6603L615.475 45.6639C793.923 65.4914 974.037 65.1355 1152.41 44.6031L1443.12 11.1386C1542.16 -0.262742 1642.05 -2.48505 1741.5 4.5V4.5V182H0V4.5Z" fill={props.color} />
+            </svg>
+        </div>
+
+    )
+}
+
 export default function Swoop(props: { top: boolean, color: string, direction: string, }) {
 
 
     if (props.top) {
         if (props.direction === 'right') {
             return (<RightTop color={props.color} />)
-        } else {
+        } else if (props.direction === 'center') {
+            return (<CenterTop color={props.color} />)
+        } else if(props.direction === 'left'){
+            return(<LeftTop color={props.color} />)
+        }else {
             return null;
         }
     }
