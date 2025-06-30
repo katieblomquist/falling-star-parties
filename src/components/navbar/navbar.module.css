@@ -1,4 +1,4 @@
-.navbar{
+.navbar {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -11,22 +11,78 @@
     z-index: 3;
 }
 
-.link{
+.link {
     text-decoration: none;
     color: #343B95;
     padding: 0 10px;
 }
 
-.linkActive{
+.linkActive {
     text-decoration: none;
     color: #343B95;
     padding: 0 10px;
     border-bottom: 2px solid #343B95;
 }
 
-.logo{
+.logo {
     width: 200px;
     height: 60px;
     background-size: cover;
     background-position: center;
+}
+
+.mobileNavbar {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+    position: sticky;
+    top: 0px;
+    z-index: 3;
+}
+
+.mobileNavbarHeader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 15px;
+    background-color: white;
+    border-bottom: 1px solid #343B954D;
+
+}
+
+.logoMobile {
+    width: 200px;
+    height: 60px;
+    background-size: cover;
+    background-position: center;
+    margin: 0 10vw;
+}
+
+.mobileDropdown {
+    display: flex;
+    flex-direction: column;
+    background-color: #343B95D9;
+    backdrop-filter: blur(10px);
+    position: absolute;
+    top: 90px;
+    width: 100%;
+    height: 100vh;
+    z-index: 10;
+    padding: 20px 30px;
+}
+
+.linkMobile {
+    text-decoration: none;
+    color: white;
+    padding: 15px 30px;
+}
+
+.linkActiveMobile {
+    font-weight: bold;
+    text-decoration: none;
+    color: white;
+    padding: 15px 30px;
+    background-color: #FFFFFF40;
+    border-radius: 15px;
 }

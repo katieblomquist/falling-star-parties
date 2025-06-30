@@ -22,7 +22,7 @@ export const packages = [{ id: 0, type: "Birthday Party", title: "Dream", descri
 //abstract to DB
 export const extras = [{ id: 0, type: "Birthday Party", title: "Storybook Keepsake", description: "Includes a storybook signed by your character that she will present at the end of story time!", duration: "", cost: 15, additionalCharacterCost: 0 },
 { id: 1, type: "Birthday Party", title: "Deluxe Storybook Keepsake", description: "Includes a storybook, with over 10 princess stories, signed by your character that she will present at the end of story time!", duration: "", cost: 30, additionalCharacterCost: 0 },
-{ id: 2, type: "Birthday Party", title: "Deluxe Princess Set", description: "Includes an upgraded rhinestone crown and a themed princess sash.", duration: "", cost: 30, additionalCharacterCost: 0 },
+{ id: 2, type: "Birthday Party", title: "Deluxe Princess Set", description: "Includes an upgraded rhinestone crown and a themed princess sash fit for any brithday royal!", duration: "", cost: 30, additionalCharacterCost: 0 },
 { id: 3, type: "Birthday Party", title: "Gift Bags", description: "Includes a gift bag for each child and the Deluxe Princess Set for the Birthday Princess. We offer both princess themed and superhero themed bags so that every child is included! \n\nNote: Price is based on the anticipated number of guests", duration: "", cost: 10, additionalCharacterCost: 0 },
 { id: 4, type: "Public Event", title: "Storytime", description: "Includes a musical story time for your guests", duration: "", cost: 0, additionalCharacterCost: 0 },
 { id: 5, type: "Public Event", title: "Interactive Storytime", description: "Your guests get to become a part of the story through props and lines of their own!", duration: "", cost: 75, additionalCharacterCost: 0 },
@@ -61,8 +61,6 @@ export const time = ["10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM", "11:00 AM",
     "12:45 PM", "1:00 PM", "1:15 PM", "1:30 PM", "1:45 PM", "2:00 PM", "2:15 PM", "2:30 PM", "2:45 PM", "3:00 PM", "3:15 PM", "3:30 PM", "3:45 PM",
     "4:00 PM", "4:15 PM", "4:30 PM", "4:45 PM", "5:00 PM", "5:15 PM", "5:30 PM", "5:45 PM", "6:00 PM"
 ]
-
-import { CharacterDressArray } from "../components/carouselCard/carouselCard";
 
 export const iceQueen = [
     { id: 0, name: "Ice Dress", img: "/DSC_0729.jpg", characterId: 0 }, { id: 1, name: "Elements Dress", img: "/IMG_4976.jpg", characterId: 0 },

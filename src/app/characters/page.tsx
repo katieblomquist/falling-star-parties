@@ -1,11 +1,10 @@
 import styles from "./characters.module.css";
-import CarouselCard from "../../components/carouselCard/carouselCard";
 import { formal_script, iceQueen, mermaidPrincess, rosePrincess, snowPrincess } from "../mockData";
 import NavBar from "@/components/navbar/navbar";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
-import ContentBlock from "@/components/contentBlock/contentBlock";
-import { characterPage } from "../content";
+import { characters } from "../content";
+import PhotoCard from "@/components/photoCard/photoCard";
 
 export default function About() {
 
@@ -25,10 +24,11 @@ export default function About() {
             </div>
             <div className={styles.princessBlock}>
                 <div className={styles.princesses}>
-                    <CarouselCard character="Ice Queen" dresses={iceQueen} />
-                    <CarouselCard character="Snow Princess" dresses={snowPrincess} />
-                    <CarouselCard character="Mermaid Princess" dresses={mermaidPrincess} />
-                    <CarouselCard character="Rose Princess" dresses={rosePrincess} />
+                    {
+                        characters.map(({name, desc, dresses, background}) => (
+                            <PhotoCard name={name} description={desc} dresses={dresses} background={background}/>
+                        ))
+                    }
                 </div>
             </div>
 
