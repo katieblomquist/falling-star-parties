@@ -34,7 +34,7 @@ export default function NavBar(props: { location: string }) {
         return (
             <nav className={styles.mobileNavbar} onClick={e => e.stopPropagation()}>
                 <div className={styles.mobileNavbarHeader}>
-                    <Link href="/"><div className={styles.logoMobile} style={{ backgroundImage: "url(/logo.png)" }}></div></Link>
+                    <Link href="/" className={styles.logoBoxMobile}><div className={styles.logoMobile} style={{ backgroundImage: "url(/logo.png)" }}></div></Link>
                     {dropdownOpen ? (
                         <IconX className={styles.mobileIcon} onClick={setDropdown} />
                     ) : (

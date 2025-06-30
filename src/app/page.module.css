@@ -1,14 +1,13 @@
 .splash {
   background-size: cover;
   background-position: center;
-  height: 800px;
+  min-height: 800px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 
 .splashText {
-  height: 75%;
   display: flex;
   flex-direction: column;
   gap: 50px;
@@ -16,6 +15,7 @@
   justify-content: center;
   margin: 80px;
   color: white;
+  flex-grow: 2;
 }
 
 .headerCenter {
@@ -37,4 +37,15 @@
 
 .textWhite{
   color: white;
+}
+
+@media screen and (max-width: 900px){
+  .splashText{
+    height: 100%;
+    max-width: 100%;
+    padding: 25px;
+    margin: 0;
+    text-align: center;
+    align-items: center;
+  }
 }
