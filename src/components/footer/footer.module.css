@@ -19,7 +19,22 @@
 .link{
     text-decoration: none;
     color: black;
+    flex-wrap: wrap;
 }
 .link:hover{
     text-decoration: underline;
+}
+
+@media screen and (max-width: 900px){
+    .footer{
+        padding: 25px;
+    }
+
+}
+
+@media screen and (max-width: 450px){
+    .links{
+        flex-direction: column;
+        gap: 20px;
+    }
 }
