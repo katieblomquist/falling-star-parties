@@ -92,7 +92,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                 name="Extras"
                                 render={({ field: { onChange, value } }) => (
 
-                                    <SelectionCard CardContent={VerticleCard} content={{
+                                    <SelectionCard CardContent={HorizontalCard} content={{
                                         id: item.id,
                                         type: item.type,
                                         title: item.title,

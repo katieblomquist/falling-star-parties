@@ -130,12 +130,12 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                         </div>
                     ) : null}
 
-                    {eventPackage > -1 ? (
-                        <div className={styles.lineItem}>
-                            <p>Travel Fee: </p>
-                            <p>${travelCost}</p>
-                        </div>
-                    ) : null}
+                    {eventPackage > -1 && travelCost !== 0 ? (
+                            <div className={styles.lineItem}>
+                                <p>Travel Fee: </p>
+                                <p>${travelCost}</p>
+                            </div>
+                        ) : null}
 
                     <hr className={styles.equals}></hr>
 

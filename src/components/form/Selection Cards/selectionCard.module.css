@@ -1,4 +1,4 @@
-.card{
+.characterCard{
     display: flex;
     flex-direction: column;
     border: 1px solid #A4A8B0;
@@ -7,12 +7,12 @@
     width: fit-content;
     min-width: 175px;
 }
-.card:hover{
+.characterCard:hover{
     cursor: pointer;
     transform: scale(1.01);
 }
 
-.cardActive{
+.characterCardActive{
     display: flex;
     flex-direction: column;
     border: 2px solid #343B95;
@@ -21,7 +21,36 @@
     width: fit-content;
     min-width: 175px;
 }
-.cardActive:hover{
+.characterCardActive:hover{
+    cursor: pointer;
+    transform: scale(1.01);
+}
+
+.textCard{
+    display: flex;
+    flex-direction: row;
+    border: 1px solid #A4A8B0;
+    border-radius: 15px;
+    padding: 20px;
+    width: fit-content;
+    min-width: 175px;
+}
+
+.textCard:hover{
+    cursor: pointer;
+    transform: scale(1.01);
+}
+
+.textCardActive{
+    display: flex;
+    flex-direction: row;
+    border: 2px solid #343B95;
+    border-radius: 15px;
+    padding: 20px;
+    width: fit-content;
+    min-width: 175px;
+}
+.textCardActive:hover{
     cursor: pointer;
     transform: scale(1.01);
 }

@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import styles from './tabs.module.css'
-import { TabArray } from "@/app/mockData";
+import { TabArray } from "@/app/content";
+
 
 export default function Tabs(props: { content: TabArray, blue: boolean}) {
 

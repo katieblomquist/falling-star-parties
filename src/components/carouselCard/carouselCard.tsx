@@ -4,6 +4,7 @@ import { useState } from "react";
 import { IconChevronLeft, IconCircleFilled, IconCircle, IconChevronRight } from '@tabler/icons-react'
 import styles from "./carouselCard.module.css"
 import { formal_script } from "@/app/mockData";
+import LightBox from "../lightBox/lightBox";
 
 export type CharacterDress = { id: number, name: String, img: String, characterId: number };
 export type CharacterDressArray = Array<CharacterDress>;
@@ -13,13 +14,19 @@ export default function CarouselCard(props: { character: string, dresses: Charac
 
     const [selected, setSelected] = useState(0);
     const dresses = props.dresses;
+    const [lightBoxOpen, setLightBox] = useState(false);
 
-    function select(index: number) {
-        setSelected(index);
+    function lightBox(){
+        if(lightBoxOpen){
+            setLightBox(false);
+        } else {
+            setLightBox(true);
+        }
     }
+
     return (
         <>
-            <div className={styles.character}>
+            <div className={styles.character } onClick={lightBox}>
                 <h3 className={styles.characterName}> <span className={formal_script.className}>{props.character}</span></h3>
                 <div className={styles.card}>
                     <div className={styles.photo} style={{ backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.00) 30%, #FFF 95%), url('${props.dresses[selected].img}')` }}></div>

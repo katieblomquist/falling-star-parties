@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
 type Faq = { question: string, answer: string }
-type Tab = {label: string, content: ReactNode}
+type Tab = { label: string, content: ReactNode }
 export type TabArray = Array<Tab>
 export type FaqArray = Array<Faq>
+export type CharacterDress = { id: number, name: String, img: String, characterId: number };
 
 export const homePage = [
     {
@@ -52,13 +53,13 @@ export const reviews = [
         title: 'They will go above and beyond to make sure your little ones birthday us the best it can be.'
     },
     {
-        stars: 5, 
+        stars: 5,
         review: "I am beyond pleased! Because of COVID-19 mandates, we were forced to indefinitely postpone my daughter’s 3 year old princess birthday event. :(. But in true princess spirit, Katie made sure to still make my daughter’s day one to remember! She setup a story time video call where the ‘snow princess’ (in full princess costume) read a fun bedtime story and sang a beautiful lullaby to my little girl. It was truly something special! I can’t say enough wonderful things about the owner - she was so sweet and so committed to making this a wonderful experience (despite current events). One to remember! Thank you, Katie!",
         client: 'Amy D.',
         photo: "/IMG_8921.jpg",
         title: 'It was truly something special!'
     }
-    
+
 ]
 
 export const aboutUs = [
@@ -116,21 +117,69 @@ export const videoCallsFaqs = [
     }
 ]
 
-export const characterPage = [
+export const characters = [
     {
-        titleStart: "Meet our ",
-        emphasis: "Enchanted",
-        titleEnd: " Characters",
-        blurb: "Here you'll find a royal court filled with the most enchanting princesses. From the graceful twirls of our Glass Slipper Princess to the adventurous spirit of our Mermaid Princess, each of our characters brings their own special charm and sparkle to every celebration. Explore their captivating stories, delightful personalities, and the magical moments they bring to life! With a sprinkle of fairy dust and a touch of whimsy, let us help you create an enchanting experience that your little ones will treasure forever!",
-        button: "BOOK NOW",
-        variant: 1,
-        href: "/book",
-        images: ["/bubbles/characters/IMG_7324.jpg", "/bubbles/characters/IMG_2519.jpg", "/bubbles/characters/DSC_0752.jpg"]
-
+        name: "Ice Queen",
+        desc: "Through love, bravery, and the power of letting go, our Ice Queen learns to embrace her uniqueness and find strength in her icy powers. With her mesmerizing presence, she is sure to captivate your guests and inspire them to embrace their true selves and the magic within.",
+        background: "/backgrounds/IceQueenBackground.png",
+        dresses: [
+            { id: 0, name: "Ice Dress", img: "/bubbles/characters/DSC_0729.jpg", characterId: 0 }, { id: 1, name: "Elements Dress", img: "/bubbles/characters/IMG_4976.jpg", characterId: 0 },
+            { id: 2, name: "Adventure Dress", img: "/bubbles/characters/IMG_4976.jpg", characterId: 0 }, { id: 3, name: "Yuletide Dress", img: "/bubbles/characters/IMG_2153.jpg", characterId: 0 }
+        ]
     },
+    {
+        name: "Snow Princess",
+        desc: "With boundless optimism, courage, and a heart full of love, our Snow Princess proves that true strength lies in never giving up on those you care about. Her warmth and adventurous spirit light up every room, inspiring your guests to face challenges with hope and to believe in the power of family and friendship. Her infectious energy is sure to enchant everyone and remind them that love can thaw even the coldest of hearts.",
+        background: "/backgrounds/SnowPrincessBackground.png",
+        dresses: [
+            { id: 4, name: "Coronation Dress", img: "/bubbles/characters/IMG_1962.jpg", characterId: 1 }, { id: 5, name: "Queen Dress", img: "/bubbles/characters/IMG_9963.jpg", characterId: 1 },
+            { id: 6, name: "Adventure Dress", img: "/bubbles/characters/IMG_7410.jpg", characterId: 1 }, { id: 7, name: "Yuletide Dress", img: "/bubbles/characters/IMG_3821.jpg", characterId: 1 }
+        ]
+    },
+    {
+        name: "Mermaid Princess",
+        desc: "With an adventurous spirit, boundless curiosity, and a heart full of dreams, our Mermaid Princess dives fearlessly into the unknown to discover a world beyond the sea. Her determination and zest for life inspire everyone she meets to embrace new adventures and follow their passions, no matter the obstacles. Her enchanting presence will captivate your guests, encouraging them to celebrate their individuality and believe in the magic of pursuing their own dreams.",
+        background: "/backgrounds/MermaidPrincessBackground.png",
+        dresses: [
+            { id: 8, name: "Walking Tail", img: "/bubbles/characters/IMG_6126.jpg", characterId: 2 }, { id: 9, name: "Ballgown", img: "/bubbles/characters/IMG_3063.jpg", characterId: 2 }
+        ]
+    },
+    {
+        name: "Rose Princess",
+        desc: "With a love for books, a thirst for adventure, and a heart full of compassion, our Rose Princess shows that true beauty shines from within. Her intelligence, courage, and kindness inspire everyone she meets to look beyond appearances and embrace the magic of empathy and open-mindedness. Her presence brings a touch of wonder to every gathering, inviting guests to imagine new worlds and discover the extraordinary in the everyday.",
+        background: "/backgrounds/RosePrincessBackground.png",
+        dresses: [
+            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_3510.jpg", characterId: 3 }, { id: 11, name: "Holiday Dress", img: "/bubbles/characters/IMG_1230.jpg", characterId: 3 }
+        ]
+    },
+    {
+        name: "Glass Slipper Princess",
+        desc: "With grace, kindness, and unwavering hope, our Glass Slipper Princess shows that dreams can come true no matter where you start. Her gentle spirit and resilience inspire everyone she meets to believe in themselves and treat others with compassion. Her presence adds a touch of magic to any celebration, encouraging guests to find joy in every moment and to never stop wishing for their own happily ever after.",
+        background: "/backgrounds/GlassSlipperPrincessBackground.png",
+        dresses: [
+            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_2752.jpg", characterId: 3 },
+        ]
+    },
+    {
+        name: "Tower Princess",
+        desc: "With boundless curiosity, creativity, and a heart full of hope, our Tower Princess turns every challenge into an adventure. Her optimism, resilience, and kindness inspire those around her to embrace the unknown and see the beauty in every new experience. Her infectious spirit brings light and laughter wherever she goes, inviting guests to dream big, explore fearlessly, and find magic in the world beyond their comfort zone.",
+        background: "/backgrounds/TowerPrincessBackground.png",
+        dresses: [
+            { id: 10, name: "Adventure Dress", img: "/bubbles/characters/IMG_0078.jpg", characterId: 3 }, { id: 11, name: "Holiday Dress", img: "/bubbles/characters/IMG_3827.jpg", characterId: 3 }
+        ]
+    },
+    {
+        name: "Sleeping Princess",
+        desc: "With a gentle heart, graceful charm, and a dreamy spirit, our Sleeping Princess blossoms from a sheltered life into a young woman longing for adventure and true love. Her kindness and quiet strength inspire those around her to believe in the magic of hope and the beauty of new beginnings. Her enchanting presence brings a timeless sense of romance and wonder, inviting guests to embrace their dreams and the promise of happily ever after.",
+        background: "/backgrounds/SleepingPrincessBackground.png",
+        dresses: [
+            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_3291.jpg", characterId: 3 }
+        ]
+    }
+
 ]
 
-export const servicesPage =[
+export const servicesPage = [
     {
         titleStart: "Something ",
         emphasis: "Special",
@@ -181,28 +230,564 @@ export const serviceTabs = [
 
 export const masonryPhotos = [
     {
-        width: 350,
-        height: 500,
-        src: '/DSC_0729.jpg'
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4256.jpg'
     },
     {
-        width: 350,
-        height: 500,
-        src: '/IMG_1230.jpg'
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4330.jpg'
     },
     {
-        width: 350,
-        height: 500,
-        src: '/IMG_1962.jpg'
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4332.jpg'
     },
     {
-        width: 350,
-        height: 500,
-        src: '/IMG_2153.jpg'
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4339.jpg'
     },
     {
-        width: 350,
-        height: 500,
-        src: '/IMG_3063.jpg'
-    }
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4492.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4756.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5315.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5326.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5339.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5355.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5403.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5432.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5441.jpg'
+    },
+    {
+        width: 1200,
+        height: 1200,
+        src: '/parties/IMG_5496.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5510.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_8918.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_8921.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_8932.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_8936.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5785.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5882.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5935.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5938.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_5949.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6079.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6001.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6169.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6192.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6201.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6245.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6321.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6369.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6386.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6393.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6398.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9282.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9358.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9374.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_9409.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_9450.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9666.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9727.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9739.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9807.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_0002.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_0041.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_0055.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9936.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9960.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9978.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_0220.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_1676.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1745.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1781.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1802.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1812.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1822.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6451.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6483.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6501.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6547.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6609.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6647.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6722.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_6865.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_7083.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_7143.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4654.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_7496.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_7565.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_7612.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_7624.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_7751.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8027.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8057.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8088.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8091.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8202.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8225.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8233.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8247.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_8377.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8545.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8559.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4530.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_4544.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_7757.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1046.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1076.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1106.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1125.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1210.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1295.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1662.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_1722.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_3529.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_3555.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_3980.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_6250.jpg'
+    },
+    {
+        width: 1200,
+        height: 1800,
+        src: '/parties/IMG_6653.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_7836.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_7870.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8021.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8613.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8630.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8659.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8662.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8665.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8682.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8683.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_8998.jpg'
+    },
+    {
+        width: 1800,
+        height: 1200,
+        src: '/parties/IMG_9497.jpg'
+    },
+    
 ]
