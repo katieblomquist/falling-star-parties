@@ -6,9 +6,9 @@ import styles from "./contentBlock.module.css"
 function Left(props: { titleStart: string, emphasis: string, titleEnd: string, blurb: string, images: Array<string>, button?: string, variant?: number, href?: string, white: boolean, index: number }) {
     if (props.button && props.variant && props.href && props.white) {
         return (
-            <div className={styles.content} style={{ color: 'white' }}>
+            <div className={styles.contentBlockLeft} style={{ color: 'white' }}>
                 <Bubbles leftSide={true} photos={props.images} />
-                <div className={styles.contentRight}>
+                <div className={styles.content}>
                     {props.index === 0 ? (<h1 style={{ color: 'white' }}>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h1>) : (<h2 style={{ color: 'white' }}>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h2>)}
                     <p className={styles.blurb} style={{ color: 'white' }}>{props.blurb}</p>
                     <Button text={props.button} variant={props.variant} icon={0} enabled={true} href={props.href} />
@@ -17,9 +17,9 @@ function Left(props: { titleStart: string, emphasis: string, titleEnd: string, b
         )
     } else if (props.button && props.variant && props.href) {
         return (
-            <div className={styles.content}>
+            <div className={styles.contentBlockLeft}>
                 <Bubbles leftSide={true} photos={props.images} />
-                <div className={styles.contentRight}>
+                <div className={styles.content}>
                     {props.index === 0 ? (<h1>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h1>) : (<h2>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h2>)}
                     <p className={styles.blurb}>{props.blurb}</p>
                     <Button text={props.button} variant={props.variant} icon={0} enabled={true} href={props.href} />
@@ -28,9 +28,9 @@ function Left(props: { titleStart: string, emphasis: string, titleEnd: string, b
         )
     } else {
         return (
-            <div className={styles.content}>
+            <div className={styles.contentBlockLeft}>
                 <Bubbles leftSide={true} photos={props.images} />
-                <div className={styles.contentRight}>
+                <div className={styles.content}>
                     {props.index === 0 ? (<h1>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h1>) : (<h2>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h2>)}
                     <p className={styles.blurb}>{props.blurb}</p>
                 </div>
@@ -42,8 +42,8 @@ function Left(props: { titleStart: string, emphasis: string, titleEnd: string, b
 function Right(props: { titleStart: string, emphasis: string, titleEnd: string, blurb: string, images: Array<string>, button?: string, variant?: number, href?: string, white: boolean, index: number }) {
     if (props.button && props.variant && props.href && props.white) {
         return (
-            <div className={styles.content} style={{ color: 'white' }}>
-                <div className={styles.contentLeft}>
+            <div className={styles.contentBlockRight} style={{ color: 'white' }}>
+                <div className={styles.content}>
                     {props.index === 0 ? (<h1 style={{ color: 'white' }}>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h1>) : (<h2 style={{ color: 'white' }}>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h2>)}
                     <p className={styles.blurb} style={{ color: 'white' }}>{props.blurb}</p>
                     <Button text={props.button} variant={props.variant} icon={0} enabled={true} href={props.href} />
@@ -53,8 +53,8 @@ function Right(props: { titleStart: string, emphasis: string, titleEnd: string, 
         )
     } else if (props.button && props.variant && props.href) {
         return (
-            <div className={styles.content}>
-                <div className={styles.contentLeft}>
+            <div className={styles.contentBlockRight}>
+                <div className={styles.content}>
                     {props.index === 0 ? (<h1>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h1>) : (<h2>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h2>)}
                     <p className={styles.blurb}>{props.blurb}</p>
                     <Button text={props.button} variant={props.variant} icon={0} enabled={true} href={props.href} />
@@ -64,8 +64,8 @@ function Right(props: { titleStart: string, emphasis: string, titleEnd: string, 
         )
     } else {
         return (
-            <div className={styles.content}>
-                <div className={styles.contentLeft}>
+            <div className={styles.contentBlockRight}>
+                <div className={styles.content}>
                     {props.index === 0 ? (<h1>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h1>) : (<h2>{props.titleStart} <span className={formal_script.className}>{props.emphasis}</span>{props.titleEnd}</h2>)}
                     <p className={styles.blurb}>{props.blurb}</p>
                 </div>

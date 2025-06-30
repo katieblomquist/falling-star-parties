@@ -1,4 +1,4 @@
-.contentRight {
+.content {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,19 +7,40 @@
     gap: 20px;
 }
 
-.contentLeft {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-left: 80px;
-    max-width: 50%;
-    gap: 20px;
-}
-
-.content{
+.contentBlockLeft{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 50px 0;
     max-width: 1700px;
   }
+
+  .contentBlockRight{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 50px 0;
+    max-width: 1700px;
+  }
+
+  @media screen and (max-width: 900px){
+    .contentBlockLeft{
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    .content{
+        max-width: 100%;
+        margin: 25px;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0;
+    }
+
+    .contentBlockRight{
+        flex-direction: column-reverse;
+        justify-content: center;
+        align-items: center;
+    }
+}
