@@ -14,8 +14,10 @@ export default function PhotoCard(props: { name: string, description: string, dr
     function lightBox() {
         if (lightBoxOpen) {
             setLightBox(false);
+            document.body.classList.remove('no-scroll');
         } else {
             setLightBox(true);
+            document.body.classList.add('no-scroll');
         }
     }
 

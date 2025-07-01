@@ -3,11 +3,12 @@
     justify-content: space-evenly;
     margin-bottom: 50px;
     align-items: center;
+    gap: 20px;
 }
 
 .mainPhoto {
-    height: 400px;
-    width: 400px;
+    height: 300px;
+    width: 300px;
     background-size: cover;
     background-position: top;
     border-radius: 100%;
@@ -23,14 +24,12 @@
     text-align: center;
 }
 
-/* .description{
-    max-width: 60%;
-} */
-
 .dressPhotos {
     display: flex;
     gap: 20px;
     align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .dress {
@@ -52,4 +51,29 @@
 .dress:hover {
     cursor: pointer;
     transform: scale(1.1);
+}
+
+.photosBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+@media screen and (max-width: 1000px){
+    .wrapper{
+        flex-direction: column;
+        overflow-y: scroll;
+        gap: 20px;
+    }
+    .content{
+        max-width: 100%;
+    }
+}
+
+@media screen and (max-width: 450px){
+    .mainPhoto {
+        height: 250px;
+        width: 250px;
+    }
 }
