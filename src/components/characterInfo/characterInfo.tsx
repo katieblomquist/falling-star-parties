@@ -13,12 +13,8 @@ export default function CharacterInfo(props: { name: string, description: string
 
     return (
         <div className={styles.wrapper}>
-            <div className={styles.mainPhoto} style={{ backgroundImage: `url("/bubble-2.png"), url(${props.dresses[selectedPhoto].img})` }}></div>
-            <div className={styles.content}>
-                <h2><span className={formal_script.className}>{props.name}</span></h2>
-                <h3>{props.dresses[selectedPhoto].name}</h3>
-                <p className={styles.description}>{props.description}</p>
-                <h3>Dress Options</h3>
+            <div className={styles.photosBox}>
+                <div className={styles.mainPhoto} style={{ backgroundImage: `url("/bubble-2.png"), url(${props.dresses[selectedPhoto].img})` }}></div>
                 <div className={styles.dressPhotos}>
                     {props.dresses.map((dress, index) => {
                         let classNames = styles['dress'];
@@ -30,6 +26,12 @@ export default function CharacterInfo(props: { name: string, description: string
                         return <div className={classNames} style={{ backgroundImage: `url(${dress.img})` }} onClick={() => setSelected(index)}></div>
                     })}
                 </div>
+            </div>
+
+            <div className={styles.content}>
+                <h2><span className={formal_script.className}>{props.name}</span></h2>
+                <h3>{props.dresses[selectedPhoto].name}</h3>
+                <p className={styles.description}>{props.description}</p>
             </div>
         </div>
     )
