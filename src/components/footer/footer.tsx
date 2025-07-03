@@ -9,7 +9,7 @@ export default function Footer(){
                 to similar characters or stories and apologize for any inconvenience this may cause you.</p>
                 <div className={styles.links}>
                     <p ><a href="https://forms.gle/fV959EENcrtcVEJw7" target="_blank" className={styles.link}>Join Our Team</a></p>
-                    <p className={styles.link}>Terms of Service</p>
+                    <p ><a href='/tos' className={styles.link}>Terms of Service</a></p>
                     <p className={styles.link}>Media Kit</p>
                 </div>
         </div>
