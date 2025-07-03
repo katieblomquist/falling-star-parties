@@ -230,563 +230,563 @@ export const serviceTabs = [
 
 export const masonryPhotos = [
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4256.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4330.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4332.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4339.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4492.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4756.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5315.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5326.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5339.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5355.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5403.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5432.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5441.jpg'
     },
     {
-        width: 1200,
-        height: 1200,
+        width: 600,
+        height: 600,
         src: '/parties/IMG_5496.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5510.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_8918.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_8921.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_8932.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_8936.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5785.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5882.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5935.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5938.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_5949.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6079.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6001.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6169.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6192.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6201.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6245.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6321.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6369.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6386.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6393.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6398.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9282.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9358.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9374.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_9409.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_9450.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9666.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9727.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9739.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9807.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_0002.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_0041.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_0055.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9936.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9960.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9978.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_0220.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_1676.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1745.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1781.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1802.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1812.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1822.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6451.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6483.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6501.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6547.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6609.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6647.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6722.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_6865.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_7083.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_7143.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4654.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_7496.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_7565.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_7612.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_7624.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_7751.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8027.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8057.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8088.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8091.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8202.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8225.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8233.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8247.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_8377.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8545.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8559.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4530.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_4544.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_7757.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1046.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1076.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1106.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1125.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1210.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1295.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1662.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_1722.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_3529.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_3555.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_3980.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_6250.jpg'
     },
     {
-        width: 1200,
-        height: 1800,
+        width: 600,
+        height: 900,
         src: '/parties/IMG_6653.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_7836.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_7870.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8021.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8613.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8630.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8659.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8662.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8665.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8682.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8683.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_8998.jpg'
     },
     {
-        width: 1800,
-        height: 1200,
+        width: 900,
+        height: 600,
         src: '/parties/IMG_9497.jpg'
     },
     

@@ -26,6 +26,7 @@
     color: white;
     max-width: 1700px;
     padding: 100px 0;
+    margin: 0 80px;
 }
 
 .enchantment{
@@ -35,7 +36,7 @@
 
 .enchantmentBlurb{
     max-width: 1300px;
-    padding-bottom: 100px;
+    padding-bottom: 50px;
     color: white;
 }
 
@@ -73,5 +74,9 @@
       margin: 0;
       text-align: center;
       align-items: center;
+    }
+    .faqContent {
+        margin: 0 25px;
+        text-align: center;
     }
   }
