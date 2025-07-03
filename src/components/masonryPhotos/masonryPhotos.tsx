@@ -3,7 +3,7 @@
 import { MasonryPhotoAlbum } from "react-photo-album";
 import "react-photo-album/masonry.css";
 import { masonryPhotos } from "@/app/content";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CharacterInfo from "../characterInfo/characterInfo";
 import LightBox from "../lightBox/lightBox";
 import Image from 'next/image'
@@ -19,7 +19,7 @@ export default function MasonryPhotos() {
             setLightBox(false);
             document.body.classList.remove('no-scroll');
         } else {
-            if (index) {
+            if (index || index === 0) {
                 setIndex(index)
                 setLightBox(true);
                 document.body.classList.add('no-scroll');
@@ -28,11 +28,24 @@ export default function MasonryPhotos() {
         }
     }
 
+    useEffect(() => {
+        if (!lightBoxOpen) return;
+
+        function handleKeyDown(e: KeyboardEvent) {
+            if (e.key === "Escape") {
+                lightBox();
+            }
+        }
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [lightBoxOpen]);
+
     return (
         <>
             {lightBoxOpen ? (
                 <LightBox close={lightBox} >
-                    <Image src={masonryPhotos[index]} alt={""} className={styles.lightBoxImage} />
+                    <Image quality={75} src={masonryPhotos[index]} alt={""} className={styles.lightBoxImage0} />
                 </LightBox>
 
             ) : null}

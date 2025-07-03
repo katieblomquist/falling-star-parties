@@ -1,7 +1,7 @@
 'use client';
 
 import { formal_script, dresses } from "@/app/mockData";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LightBox from "../lightBox/lightBox";
 import styles from "./photoCard.module.css"
 import { CharacterDress } from "@/app/content";
@@ -20,6 +20,19 @@ export default function PhotoCard(props: { name: string, description: string, dr
             document.body.classList.add('no-scroll');
         }
     }
+
+    useEffect(() => {
+        if (!lightBoxOpen) return;
+
+        function handleKeyDown(e: KeyboardEvent) {
+            if (e.key === "Escape") {
+                lightBox();
+            }
+        }
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [lightBoxOpen]);
 
     return (
         <>

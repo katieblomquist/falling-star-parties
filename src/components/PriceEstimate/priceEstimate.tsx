@@ -36,6 +36,19 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
         fetchTravelCost();
     }, [address]);
 
+    useEffect(() => {
+        if (!popupActive) return;
+
+        function handleKeyDown(e: KeyboardEvent) {
+            if (e.key === "Escape") {
+                activatePopup();
+            }
+        }
+
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [popupActive]);
+
     function calculateExtraCost() {
         let total = 0;
         if (eventExtras) {
