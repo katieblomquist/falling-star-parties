@@ -5,7 +5,6 @@ import { formal_script } from "@/app/mockData";
 
 export default function CharacterInfo(props: { name: string, description: string, dresses: Array<CharacterDress> }) {
     const [selectedPhoto, setSelectedPhoto] = useState(0)
-    const [squished, setSquished] = useState(true);
 
     function setSelected(index: number) {
         setSelectedPhoto(index)

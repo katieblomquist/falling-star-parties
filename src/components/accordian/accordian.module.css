@@ -5,6 +5,7 @@
   
   .item {
     border-bottom: 1px solid #eee;
+    max-width: 1260px;
   }
   
   .button {

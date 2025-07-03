@@ -1,5 +1,5 @@
 import styles from "./characters.module.css";
-import { formal_script, iceQueen, mermaidPrincess, rosePrincess, snowPrincess } from "../mockData";
+import { formal_script } from "../mockData";
 import NavBar from "@/components/navbar/navbar";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
