@@ -10,8 +10,13 @@ import Footer from "@/components/footer/footer";
 import Button from "@/components/Button/button";
 import { homePage, reviews } from "./content";
 import ContentBlock from "@/components/contentBlock/contentBlock";
+import Carousel from "@/components/carousel/carousel";
 
 export const open_Sans = Open_Sans({ weight: "400", subsets: ["latin"], variable: '--open-sans', preload: false })
+
+const reviewArray = reviews.map(review => (
+  <ReviewCard title={review.title} review={review.review} client={review.client} />
+));
 
 export default function Home() {
 
@@ -44,7 +49,7 @@ export default function Home() {
       <div>
         <h2 className={styles.headerCenter}>Clients are <span className={formal_script.className}>Spellbound</span></h2>
         <div className={styles.reviews}>
-          <ReviewCard />
+          <Carousel content={reviewArray} />
         </div>
       </div>
       <Footer />

@@ -2,14 +2,12 @@ import NavBar from "@/components/navbar/navbar";
 import styles from "./services.module.css"
 import ServiceTabs from "@/components/serviceTabs/serviceTabs";
 import Tabs from "@/components/tabs/tabs";
-import { MasonryPhotoAlbum } from "react-photo-album";
-import "react-photo-album/masonry.css";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
-import { masonryPhotos, serviceTabs, servicesPage } from "../content";
+import { serviceTabs, servicesPage } from "../content";
 import { formal_script } from "../mockData";
-import ContentBlock from "@/components/contentBlock/contentBlock";
 import Button from "@/components/Button/button";
+import MasonryPhotos from "@/components/masonryPhotos/masonryPhotos";
 
 export default function Service() {
 
@@ -44,7 +42,7 @@ export default function Service() {
                 </div>
                 <div className={styles.photosBlock}>
                     <h2 className={styles.photosHeader}>A <span className={formal_script.className}>Glimpse</span> of Past Events</h2>
-                    <MasonryPhotoAlbum photos={masonryPhotos} />
+                    <MasonryPhotos />
                 </div>
             </div>
             <Footer />

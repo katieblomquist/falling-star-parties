@@ -4,7 +4,7 @@ import Accordian from "@/components/accordian/accordian";
 import NavBar from "@/components/navbar/navbar";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
-import { aboutUs, bookingFaqs, servicesPage, videoCallsFaqs } from "../content";
+import { aboutUs, bookingFaqs, videoCallsFaqs } from "../content";
 import ContentBlock from "@/components/contentBlock/contentBlock";
 import Button from "@/components/Button/button";
 import { formal_script } from "../mockData";

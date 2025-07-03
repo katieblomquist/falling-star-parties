@@ -1,0 +1,11 @@
+.lightBoxImage {
+    max-width: 100%;
+    max-height: 80vh; /* or 90vh for more vertical space */
+    width: auto;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  }

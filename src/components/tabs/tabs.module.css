@@ -37,3 +37,17 @@
   .tabContent {
     padding: 1rem;
   }
+
+  .mobileTab{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #DADDE5;
+    align-items: center;
+  }
+
+  .header{
+    flex-grow: 2;
+    text-align: center;
+  }

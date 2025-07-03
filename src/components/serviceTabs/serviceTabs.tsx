@@ -1,8 +1,9 @@
+import { formal_script } from '@/app/mockData';
 import Button from '../Button/button';
 import styles from './serviceTabs.module.css'
 import Link from "next/link";
 
-export default function serviceTabs(props: { beginningBlurb: string, listItems: Array<string>, endBlurb: string }) {
+export default function serviceTabs(props: {  beginningBlurb: string, listItems: Array<string>, endBlurb: string }) {
 
     return (
         <>
