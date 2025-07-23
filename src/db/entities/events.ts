@@ -4,13 +4,13 @@ import { DateTime } from "luxon";
 import { Packages } from "./packages";
 import { ClientInfo } from "./clientInfo";
 
-@Entity()
+@Entity("events")
 export class Events {
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Column({
-    type:"datetime",
+    type:"timestamp",
     transformer: new DateTimeTransformer()
   })
   dateTime!: DateTime;

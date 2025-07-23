@@ -4,7 +4,7 @@ import { AddOns } from "./addOns";
 
 @Entity()
 export class EventsAddOns {
-  @PrimaryColumn()
+  @PrimaryColumn("events_add_ons")
   eventId!: number;
 
   @ManyToOne(() => Events)

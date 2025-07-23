@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity()
+@Entity("add_ons")
 export class AddOns {
   @PrimaryGeneratedColumn()
   id!: number;

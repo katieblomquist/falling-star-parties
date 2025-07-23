@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity()
+@Entity("costumes")
 export class Costumes {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -9,9 +9,9 @@ export class Costumes {
   name!: string;
 
   @Column()
-  image!: string;
+  img!: string;
 
   @Column()
-  characterId!: number;
+  characterid!: number;
 
 }
