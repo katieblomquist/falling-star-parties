@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity()
+@Entity("packages")
 export class Packages {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -18,7 +18,7 @@ export class Packages {
   cost!: number;
 
   @Column()
-  additionalCharacterCost!: number;
+  additionalcharactercost!: number;
 
   @Column()
   type!: string;

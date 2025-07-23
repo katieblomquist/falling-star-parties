@@ -2,7 +2,7 @@ import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
 import { Events } from "./events";
 import { Costumes } from "./costumes";
 
-@Entity()
+@Entity("events_costumes")
 export class EventsCostumes {
     @PrimaryColumn()
     eventId!: number;
