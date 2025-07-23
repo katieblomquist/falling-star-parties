@@ -1,0 +1,17 @@
+import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+
+@Entity()
+export class Costumes {
+  @PrimaryGeneratedColumn()
+  id!: number;
+
+  @Column()
+  name!: string;
+
+  @Column()
+  image!: string;
+
+  @Column()
+  characterId!: number;
+
+}
