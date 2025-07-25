@@ -3,22 +3,34 @@
 import { Control, useWatch } from "react-hook-form"
 import { FormValues } from "@/app/book/page"
 import styles from "./priceEstimate.module.css"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
-import { extras, packages } from "@/app/mockData";
+import { Packages } from "@/db/entities/packages";
+import { AddOns } from "@/db/entities/addOns";
 
 export default function PriceEstimate(props: { controller: Control<FormValues, any> }) {
 
     const [popupActive, activate] = useState(false);
 
     const control = props.controller
+    const selectedEventType = useWatch({ control, name: "EventType" });
     const eventPackage = useWatch({ control, name: "Package" });
     const eventExtras = useWatch({ control, name: "Extras" });
     const numCharacters = useWatch({ control, name: "NumCharacters" });
     const numGuests = useWatch({ control, name: "Attendance" });
     const address = useWatch({ control, name: "Location.address" });
     const [width, setWidth] = useState(window.innerWidth);
+    const [packageOptions, setPackages] = useState<Packages[]>([]);
+    const [extrasOptions, setExtrasOptions] = useState<AddOns[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
+    const selectedPackage = useMemo(() => {
+        console.log("in selected pacakage", "event Package", eventPackage, "package options", packageOptions)
+        return packageOptions.find(pkg => pkg.id === eventPackage);
+      }, [packageOptions, eventPackage]);
+
+    const [total, setTotal] = useState(0);
     const [travelCost, setTravelCost] = useState(0);
 
     useEffect(() => {
@@ -33,8 +45,63 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                 }
             }
         }
+
+        
         fetchTravelCost();
     }, [address]);
+
+    useEffect(() => {
+        const fetchPackages = async () => {
+            setLoading(true);
+            setError(null);
+            try{
+                const res = await fetch(`api/packages/${selectedEventType}`);
+                if (!res.ok) throw new Error("Failed to fetch packages");
+                const data: Packages[] = await res.json();
+                setPackages(data);
+            } catch (err: any){
+                setError(err.message || "Unknown error");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        const fetchExtras = async () => {
+            setLoading(true);
+            setError(null);
+            try{
+                const res = await fetch(`api/addons/${selectedEventType}`);
+                if(!res.ok) throw new Error("Failed to fetch Extras");
+                const data: AddOns[] = await res.json();
+                setExtrasOptions(data)
+            } catch (err: any) {
+                setError(err.message || "Unknown error");
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchPackages();
+        fetchExtras();
+    }, [selectedEventType])
+
+    useEffect(() => {
+        function calculateTotal() {
+            let total = 0;
+            if (selectedPackage !== undefined) {
+                total += calculateCharacterCost();
+                total += calculateExtraCost();
+                total += travelCost;
+                total += selectedPackage.cost;
+            }
+            setTotal(total) ;
+        }
+    
+        calculateTotal();
+
+    }, [selectedPackage, eventExtras, numCharacters, numGuests, travelCost, extrasOptions]);
+
+
 
     useEffect(() => {
         if (!popupActive) return;
@@ -53,10 +120,10 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
         let total = 0;
         if (eventExtras) {
             eventExtras.forEach(extra => {
-                if (extras[extra].title === 'Gift Bags' && (numGuests !== undefined && numGuests !== '')) {
-                    total += extras[extra].cost * parseInt(numGuests);
+                if (extrasOptions[extra-1].title === 'Gift Bags' && (numGuests !== undefined && numGuests !== '')) {
+                    total += extrasOptions[extra-1].cost * parseInt(numGuests);
                 } else {
-                    total += extras[extra].cost;
+                    total += extrasOptions[extra-1].cost;
                 }
 
             });
@@ -66,26 +133,13 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     }
 
     function calculateCharacterCost() {
-        if (numCharacters && eventPackage !== undefined) {
+        if (numCharacters && selectedPackage !== undefined) {
 
-            return packages[eventPackage].additionalCharacterCost * (parseInt(numCharacters) - 1);
+            return selectedPackage.additionalcharactercost * (parseInt(numCharacters) - 1);
 
         } else {
             return 0
         }
-    }
-
-    function calculateTotal() {
-        let total = 0;
-        if (eventPackage !== undefined) {
-            total += calculateCharacterCost();
-            total += calculateExtraCost();
-            total += travelCost;
-            total += packages[eventPackage].cost;
-        }
-
-
-        return total;
     }
 
     function activatePopup() {
@@ -103,11 +157,12 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
             {width > 1100 ? (
                 <div className={styles.estimate}>
                     <h3 className={styles.header}>Your Estimate</h3>
-                    {eventPackage > -1 ? (
+                    {selectedPackage !== undefined ? (
                         <div className={styles.lineItem}>
                             <p>Base Visit: </p>
-                            <p>${packages[eventPackage].cost}</p>
+                            <p>${selectedPackage?.cost}</p>
                         </div>
+                        
                     ) : null}
 
                     {eventExtras ? (
@@ -116,16 +171,16 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                             return (
                                 <>
                                     <div className={styles.lineItem}>
-                                        <p>{extras[item].title}:</p>
-                                        {extras[item].title === "Gift Bags" ? (
+                                        <p>{extrasOptions[item-1].title}:</p>
+                                        {extrasOptions[item-1].title === "Gift Bags" ? (
                                             numGuests ? (
-                                                <p>${extras[item].cost * parseInt(numGuests)}</p>
+                                                <p>${extrasOptions[item-1].cost * parseInt(numGuests)}</p>
                                             ) : (
                                                 <p> -- </p>
                                             )
 
                                         ) : (
-                                            <p>${extras[item].cost}</p>
+                                            <p>${extrasOptions[item-1].cost}</p>
                                         )}
 
                                     </div>
@@ -143,7 +198,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                         </div>
                     ) : null}
 
-                    {eventPackage > -1 && travelCost !== 0 ? (
+                    {travelCost !== 0 && selectedPackage !== undefined ? (
                             <div className={styles.lineItem}>
                                 <p>Travel Fee: </p>
                                 <p>${travelCost}</p>
@@ -154,7 +209,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
 
                     <div className={styles.lineItem}>
                         <h4>Total: </h4>
-                        <h4>${calculateTotal()}</h4>
+                        <h4>${total}</h4>
                     </div>
 
 
@@ -179,10 +234,10 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                         </div>
                         {popupActive ? (
                             <div className={styles.estimateMobile} onClick={activatePopup}>
-                                {eventPackage > -1 ? (
+                                {selectedPackage !== undefined ? (
                                     <div className={styles.lineItem}>
                                         <p>Base Visit: </p>
-                                        <p>${packages[eventPackage].cost}</p>
+                                        <p>${selectedPackage?.cost}</p>
                                     </div>
                                 ) : null}
 
@@ -192,16 +247,16 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                                         return (
                                             <>
                                                 <div className={styles.lineItem}>
-                                                    <p>{extras[item].title}:</p>
-                                                    {extras[item].title === "Gift Bags" ? (
+                                                    <p>{extrasOptions[item-1].title}:</p>
+                                                    {extrasOptions[item-1].title === "Gift Bags" ? (
                                                         numGuests ? (
-                                                            <p>${extras[item].cost * parseInt(numGuests)}</p>
+                                                            <p>${extrasOptions[item-1].cost * parseInt(numGuests)}</p>
                                                         ) : (
                                                             <p> -- </p>
                                                         )
 
                                                     ) : (
-                                                        <p>${extras[item].cost}</p>
+                                                        <p>${extrasOptions[item-1].cost}</p>
                                                     )}
 
                                                 </div>
@@ -222,7 +277,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
 
                                 <div className={styles.lineItem}>
                                     <h4>Total: </h4>
-                                    <h4>${calculateTotal()}</h4>
+                                    <h4>${total}</h4>
                                 </div>
 
 

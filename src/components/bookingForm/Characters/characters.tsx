@@ -1,19 +1,23 @@
 import { FormValues } from "@/app/book/page"
 import { Control, Controller, UseFormResetField, useWatch } from "react-hook-form";
-import { CharacterSelection, characters, dresses, numberCharacters } from "@/app/mockData"
+import { Character, CharacterDress, CharacterSelection, characters, dresses, numberCharacters } from "@/app/mockData"
 import CharacterCard from "@/components/form/Selection Cards/characterCard"
 import SelectionCard from "@/components/form/Selection Cards/selectionCard"
 import styles from "./characters.module.css"
 import Dropdown from "@/components/form/Dropdown/dropdown";
+import { useEffect, useState } from "react";
+import { Costumes } from "@/db/entities/costumes";
 
 export default function Characters(props: { controller: Control<FormValues, any>, resetField: UseFormResetField<FormValues> }) {
 
     const control = props.controller
     const selectedCharacters = useWatch({ control, name: "Character" });
     const numCharacters = useWatch({ control, name: "NumCharacters" });
-    const characterOptions = characters;
-    const dressOptions = dresses;
+    const [characterOptions, setCharacterOptions] = useState<Character[]>([]);
+    const [dressOptions, setDressOptions] = useState<Costumes[]>([]);
     const numCharacterOptions = numberCharacters;
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     function setCharacters(id: number, selectedState: boolean, value: CharacterSelection[] = []): CharacterSelection[] {
         if (!selectedState) {
@@ -56,6 +60,68 @@ export default function Characters(props: { controller: Control<FormValues, any>
 
     }
 
+    useEffect(() => {
+        const fetchCharacters = async () => {
+            setLoading(true);
+            setError(null);
+            try {
+                const res = await fetch("/api/characters");
+                if (!res.ok) throw new Error("Failed to fetch characters");
+                const data: Character[] = await res.json();
+                setCharacterOptions(data);
+            } catch (err: any) {
+                setError(err.message || "Unknown error");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCharacters();
+    }, []);
+
+    useEffect(() => {
+        if (!selectedCharacters) {
+          setDressOptions([]);
+          return;
+        }
+      
+        setLoading(true);
+        setError(null);
+      
+        const fetchCostumesByCharacter = async (characterId: number): Promise<Costumes[]> => {
+          try {
+            const res = await fetch(`/api/costumes/${characterId}`);
+            if (!res.ok) throw new Error(`Failed to fetch dresses for character ${characterId}`);
+            const data: Costumes[] = await res.json();
+            return data;
+          } catch (err: any) {
+            setError(err.message || "Unknown error");
+            return [];
+          }
+        };
+      
+        const loadAllDresses = async () => {
+          try {
+            // Map selected characters to fetch promises
+            const allDressesArrays = await Promise.all(
+              selectedCharacters.map(char => fetchCostumesByCharacter(char.characterId))
+            );
+            // Flatten arrays of dresses into a single array
+            const allDresses = allDressesArrays.flat();
+            console.log(allDresses);
+            setDressOptions(allDresses);
+          } catch (err: any) {
+            setError(err.message || "Unknown error");
+            setDressOptions([]);
+          } finally {
+            setLoading(false);
+          }
+        };
+      
+        loadAllDresses();
+      
+      }, [selectedCharacters]);
+
     return (
         <>
             <div>
@@ -91,9 +157,9 @@ export default function Characters(props: { controller: Control<FormValues, any>
                                                 render={({ field: { onChange, value } }) => (
 
                                                     <SelectionCard CardContent={CharacterCard} content={{
-                                                        id: characters[item.characterId].id,
-                                                        name: characters[item.characterId].name,
-                                                        img: characters[item.characterId].img
+                                                        id: characters[item.characterId - 1].id,
+                                                        name: characters[item.characterId - 1].name,
+                                                        img: characters[item.characterId - 1].img
 
                                                     }} selected={value?.map((selected) => selected.characterId).includes(item.characterId)} makeSelection={(id, selected) => {
                                                         onChange(setCharacters(id, selected, value))
@@ -155,14 +221,14 @@ export default function Characters(props: { controller: Control<FormValues, any>
 
                         <div className={styles.dressSelection}>
                             {
-                                selectedCharacters?.length === parseInt(numCharacters) ? (
+                                selectedCharacters?.length === parseInt(numCharacters) && numCharacters !== undefined ? (
 
                                     selectedCharacters.map((character) => {
                                         return (
                                             <div>
-                                                <h4 className={styles.subheader}>{characterOptions[character.characterId].name}</h4>
+                                                <h4 className={styles.subheader}>{characterOptions[character.characterId - 1].name}</h4>
                                                 <div className={styles.selections}>
-                                                    {dressOptions.filter((item) => item.characterId === character.characterId).map((dress) => {
+                                                    {dressOptions.filter((item) => item.characterid === character.characterId).map((dress) => {
                                                         return (
                                                             <Controller
                                                                 control={props.controller}
@@ -173,10 +239,10 @@ export default function Characters(props: { controller: Control<FormValues, any>
                                                                         id: dress.id,
                                                                         name: dress.name,
                                                                         img: dress.img,
-                                                                        characterId: dress.characterId
+                                                                        characterId: dress.characterid
 
                                                                     }} selected={value?.map((selected) => selected.dressId).includes(dress.id)} makeSelection={(id, selected) => {
-                                                                        onChange(setDress(id, selected, dress.characterId, value))
+                                                                        onChange(setDress(id, selected, dress.characterid, value))
                                                                     }} />
                                                                 )}
                                                             />
