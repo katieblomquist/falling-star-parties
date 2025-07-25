@@ -6,7 +6,6 @@ export async function GET() {
     try {
         const connection = await getDBConnection();
         const characters = await connection.getRepository(Characters).find();
-        console.log(characters)
         return NextResponse.json(characters);
     } catch (error){
         console.error("Error fetching characters:", error);

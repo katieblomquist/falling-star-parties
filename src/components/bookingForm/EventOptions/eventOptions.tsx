@@ -5,6 +5,9 @@ import { FormValues } from "@/app/book/page";
 import HorizontalCard from "@/components/form/Selection Cards/horizontalCard";
 import VerticleCard from "@/components/form/Selection Cards/verticleCard";
 import { packages, extras } from "@/app/mockData";
+import { Packages } from "@/db/entities/packages";
+import { useEffect, useState } from "react";
+import { AddOns } from "@/db/entities/addOns";
 
 
 //Need to create and Add Character cards and Costume Cards
@@ -12,15 +15,47 @@ import { packages, extras } from "@/app/mockData";
 export default function EventOptions(props: { controller: Control<FormValues, any>, resetField: UseFormResetField<FormValues> }) {
 
     const control = props.controller
-    const packageOptions = getPackages();
-    const extrasOptions = getExtras();
+    const selectedEventType = useWatch({ control, name: "EventType" });
+    const [packageOptions, setPackages] = useState<Packages[]>([]);
+    const [extrasOptions, setExtrasOptions] = useState<AddOns[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    function getPackages() {
+    useEffect (() => {
+        const fetchPackages = async () => {
+            setLoading(true);
+            setError(null);
+            try{
+                const res = await fetch(`api/packages/${selectedEventType}`);
+                if (!res.ok) throw new Error("Failed to fetch packages");
+                const data: Packages[] = await res.json();
+                setPackages(data);
+            } catch (err: any){
+                setError(err.message || "Unknown error");
+            } finally {
+                setLoading(false);
+            }
+        }
 
-        const selectedEventType = useWatch({ control, name: "EventType" });
+        const fetchExtras = async () => {
+            setLoading(true);
+            setError(null);
+            try{
+                const res = await fetch(`api/addons/${selectedEventType}`);
+                if(!res.ok) throw new Error("Failed to fetch Extras");
+                const data: AddOns[] = await res.json();
+                setExtrasOptions(data)
+            } catch (err: any) {
+                setError(err.message || "Unknown error");
+            } finally {
+                setLoading(false);
+            }
+        }
 
-        return (packages.filter(item => item.type === selectedEventType));
-    }
+        fetchPackages();
+        fetchExtras();
+    }, []) 
+
 
     function getExtras() {
         const selectedEventType = useWatch({ control, name: "EventType" });
@@ -75,7 +110,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                         description: item.description,
                                         duration: item.duration,
                                         cost: item.cost,
-                                        additionalCharacterCost: item.additionalCharacterCost
+                                        additionalCharacterCost: item.additionalcharactercost
                                     }} selected={value === item.id ? true : false} makeSelection={onChange} />
                                 )} />
                         )
@@ -97,9 +132,9 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                         type: item.type,
                                         title: item.title,
                                         description: item.description,
-                                        duration: item.duration,
+                                        duration: "",
                                         cost: item.cost,
-                                        additionalCharacterCost: item.additionalCharacterCost
+                                        additionalCharacterCost: 0
                                     }} selected={value?.includes(item.id) ? true : false} makeSelection={(id, selected) => {
                                         onChange(setExtras(id, selected, value))
                                     }} />
