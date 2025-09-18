@@ -4,13 +4,15 @@ import Accordian from "@/components/accordian/accordian";
 import NavBar from "@/components/navbar/navbar";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
-import { aboutUs, bookingFaqs, videoCallsFaqs } from "../content";
+import { aboutUs, bookingFaqs, generalFaqs, inPersonFaqs, videoCallsFaqs } from "../content";
 import ContentBlock from "@/components/contentBlock/contentBlock";
 import Splash from "@/components/splash/splash";
 
 const tabs = [
     { label: "BOOKING", content: <Accordian content={bookingFaqs} /> },
-    { label: "VIDEO CALLS", content: <Accordian content={videoCallsFaqs} /> }
+    { label: "VIDEO CALLS", content: <Accordian content={videoCallsFaqs} /> }, 
+    { label: "IN PERSON SERVICES", content: <Accordian content={inPersonFaqs} /> },
+    { label: "GENERAL QUESTIONS", content: <Accordian content={generalFaqs} /> }
 ];
 
 export default function About() {

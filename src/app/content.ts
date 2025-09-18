@@ -86,7 +86,7 @@ export const aboutUs = [
 export const bookingFaqs = [
     {
         question: 'How far in advance should I book?',
-        answer: "We suggest booking 4-6 weeks in advance. However, always try to accommodate any request we receive, so don't hesitate to ask!"
+        answer: "We suggest booking 6 weeks in advance. However, always try to accommodate any request we receive, so don't hesitate to ask!"
     },
     {
         question: 'Do you offer price matching?',
@@ -115,7 +115,45 @@ export const videoCallsFaqs = [
         question: 'How do video calls work?',
         answer: "Once your booking is finalized, you’ll receive a google calendar invite to the email you provide that includes a link to a google meet call (We send this link again when we confirm your booking the week before). If you’re connecting from a laptop or desktop computer (which we strongly recommend as computers tend to hold the connection better), all you’d need to do on the day of is Click on the link and select join meeting. If you choose to connect on a mobile device, you would additionally need to download the google meet app and sign into your google account."
     }
-]
+];
+
+export const inPersonFaqs = [
+    {
+        question: 'How far do you travel?',
+        answer: "Our performers are currently located in the Baltimore area and service Maryland, Southern Pennsylvania, and parts of Delaware. We will travel within a 30-mile radius of our home location free of charge. However, we are happy to travel farther for a small travel fee. There is an additional fee for tolls regardless of location."
+    },
+    {
+        question: 'Do you perform outdoors?',
+        answer: "Yes! However, please be aware that an alternate indoor location is required for temperatures above 90 degrees and below 50 degrees  as well as extreme weather. This is for the safety of your guests and our performers."
+    },
+    {
+        question: 'What do I need to do to prepare for your arrival?',
+        answer: "Our performers will bring all the supplies they need to entertain at your party! However, there are some things you can do to make things go a little more smoothly. We ask that there be a place for our performers to sit and an open space for them to entertain. Additionally, we will need a table if your event includes face painting."
+    },
+    {
+        question: 'Do I need to be present during the party?',
+        answer: "Yes! We love working with kids, but their safety is our first priority. For the children's safety, please make sure there are at least one adult present for every 5 children the duration of your party."
+    }
+];
+
+export const generalFaqs = [
+    {
+        question: 'Are your parties appropriate for all ages?',
+        answer: "Yes! Falling Star Parties LLC is committed to providing a family friendly experience. Our parties work best for children ages 2-6 years of age. However, all ages enjoy our performances."
+    },
+    {
+        question: 'Should I tip the performer?',
+        answer: "Absolutely! We do not factor gratuity into our prices, and tipping is a great way to let our team know they've done a wonderful job."
+    },
+    {
+        question: 'How do I have my children featured on your website or social media?',
+        answer: "Feel free to send us any photos from your event that you would like to have featured. You can send photos to info@fallingstarparties.com"
+    },
+    {
+        question: 'Do your performers sing?',
+        answer: "Absolutely! Our performers sing songs related to our characters during their story time and throughout the party"
+    }
+];
 
 export const characters = [
     {
