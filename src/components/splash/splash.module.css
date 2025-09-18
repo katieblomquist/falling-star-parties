@@ -14,6 +14,14 @@
     height: 1000px;
   }
 
+  .mobileContainer{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 60vh;
+  }
+
   .mobileHomeTextContainer{
     background-color: #343B95CC;
     width: 90vw;
@@ -25,6 +33,21 @@
     text-align: center;
     position: absolute;
     top: 375px;
+    padding: 30px;
+    gap: 20px;
+  }
+
+  .mobileTextContainer{
+    background-color: #343B95CC;
+    width: 90vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    text-align: center;
+    position: absolute;
+    top: 250px;
     padding: 30px;
     gap: 20px;
   }

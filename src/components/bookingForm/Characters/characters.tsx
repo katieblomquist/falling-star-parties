@@ -42,23 +42,23 @@ export default function Characters(props: { controller: Control<FormValues, any>
     }
 
 
-    function setDress(id: number, selectedState: boolean, characterId: number, value: CharacterSelection[] = []): CharacterSelection[] {
-        if (!selectedState) {
-            const dupValue = [...value];
-            dupValue.splice(dupValue.indexOf({ dressId: id, characterId: characterId }), 1);
-            return dupValue;
-        }
+    // function setDress(id: number, selectedState: boolean, characterId: number, value: CharacterSelection[] = []): CharacterSelection[] {
+    //     if (!selectedState) {
+    //         const dupValue = [...value];
+    //         dupValue.splice(dupValue.indexOf({ dressId: id, characterId: characterId }), 1);
+    //         return dupValue;
+    //     }
 
-        if (value.map((item) => item.characterId).includes(characterId)) {
-            const location = value.map((item) => item.characterId).indexOf(characterId);
-            value[location].dressId = id;
-        }
+    //     if (value.map((item) => item.characterId).includes(characterId)) {
+    //         const location = value.map((item) => item.characterId).indexOf(characterId);
+    //         value[location].dressId = id;
+    //     }
 
-        //need to find a way to keep it from reordering. 
-        value[value.map((item) => item.characterId).indexOf(characterId)].dressId = id;
-        return value;
+    //     //need to find a way to keep it from reordering. 
+    //     value[value.map((item) => item.characterId).indexOf(characterId)].dressId = id;
+    //     return value;
 
-    }
+    // }
 
     useEffect(() => {
         const fetchCharacters = async () => {
@@ -79,48 +79,48 @@ export default function Characters(props: { controller: Control<FormValues, any>
         fetchCharacters();
     }, []);
 
-    useEffect(() => {
-        if (!selectedCharacters) {
-          setDressOptions([]);
-          return;
-        }
+    // useEffect(() => {
+    //     if (!selectedCharacters) {
+    //       setDressOptions([]);
+    //       return;
+    //     }
       
-        setLoading(true);
-        setError(null);
+    //     setLoading(true);
+    //     setError(null);
       
-        const fetchCostumesByCharacter = async (characterId: number): Promise<Costumes[]> => {
-          try {
-            const res = await fetch(`/api/costumes/${characterId}`);
-            if (!res.ok) throw new Error(`Failed to fetch dresses for character ${characterId}`);
-            const data: Costumes[] = await res.json();
-            return data;
-          } catch (err: any) {
-            setError(err.message || "Unknown error");
-            return [];
-          }
-        };
+    //     const fetchCostumesByCharacter = async (characterId: number): Promise<Costumes[]> => {
+    //       try {
+    //         const res = await fetch(`/api/costumes/${characterId}`);
+    //         if (!res.ok) throw new Error(`Failed to fetch dresses for character ${characterId}`);
+    //         const data: Costumes[] = await res.json();
+    //         return data;
+    //       } catch (err: any) {
+    //         setError(err.message || "Unknown error");
+    //         return [];
+    //       }
+    //     };
       
-        const loadAllDresses = async () => {
-          try {
-            // Map selected characters to fetch promises
-            const allDressesArrays = await Promise.all(
-              selectedCharacters.map(char => fetchCostumesByCharacter(char.characterId))
-            );
-            // Flatten arrays of dresses into a single array
-            const allDresses = allDressesArrays.flat();
-            console.log(allDresses);
-            setDressOptions(allDresses);
-          } catch (err: any) {
-            setError(err.message || "Unknown error");
-            setDressOptions([]);
-          } finally {
-            setLoading(false);
-          }
-        };
+    //     const loadAllDresses = async () => {
+    //       try {
+    //         // Map selected characters to fetch promises
+    //         const allDressesArrays = await Promise.all(
+    //           selectedCharacters.map(char => fetchCostumesByCharacter(char.characterId))
+    //         );
+    //         // Flatten arrays of dresses into a single array
+    //         const allDresses = allDressesArrays.flat();
+    //         console.log(allDresses);
+    //         setDressOptions(allDresses);
+    //       } catch (err: any) {
+    //         setError(err.message || "Unknown error");
+    //         setDressOptions([]);
+    //       } finally {
+    //         setLoading(false);
+    //       }
+    //     };
       
-        loadAllDresses();
+    //     loadAllDresses();
       
-      }, [selectedCharacters]);
+    //   }, [selectedCharacters]);
 
     return (
         <>
@@ -144,7 +144,7 @@ export default function Characters(props: { controller: Control<FormValues, any>
             </div>
             {parseInt(numCharacters) ? (
                 <div className={styles.characters}>
-                    {
+                    {/* {
                         selectedCharacters?.length === parseInt(numCharacters) ? (
                             <div>
                                 <h4 className={styles.subheader}>Characters</h4>
@@ -178,7 +178,7 @@ export default function Characters(props: { controller: Control<FormValues, any>
                                 />
 
                             </div>
-                        ) : (
+                        ) : ( */}
                             <div>
                                 <div>
                                     <h4 className={styles.subheader}>Characters</h4>
@@ -206,12 +206,12 @@ export default function Characters(props: { controller: Control<FormValues, any>
 
                                 </div>
                             </div>
-                        )
-                    }
+                        {/* )
+                    } */}
 
 
 
-                    <div>
+                    {/* <div>
                         {
                             selectedCharacters?.length === parseInt(numCharacters) ? (
                                 <h3 className={styles.header}>Select Preferred Attire (Optional)</h3>
@@ -258,9 +258,9 @@ export default function Characters(props: { controller: Control<FormValues, any>
                             }
 
 
-                        </div>
+                        </div> */}
 
-                    </div>
+                    {/* </div> */}
 
                 </div>
             ) : null}

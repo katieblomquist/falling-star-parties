@@ -7,6 +7,7 @@ import { useState, useEffect, useMemo } from "react"
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { Packages } from "@/db/entities/packages";
 import { AddOns } from "@/db/entities/addOns";
+import { DateTime, Interval } from "luxon";
 
 export default function PriceEstimate(props: { controller: Control<FormValues, any> }) {
 
@@ -14,21 +15,31 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
 
     const control = props.controller
     const selectedEventType = useWatch({ control, name: "EventType" });
+    const date = useWatch({control, name: "Date"})
     const eventPackage = useWatch({ control, name: "Package" });
     const eventExtras = useWatch({ control, name: "Extras" });
     const numCharacters = useWatch({ control, name: "NumCharacters" });
     const numGuests = useWatch({ control, name: "Attendance" });
-    const address = useWatch({ control, name: "Location.address" });
+    const address = useWatch({ control, name: "Location" });
     const [width, setWidth] = useState(window.innerWidth);
     const [packageOptions, setPackages] = useState<Packages[]>([]);
     const [extrasOptions, setExtrasOptions] = useState<AddOns[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
+    function isInNextWeek(day: DateTime) {
+        const now = DateTime.now();
+        const oneWeekFromNow = now.plus({ days: 7 });
+        const interval = Interval.fromDateTimes(now, oneWeekFromNow);
+
+        return interval.contains(day);
+    }
+
+
     const selectedPackage = useMemo(() => {
         console.log("in selected pacakage", "event Package", eventPackage, "package options", packageOptions)
         return packageOptions.find(pkg => pkg.id === eventPackage);
-      }, [packageOptions, eventPackage]);
+    }, [packageOptions, eventPackage]);
 
     const [total, setTotal] = useState(0);
     const [travelCost, setTravelCost] = useState(0);
@@ -46,7 +57,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
             }
         }
 
-        
+
         fetchTravelCost();
     }, [address]);
 
@@ -54,12 +65,12 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
         const fetchPackages = async () => {
             setLoading(true);
             setError(null);
-            try{
+            try {
                 const res = await fetch(`api/packages/${selectedEventType}`);
                 if (!res.ok) throw new Error("Failed to fetch packages");
                 const data: Packages[] = await res.json();
                 setPackages(data);
-            } catch (err: any){
+            } catch (err: any) {
                 setError(err.message || "Unknown error");
             } finally {
                 setLoading(false);
@@ -69,9 +80,9 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
         const fetchExtras = async () => {
             setLoading(true);
             setError(null);
-            try{
+            try {
                 const res = await fetch(`api/addons/${selectedEventType}`);
-                if(!res.ok) throw new Error("Failed to fetch Extras");
+                if (!res.ok) throw new Error("Failed to fetch Extras");
                 const data: AddOns[] = await res.json();
                 setExtrasOptions(data)
             } catch (err: any) {
@@ -94,9 +105,13 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                 total += travelCost;
                 total += selectedPackage.cost;
             }
-            setTotal(total) ;
+
+            if(date && isInNextWeek(date)){
+                total += (total*0.3)
+            }
+            setTotal(parseFloat(total.toFixed(2)));
         }
-    
+
         calculateTotal();
 
     }, [selectedPackage, eventExtras, numCharacters, numGuests, travelCost, extrasOptions]);
@@ -120,10 +135,10 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
         let total = 0;
         if (eventExtras) {
             eventExtras.forEach(extra => {
-                if (extrasOptions[extra-1].title === 'Gift Bags' && (numGuests !== undefined && numGuests !== '')) {
-                    total += extrasOptions[extra-1].cost * parseInt(numGuests);
+                if (extrasOptions[extra - 1].title === 'Gift Bags' && (numGuests !== undefined && numGuests !== '')) {
+                    total += extrasOptions[extra - 1].cost * parseInt(numGuests);
                 } else {
-                    total += extrasOptions[extra-1].cost;
+                    total += extrasOptions[extra - 1].cost;
                 }
 
             });
@@ -162,7 +177,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                             <p>Base Visit: </p>
                             <p>${selectedPackage?.cost}</p>
                         </div>
-                        
+
                     ) : null}
 
                     {eventExtras ? (
@@ -171,16 +186,16 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                             return (
                                 <>
                                     <div className={styles.lineItem}>
-                                        <p>{extrasOptions[item-1].title}:</p>
-                                        {extrasOptions[item-1].title === "Gift Bags" ? (
+                                        <p>{extrasOptions[item - 1].title}:</p>
+                                        {extrasOptions[item - 1].title === "Gift Bags" ? (
                                             numGuests ? (
-                                                <p>${extrasOptions[item-1].cost * parseInt(numGuests)}</p>
+                                                <p>${extrasOptions[item - 1].cost * parseInt(numGuests)}</p>
                                             ) : (
                                                 <p> -- </p>
                                             )
 
                                         ) : (
-                                            <p>${extrasOptions[item-1].cost}</p>
+                                            <p>${extrasOptions[item - 1].cost}</p>
                                         )}
 
                                     </div>
@@ -199,11 +214,11 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                     ) : null}
 
                     {travelCost !== 0 && selectedPackage !== undefined ? (
-                            <div className={styles.lineItem}>
-                                <p>Travel Fee: </p>
-                                <p>${travelCost}</p>
-                            </div>
-                        ) : null}
+                        <div className={styles.lineItem}>
+                            <p>Travel Fee: </p>
+                            <p>${travelCost}</p>
+                        </div>
+                    ) : null}
 
                     <hr className={styles.equals}></hr>
 
@@ -247,16 +262,16 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                                         return (
                                             <>
                                                 <div className={styles.lineItem}>
-                                                    <p>{extrasOptions[item-1].title}:</p>
-                                                    {extrasOptions[item-1].title === "Gift Bags" ? (
+                                                    <p>{extrasOptions[item - 1].title}:</p>
+                                                    {extrasOptions[item - 1].title === "Gift Bags" ? (
                                                         numGuests ? (
-                                                            <p>${extrasOptions[item-1].cost * parseInt(numGuests)}</p>
+                                                            <p>${extrasOptions[item - 1].cost * parseInt(numGuests)}</p>
                                                         ) : (
                                                             <p> -- </p>
                                                         )
 
                                                     ) : (
-                                                        <p>${extrasOptions[item-1].cost}</p>
+                                                        <p>${extrasOptions[item - 1].cost}</p>
                                                     )}
 
                                                 </div>

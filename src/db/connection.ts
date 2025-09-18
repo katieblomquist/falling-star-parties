@@ -7,7 +7,7 @@ import { Costumes } from "./entities/costumes";
 import { AddOns } from "./entities/addOns";
 import { EventsAddOns } from "./entities/eventsAddOns";
 import { Events } from "./entities/events";
-import { EventsCostumes } from "./entities/eventsCostumes";
+import { EventsCharacters } from "./entities/eventsCharacters";
 
 const AppDataSource = new DataSource({
   type: "postgres",
@@ -18,7 +18,7 @@ const AppDataSource = new DataSource({
   database: process.env.DB_NAME,
   synchronize: true,
   logging: false,
-  entities: [Packages, ClientInfo, Characters, Costumes, AddOns, EventsAddOns, Events, EventsCostumes],
+  entities: [Packages, ClientInfo, Characters, Costumes, AddOns, EventsAddOns, Events, EventsCharacters],
   migrations: [],
   subscribers: [],
 });

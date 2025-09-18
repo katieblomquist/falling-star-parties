@@ -20,7 +20,7 @@ export default function About() {
             <NavBar location={"about"} />
             <Splash locationLeft={false} home={false} image={"/IMG_4985.jpg"} gradient={"linear-gradient(90deg, rgba(52, 59, 149, 0.7), rgba(52, 59, 149, 0.7))"} headerStart={aboutUs[0].titleStart} emphasis={aboutUs[0].emphasis} headerFinish={aboutUs[0].titleEnd}
                 blurb={aboutUs[0].blurb}
-                buttonText={aboutUs[0].button ? aboutUs[0].button : ""} buttonVarient={aboutUs[0].variant ? aboutUs[0].variant : 0} buttonIcon={0} buttonHref={aboutUs[0].href ? aboutUs[0].href : ""} swoopTop={true} swoopColor={"white"} swoopDirection={"left"} mobileImage={"/IMG_3313.jpg"} />
+                buttonText={aboutUs[0].button ? aboutUs[0].button : ""} buttonVarient={aboutUs[0].variant ? aboutUs[0].variant : 0} buttonIcon={0} buttonHref={aboutUs[0].href ? aboutUs[0].href : ""} swoopTop={true} swoopColor={"white"} swoopDirection={"left"} mobileImage={"/IMG_4985.jpg"} height="60vh" />
             <div className={styles.katieBlock}>
                 <ContentBlock titleStart={aboutUs[1].titleStart} emphasis={aboutUs[1].emphasis} titleEnd={aboutUs[1].titleEnd} blurb={aboutUs[1].blurb} white={false} images={aboutUs[1].images} left={false} index={1} />
             </div>

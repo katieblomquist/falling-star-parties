@@ -76,16 +76,35 @@ export default function Splash(props: { locationLeft: boolean, home: boolean, im
         )
 
 
-    } else {
+    } else if (props.headerStart === ""){
         return (
-            <div className={styles.splash} style={{ backgroundImage: `${props.mobileGradient}, url('${props.mobileImage}')` }}>
-                <div className={styles.splashTextRight}>
+            <div className={styles.mobileContainer}>
+                <div  style={{ width: '100%', height: '50vh', position: 'relative' }}>
+                    <Image
+                        src={props.mobileImage}
+                        alt="Description"
+                        fill
+                        style={{ objectFit: 'cover' }}
+                    />
+                </div>
+            </div>
+        )
+    }
+     else {
+        return (
+            <div className={styles.mobileHomeContainer}>
+                <div  style={{ width: '100%', height: '60vh', position: 'relative' }}>
+                    <Image
+                        src={props.mobileImage}
+                        alt="Description"
+                        fill
+                        style={{ objectFit: 'cover' }}
+                    />
+                </div>
+                <div className={styles.mobileTextContainer}>
                     <h1 className={styles.textWhite}>{props.headerStart}<span className={formal_script.className}>{props.emphasis}</span>{props.headerFinish}</h1>
                     <p className={styles.textWhite}>{props.blurb}</p>
                     <Button text={props.buttonText} variant={props.buttonVarient} icon={props.buttonIcon} enabled={true} href={props.buttonHref} />
-                </div>
-                <div className={styles.swoop}>
-                    <Swoop top={props.swoopTop} color={props.swoopColor} direction={props.swoopDirection} />
                 </div>
             </div>
         )
