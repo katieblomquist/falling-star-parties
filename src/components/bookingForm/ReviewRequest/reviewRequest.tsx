@@ -30,11 +30,11 @@ export default function ReviewRequest(props: { values: FormValues }) {
     const buildCharacterList = () => {
       const characterList = props.values.Character.map(char => {
         const character = characters.find(character => character.id === char.characterId)?.name;
-        const dress = dresses.find(dress => dress.id === char.dressId)?.name;
-        if(dress !== undefined){
-          return `${character} (${dress})`
-        }
-        return `${character} (No Preference)`
+        // const dress = dresses.find(dress => dress.id === char.dressId)?.name;
+        // if(dress !== undefined){
+        //   return `${character} (${dress})`
+        // }
+        // return `${character} (No Preference)`
       }).filter(Boolean).join(', ');
 
       return characterList;
@@ -62,7 +62,7 @@ export default function ReviewRequest(props: { values: FormValues }) {
         )}
 
         <p className={styles.subline}><b>When:</b> {props.values.Date.monthLong} {props.values.Date.day}{getOrdinal(props.values.Date?.day)}, {props.values.Date.year} at {props.values.Time} </p>
-        <p className={styles.subline}><b>Where:</b> {props.values.Location.address}</p>
+        <p className={styles.subline}><b>Where:</b> {props.values.Location}</p>
         {eventType === "Birthday Party" ? (
           <p className={styles.subline}><b>Event Package: </b>{packages[props.values.Package].title} - {packages[props.values.Package].duration}</p>
         ) : (

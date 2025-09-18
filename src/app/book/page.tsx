@@ -26,7 +26,7 @@ export type FormValues = {
     EventType: string,
     Date: DateTime,
     Time: string,
-    Location: Location,
+    Location: string,
     Package: number,
     Extras?: number[],
     NumCharacters: string,
@@ -71,15 +71,15 @@ export default function Book() {
         return EventDetailsPublicValues.every(x => (x != null && x != ''));
     }, [EventDetailsPublicValues]);
 
-    const CharacterSelectionValues = useWatch({control, name: "Character"})
-    const characterNumber = useWatch({control, name: ["NumCharacters"]})
+    const CharacterSelectionValues = useWatch({ control, name: "Character" })
+    const characterNumber = useWatch({ control, name: ["NumCharacters"] })
     const CharacterSelectionIsComplete = useMemo(() => {
-        if(characterNumber !== undefined && CharacterSelectionValues !== undefined){
+        if (characterNumber !== undefined && CharacterSelectionValues !== undefined) {
             return CharacterSelectionValues.length === parseInt(characterNumber[0])
-        } else{
+        } else {
             return false
         }
-        
+
     }, [CharacterSelectionValues])
 
     const formIsValid = useCallback((x: unknown): x is FormValues => {
@@ -89,13 +89,76 @@ export default function Book() {
         return formIsValid;
     }, []);
 
-    
+    function mapFormValuesToRequestBody(formValues: FormValues) {
+        // Extract/transform fields
+        const date = formValues.Date;
+        const [hourStr, minuteStr] = formValues.Time.split(":");
+        const dateTimeISO = date.set({
+            hour: parseInt(hourStr, 10),
+            minute: parseInt(minuteStr, 10),
+        }).toISO();
+
+        return {
+            firstName: formValues.FirstName,
+            lastName: formValues.LastName,
+            email: formValues.Email,
+            phone: formValues.Phone,
+
+            dateTime: dateTimeISO,
+            address: formValues.Location, // or your formatted address string
+
+            packageId: formValues.Package,
+
+            childName: formValues.ChildName ?? null,
+            childAge: formValues.ChildAge ? parseInt(formValues.ChildAge) : null,
+            orgName: formValues.OrganizationName ?? null,
+
+            numGuests: parseInt(formValues.Attendance, 10),
+
+            outdoor: formValues.LocationPref.toLowerCase() === "outdoor",
+            photoRelease: formValues.PhotoPref.toLowerCase() === "yes",
+
+            additionalInfo: formValues.AdditionalInfo ?? null,
+
+            addOnIds: formValues.Extras || [],
+        };
+    }
+
+    const submit = () => {
+        if (formIsValid(formValues)) {
+            console.log(formValues);
+            fetch("/api/createEvent", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(mapFormValuesToRequestBody(formValues)),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        return response.json().then(err => {
+                            alert("Failed to submit: " + (err.error || "Unknown error"));
+                            throw new Error(err.error || "Unknown error");
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert("Event submitted successfully! Event ID: " + data.eventId);
+                    // optional: do other UI updates here
+                })
+                .catch(error => {
+                    alert("Error submitting event: " + error.message);
+                });
+        }
+
+    };
 
     const stepperTest = [
         { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} resetField={resetField} /> },
         { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} setValue={setValue} /> },
         { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} /> },
-        {id: 3, title: "Character Selection", completed:CharacterSelectionIsComplete, content: <Characters controller={control} resetField={resetField} />},
+        { id: 3, title: "Character Selection", completed: CharacterSelectionIsComplete, content: <Characters controller={control} resetField={resetField} /> },
         { id: 4, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete, content: <EventDetails controller={control} eventType={formValues.EventType} /> },
         { id: 5, title: "Review Request", completed: InformationIsComplete && TimeLocationIsComplete && EventOptionsIsComplete && (EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete), content: formIsValid(formValues) ? <ReviewRequest values={formValues} /> : null }
     ];
@@ -112,10 +175,10 @@ export default function Book() {
                 <form>
                     <div className={styles.booking}>
                         <div className={styles.stepper}>
-                            <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} />
+                            <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} />
                         </div>
 
-                        <PriceEstimate controller={control} />
+                        {/* <PriceEstimate controller={control} /> */}
                     </div>
                 </form>
             </div>

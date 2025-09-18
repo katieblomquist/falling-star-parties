@@ -7,7 +7,7 @@ import { IconCircleCheckFilled } from '@tabler/icons-react'
 import Button from "@/components/Button/button";
 import { StepperContent } from "@/app/mockData";
 
-export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string }) {
+export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string, submit: () => void }) {
 
 
 
@@ -47,7 +47,7 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
     }
 
     const handleSubmit = () => {
-
+        props.submit();
     }
 
     function buildStepper(step: StepperContent) {
