@@ -106,7 +106,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                     <SelectionCard CardContent={HorizontalCard} content={{
                                         id: item.id,
                                         type: item.type,
-                                        title: item.title,
+                                        title: item.title + " - Starting at $" + item.cost,
                                         description: item.description,
                                         duration: item.duration,
                                         cost: item.cost,
@@ -130,7 +130,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                     <SelectionCard CardContent={HorizontalCard} content={{
                                         id: item.id,
                                         type: item.type,
-                                        title: item.title,
+                                        title: item.title + " - $" + item.cost + " per child",
                                         description: item.description,
                                         duration: "",
                                         cost: item.cost,
