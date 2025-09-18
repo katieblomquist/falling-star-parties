@@ -213,7 +213,15 @@ export const characters = [
         dresses: [
             { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_3291.jpg", characterId: 3 }
         ]
-    }
+    },
+    {
+        name: "Bubble Queen",
+        desc: "With sparkling wit, boundless charm, and a heart as bright as her famous bubbles, the Bubble Queen floats into every gathering with a spirit that lifts and inspires. Radiantly optimistic and endlessly encouraging, she believes in the power of kindness, friendship, and helping others find their inner sparkle. Whether offering a whimsical laugh or gentle wisdom, her magical presence delights guests of all ages and reminds everyone that sometimes the greatest magic is choosing to do good.",
+        background: "/backgrounds/BubbleQueenBackground.png",
+        dresses: [
+            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_5468.jpg", characterId: 3 }
+        ]
+    },
 
 ]
 
@@ -248,6 +256,12 @@ export const serviceTabs = [
         topBlurb: 'Turn your party into a fairy tale come true with the Ultimate Dream Package! Enjoy:',
         listItems: ['90 Minutes with 1 Magical Character', 'A Story Time filled with live singing!', 'Princess Lessons straight from the enchanted kingdom', 'The Grandeur of a Royal Coronation Ceremony, complete with a shimmering crystal tiara to cherish!', 'Magical Face Painting for all your guests', 'Games and activities led by your character', 'Commemorate the occasion with an enchanting photo opportunity', 'Finish the fairy tale with a Happy Birthday Song!'],
         bottomBlurb: 'Starting at $350 Add more enchanting characters for $200 each!'
+    },
+    {
+        title: 'PUBLIC EVENTS',
+        topBlurb: 'Bring unforgettable magic to your next business, community, school, or charity event with our interactive Meet & Greet packages, designed to delight kids of all ages! Choose from classic character appearances, story time adventures, or immersive experiences that let every child become part of the story!',
+        listItems: ['One or Two Hour Meet & Greet with a Magical Character', 'Smiles, Hugs, and Memorable Photo Opportunities', 'Option to Add Classic Story Time or Interactive Story Time (Kids act out the story and join with props!)', 'Option to add Signature Keepsake Cards for Each Child'],
+        bottomBlurb: 'Starting at $250 for public appearances and $175 for charity events!'
     },
     {
         title: 'MAGIC MIRROR',
