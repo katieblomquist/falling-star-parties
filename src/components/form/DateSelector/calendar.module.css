@@ -38,3 +38,9 @@
 .arrowCurrentMonth{
     visibility: hidden;
 }
+
+@media screen and (max-width: 900px){
+    .calendar{
+        background-color: white;
+    }
+}

@@ -2,6 +2,7 @@ import { FormValues } from "@/app/book/page";
 import { packages, extras, characters, dresses, event, time } from "@/app/mockData";
 import { useEffect, useState } from "react";
 import styles from "./reviewRequest.module.css";
+import { useWatch } from "react-hook-form";
 
 
 export default function ReviewRequest(props: { values: FormValues }) {
@@ -26,7 +27,6 @@ export default function ReviewRequest(props: { values: FormValues }) {
   }
 
   useEffect(() => {
-    // Move the character list logic directly into useEffect
     const buildCharacterList = () => {
       const characterList = props.values.Character.map(char => {
         const character = characters.find(character => character.id === char.characterId)?.name;
@@ -34,7 +34,7 @@ export default function ReviewRequest(props: { values: FormValues }) {
         // if(dress !== undefined){
         //   return `${character} (${dress})`
         // }
-        // return `${character} (No Preference)`
+        return `${character}`
       }).filter(Boolean).join(', ');
 
       return characterList;

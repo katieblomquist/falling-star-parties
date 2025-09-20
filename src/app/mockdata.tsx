@@ -30,13 +30,14 @@ export const extras = [{ id: 0, type: "Birthday Party", title: "Storybook Keepsa
 ];
 
 //abstract to DB
-export const characters = [{ id: 0, name: "Ice Queen", img: "/DSC_0729.jpg" },
-{ id: 1, name: "Snow Princess", img: "/IMG_1962.jpg" },
-{ id: 2, name: "Mermaid Princess", img: "/IMG_6126.jpg" },
-{ id: 3, name: "Rose Princess", img: "/IMG_3422.jpg" },
-{ id: 4, name: "Glass Slipper Princess", img: "/IMG_4976.jpg" },
-{ id: 5, name: "Sleeping Princess", img: "/IMG_4976.jpg" },
-{ id: 6, name: "Tower Princess", img: "/IMG_4976.jpg" },
+export const characters = [{ id: 1, name: "Ice Queen", img: "/DSC_0729.jpg" },
+{ id: 2, name: "Snow Princess", img: "/IMG_1962.jpg" },
+{ id: 3, name: "Mermaid Princess", img: "/IMG_6126.jpg" },
+{ id: 4, name: "Rose Princess", img: "/IMG_3422.jpg" },
+{ id: 5, name: "Glass Slipper Princess", img: "/IMG_4976.jpg" },
+{ id: 6, name: "Sleeping Princess", img: "/IMG_4976.jpg" },
+{ id: 7, name: "Tower Princess", img: "/IMG_4976.jpg" },
+{ id: 8, name: "Bubble Queen", img: "/bubbles/characters/IMG_5468.jpg"}
 ];
 
 //abstract to DB

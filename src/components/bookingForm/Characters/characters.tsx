@@ -84,10 +84,10 @@ export default function Characters(props: { controller: Control<FormValues, any>
     //       setDressOptions([]);
     //       return;
     //     }
-      
+
     //     setLoading(true);
     //     setError(null);
-      
+
     //     const fetchCostumesByCharacter = async (characterId: number): Promise<Costumes[]> => {
     //       try {
     //         const res = await fetch(`/api/costumes/${characterId}`);
@@ -99,7 +99,7 @@ export default function Characters(props: { controller: Control<FormValues, any>
     //         return [];
     //       }
     //     };
-      
+
     //     const loadAllDresses = async () => {
     //       try {
     //         // Map selected characters to fetch promises
@@ -117,9 +117,9 @@ export default function Characters(props: { controller: Control<FormValues, any>
     //         setLoading(false);
     //       }
     //     };
-      
+
     //     loadAllDresses();
-      
+
     //   }, [selectedCharacters]);
 
     return (
@@ -179,36 +179,35 @@ export default function Characters(props: { controller: Control<FormValues, any>
 
                             </div>
                         ) : ( */}
-                            <div>
-                                <div>
-                                    <h4 className={styles.subheader}>Characters</h4>
-                                    <div className={styles.selections}>
-                                        {characterOptions.map((item) => {
-                                            return (
-                                                <Controller
-                                                    control={props.controller}
-                                                    name="Character"
-                                                    render={({ field: { onChange, value } }) => (
+                    <div>
+                        <div>
+                            <h4 className={styles.subheader}>Characters</h4>
+                            <div className={styles.selections}>
+                                {characterOptions.map((item) => {
+                                    return (
+                                        <Controller
+                                            control={props.controller}
+                                            name="Character"
+                                            render={({ field: { onChange, value } }) => (
 
-                                                        <SelectionCard CardContent={CharacterCard} content={{
-                                                            id: item.id,
-                                                            name: item.name,
-                                                            img: item.img
+                                                <SelectionCard CardContent={CharacterCard} content={{
+                                                    id: item.id,
+                                                    name: item.name,
+                                                    img: item.img
 
-                                                        }} selected={value?.map((selected) => selected.characterId).includes(item.id)} makeSelection={(id, selected) => {
-                                                            onChange(setCharacters(id, selected, value))
-                                                        }} />
-                                                    )}
-                                                />
-                                            )
-                                        })}
-                                    </div>
-
-                                </div>
+                                                }} selected={value?.map((selected) => selected.characterId).includes(item.id)} makeSelection={(id, selected) => {
+                                                    onChange(setCharacters(id, selected, value))
+                                                }} />
+                                            )}
+                                        />
+                                    )
+                                })}
                             </div>
-                        {/* )
-                    } */}
 
+                        </div>
+                    </div>
+                    {/* )
+                    } */}
 
 
                     {/* <div>
@@ -261,7 +260,6 @@ export default function Characters(props: { controller: Control<FormValues, any>
                         </div> */}
 
                     {/* </div> */}
-
                 </div>
             ) : null}
         </>
