@@ -15,34 +15,39 @@ export default function Dropdown(props: { options: string[], selected: string, s
         // TODO(ningy says) remove the internal state for selected and rely on passing data down from and up to parent component
         setToggle(false);
         props.setData(selected);
-        
+
     }
 
     function handleToggle() {
         if (toggled) {
             setToggle(false);
+            document.body.classList.remove('no-scroll');
         } else {
-            setToggle(true)
+            setToggle(true);
+            document.body.classList.add('no-scroll');
         }
     }
 
     const handleClickOutside = (event: MouseEvent) => { if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) { setToggle(false) } };
-    const handleEscapeKey = (event: KeyboardEvent) => {if(event.key === 'Escape' && !dropdownRef.current?.contains(event.target as Node)) {setToggle(false)}};
+    const handleEscapeKey = (event: KeyboardEvent) => { if (event.key === 'Escape' && !dropdownRef.current?.contains(event.target as Node)) { setToggle(false) } };
 
     useEffect(() => { document.addEventListener('mousedown', handleClickOutside); return () => { document.removeEventListener('mousedown', handleClickOutside); }; }, []);
-    useEffect(() => {document.addEventListener('keydown', handleEscapeKey)}, []);
+    useEffect(() => { document.addEventListener('keydown', handleEscapeKey) }, []);
 
     return (
         <>
             <div id="nick-test" className={styles.dropdown} ref={dropdownRef}>
                 <div className={styles.selected} onClick={handleToggle}>
                     <p>{selected}</p>
-                        {toggled ? (
-                            <IconChevronUp size={20}/>
-                        ) : (
-                            <IconChevronDown size={20} />
-                        )}
+                    {toggled ? (
+                        <IconChevronUp size={20} />
+                    ) : (
+                        <IconChevronDown size={20} />
+                    )}
                 </div >
+                {toggled && (
+                    <div className={styles.backdrop} onClick={handleToggle} />
+                )}
                 {toggled ? (
                     <div className={styles.options}>
                         {options.map((option, index) => {
