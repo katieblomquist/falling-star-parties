@@ -37,7 +37,15 @@ export default function Dropdown(props: { options: string[], selected: string, s
     return (
         <>
             <div id="nick-test" className={styles.dropdown} ref={dropdownRef}>
-                <div className={styles.selected} onClick={handleToggle}>
+                <div className={styles.selected}
+                    onClick={handleToggle}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                        if (e.key === " " || e.key === "Enter") {
+                            e.preventDefault();
+                            handleToggle();
+                        }
+                    }}>
                     <p>{selected}</p>
                     {toggled ? (
                         <IconChevronUp size={20} />
@@ -52,7 +60,16 @@ export default function Dropdown(props: { options: string[], selected: string, s
                     <div className={styles.options}>
                         {options.map((option, index) => {
                             return (
-                                <p className={styles.option} onClick={() => handleSelected(option)}>{option}</p>
+                                <p key={option}
+                                    className={styles.option}
+                                    onClick={() => handleSelected(option)}
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                        if (e.key === " " || e.key === "Enter") {
+                                            e.preventDefault();
+                                            handleSelected(option);
+                                        }
+                                    }}>{option}</p>
                             )
                         })}
                     </div>
