@@ -1,6 +1,5 @@
 'use client'
 
-import { Content } from "next/font/google";
 import { useState, useEffect, useRef } from "react"
 import styles from "./stepper.module.css";
 import { IconCircleCheckFilled } from '@tabler/icons-react'
@@ -9,12 +8,24 @@ import { StepperContent } from "@/app/mockData";
 
 export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string, submit: () => void }) {
 
-
-
     const [current, setCurrent] = useState(0);
     const [inReview, setReview] = useState(false);
     const stepperContent = props.content;
-    const last = stepperContent.length - 1
+    const last = stepperContent.length - 1;
+
+    // Store refs to each step header
+    const headerRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    // Scroll to the header of the active tab
+    useEffect(() => {
+        if (current !== 0 && headerRefs.current[current]) {
+          const offset = 100;
+          const element = headerRefs.current[current];
+          const elementPosition = element.getBoundingClientRect().top;
+          const scrollPosition = window.pageYOffset + elementPosition - offset;
+          window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+        }
+      }, [current]);
 
     const handleNext = () => {
         if (current < stepperContent.length) {
@@ -43,7 +54,6 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
         if (id === stepperContent.length - 1) {
             setReview(false);
         }
-
     }
 
     const handleSubmit = () => {
@@ -69,7 +79,7 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
                         <Button text={props.nextButtonText} action={handleNext} variant={1} icon={1} enabled={stepperContent[stepperContent.map(item => item.id).indexOf(current)].completed} />
                     </div>
                 </div>
-        } else if(step.id === current){
+        } else if (step.id === current) {
             content =
                 <div className={styles.stepContent}>
                     <div className={styles.stepContentInput}>{step.content}</div>
@@ -82,7 +92,11 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
 
         return (
             <div key={step.id} className={styles.step}>
-                <div className={styles.header} onClick={() => handleClick(step.id)}>
+                <div
+                    className={styles.header}
+                    onClick={() => handleClick(step.id)}
+                    ref={el => headerRefs.current[step.id] = el}
+                >
                     {step.completed ? (
                         <IconCircleCheckFilled width={34} height={34} strokeWidth={1} />
                     ) : (
@@ -93,15 +107,13 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
                 <div className={styles.stepperContent}>
                     {content}
                 </div>
-
-            </div >
+            </div>
         )
-
     };
 
     return (
-        <div id="stepper" className={styles.stepper}>{stepperContent.map((step) => {
-            return buildStepper(step)
-        })}</div>
+        <div id="stepper" className={styles.stepper}>
+            {stepperContent.map((step) => buildStepper(step))}
+        </div>
     )
 }
