@@ -27,14 +27,6 @@ export default function Tabs(props: { content: TabArray, blue: boolean }) {
         }
     }
 
-    // useEffect(() => {
-    //     if (width > 750) {
-    //         setActive(0);
-    //     } else {
-    //         setActive(-1);
-    //     }
-    // }, [width]);
-
     if (width > 750) {
         return (
             <>
