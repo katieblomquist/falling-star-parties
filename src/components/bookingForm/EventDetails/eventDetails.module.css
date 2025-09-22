@@ -1,0 +1,14 @@
+.header{
+    margin: 20px 0 10px 0;
+}
+
+.nameAge{
+    display: flex;
+    gap: 20px;
+}
+
+@media screen and (max-width: 540px) {
+    .nameAge{
+        flex-direction: column;
+    }
+}

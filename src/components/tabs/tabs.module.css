@@ -1,0 +1,53 @@
+.tabs {
+    width: 100%;
+  }
+  
+  .tabListWhite {
+    display: flex;
+    gap: 1rem;
+    border-bottom: 2px solid white;
+    align-items: flex-end;
+  }
+
+  .tabListBlue{
+    display: flex;
+    gap: 1rem;
+    border-bottom: 2px solid #343B954D;
+    align-items: flex-end;
+  }
+  
+  .tabButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-bottom: 2px solid transparent; 
+    cursor: pointer;
+    box-sizing: border-box; 
+    margin: 0;
+  }
+  
+  /* Active tab style */
+  .tabButtonActiveWhite {
+    border-bottom: 2px solid white;
+  }
+
+  .tabButtonActiveBlue{
+    border-bottom: 2px solid #343B95;
+  }
+  
+  .tabContent {
+    padding: 1rem;
+  }
+
+  .mobileTab{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    border-bottom: 1px solid #DADDE5;
+    align-items: center;
+  }
+
+  .header{
+    flex-grow: 2;
+    text-align: center;
+  }

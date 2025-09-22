@@ -1,0 +1,50 @@
+.headerBlock{
+    background-color: #DADDE5;
+    display: flex;
+    justify-content: center;
+}
+
+.princesses{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    max-width: 1700px;
+}
+
+.characterHeader{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 25px 50px 25px;
+    text-align: center;
+}
+
+.princessBlock{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.splash {
+    background-size: cover;
+    background-position: top;
+    height: 550px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .splashText {
+    height: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    margin-bottom: 100px;
+    color: white;
+  }
+
+  .textWhite{
+    color: white;
+  }

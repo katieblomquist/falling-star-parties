@@ -1,0 +1,16 @@
+.tos{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin: 30px 80px;
+}
+
+.header{
+    text-align: center;
+}
+
+@media screen and (max-width: 900px){
+    .tos{
+        margin: 30px 25px
+    }
+}
