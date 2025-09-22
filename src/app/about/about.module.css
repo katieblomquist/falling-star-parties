@@ -32,12 +32,14 @@
 .enchantment{
     padding-bottom: 25px;
     color: white;
+    text-align: center;
 }
 
 .enchantmentBlurb{
     max-width: 1300px;
     padding-bottom: 50px;
     color: white;
+    text-align: center;
 }
 
 .splash {
