@@ -1,0 +1,83 @@
+.headerBlock{
+    background-color: #DADDE5;
+    display: flex;
+    justify-content: center;
+}
+
+.swoop {
+    width: 100%;
+}
+
+.katieBlock{
+    display: flex;
+    justify-content: center;
+}
+
+.faqBlock{
+    background-color: #343B95;
+    display: flex;
+    justify-content: center;
+}
+
+.faqContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+    max-width: 1700px;
+    padding: 100px 0;
+    margin: 0 80px;
+}
+
+.enchantment{
+    padding-bottom: 25px;
+    color: white;
+    text-align: center;
+}
+
+.enchantmentBlurb{
+    max-width: 1300px;
+    padding-bottom: 50px;
+    color: white;
+    text-align: center;
+}
+
+.splash {
+    background-size: cover;
+    background-position: center;
+    min-height: 700px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: end;
+  }
+  
+  .splashText {
+    height: 75%;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    max-width: 50vw;
+    justify-content: center;
+    margin-right: 80px;
+    color: white;
+    flex-grow: 2;
+  }
+
+.textWhite{
+    color: white;
+}
+
+@media screen and (max-width: 900px){
+    .splashText{
+      height: 100%;
+      max-width: 100%;
+      padding: 25px;
+      margin: 0;
+      text-align: center;
+      align-items: center;
+    }
+    .faqContent {
+        margin: 0 25px;
+    }
+  }

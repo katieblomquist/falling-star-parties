@@ -1,0 +1,106 @@
+.primary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 40px;
+    width: fit-content;
+    border-radius: 15px;
+    background: #343B95;
+    color: white;
+
+    .icon {
+        padding-left: 25px;
+    }
+}
+
+.primary:hover {
+    cursor: pointer;
+}
+
+.primaryText {
+    color: white;
+}
+
+.primaryDisabled {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 40px;
+    width: fit-content;
+    border-radius: 15px;
+    background: #DADDE5;
+    color: #A4A8B0;
+
+
+    .icon {
+        padding-left: 25px;
+    }
+}
+
+.primaryTextDisabled {
+    color: #A4A8B0;
+}
+
+.secondary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 40px;
+    width: fit-content;
+    border-radius: 15px;
+    border: 1px solid #343B95;
+    color: #343B95;
+    background-color: white;
+
+}
+
+.icon {
+    padding-left: 25px;
+    height: 24px;
+}
+
+.secondary:hover {
+    cursor: pointer;
+}
+
+.linkPrimary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 40px;
+    width: fit-content;
+    border-radius: 15px;
+    background: #343B95;
+    color: white;
+    text-decoration: none;
+}
+
+.linkSecondary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 40px;
+    width: fit-content;
+    border-radius: 15px;
+    border: 1px solid #343B95;
+    color: #343B95;
+    background-color: white;
+    text-decoration: none;
+}
+
+.terciary {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 25px;
+    padding-bottom: 0;
+}
+
+.terciary:hover {
+    cursor: pointer;
+    border-bottom: 1px solid #1D1E1F;
+}
+
+.iconLeft{
+    height: 24px;
+}

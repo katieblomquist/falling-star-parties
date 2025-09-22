@@ -1,0 +1,22 @@
+.photo {
+    width: 300px;
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    border: 1px solid #DADDE5;
+    position: relative;
+}
+
+.characterName {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 15px;
+    color: white;
+}
+
+.character:hover{
+    cursor: pointer;
+}

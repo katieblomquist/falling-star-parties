@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
+import { dhyana } from "./fonts";
+import "reflect-metadata"
 
-const inter = Inter({ subsets: ["latin"] });
+
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,8 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={dhyana.className}>
+      <head>
+      <script src="https://www.google.com/recaptcha/api.js?render=6LcyB3krAAAAABVOBfqHSsrDxAxR42OqmE33W7fa"></script>
+      </head>
+      <body>
+        {children}
+      </body>
     </html>
   );
 }
