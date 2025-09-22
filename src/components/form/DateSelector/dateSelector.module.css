@@ -1,0 +1,67 @@
+.selector {
+    width: fit-content;
+}
+
+.input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+    border: 1px solid #A4A8B0;
+    width: fit-content;
+    border-radius: 15px;
+}
+
+.input:hover {
+    cursor: pointer;
+}
+
+.inputActive {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 20px;
+    border: 1px solid #343B95;
+    width: fit-content;
+    border-radius: 15px;
+}
+
+.inputActive:hover {
+    cursor: pointer;
+}
+
+.calendar {
+    position: absolute;
+    background-color: white;
+    z-index: 1001;
+}
+
+.selected {
+    margin-right: 20px;
+}
+
+.nonSelected {
+    color: #A4A8B0;
+    margin-right: 20px;
+}
+
+@media screen and (max-width: 900px) {
+    .backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(52, 59, 149, 0.85);
+        z-index: 1000;
+      }
+
+      .calendarContainer {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1001; /* Higher than backdrop */
+        padding: 1.5rem;
+      }
+}

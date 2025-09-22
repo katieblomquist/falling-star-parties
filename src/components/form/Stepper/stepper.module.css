@@ -1,0 +1,85 @@
+.header {
+    color: #343B95;
+    font-size: 35px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .title {
+        padding-left: 10px;
+    }
+}
+
+.number {
+    font-size: 20px;
+    text-align: center;
+    font-weight: 400;
+    line-height: 15px;
+    padding: 8px 12px 12px 12px;
+    outline: 1px solid #343B95;
+    border-radius: 100%;
+}
+
+.step {
+    padding-bottom: 15px;
+    margin-left: 35px;
+}
+
+.stepContent {
+    margin-left: 45px;
+}
+
+.stepContentInput {
+    margin-bottom: 15px;
+}
+
+.stepFiveButtons {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    justify-content: flex-end;
+}
+
+.buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.buttonsInitial {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.stepperContent {
+    margin-left: 15px;
+    border-left: solid 1px #DADDE5;
+}
+
+@media screen and (max-width: 1100px) {
+    .stepContent {
+        margin-right: 50px;
+    }
+}
+
+@media screen and (max-width: 550px) {
+    .stepFiveButtons {
+        flex-direction: column;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .stepContent{
+        margin-left: 0px;
+    }
+    .stepperContent {
+        margin-left: 0px;
+        border: none;
+    }
+    .buttons {
+        justify-content: center;
+        width: 100%;
+    }
+}
