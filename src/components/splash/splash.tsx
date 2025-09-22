@@ -67,7 +67,7 @@ export default function Splash(props: { locationLeft: boolean, home: boolean, im
                         style={{ objectFit: 'cover' }}
                     />
                 </div>
-                <div className={styles.mobileHomeTextContainer}>
+                <div className={styles.mobileTextContainer}>
                     <h1 className={styles.textWhite}>{props.headerStart}<span className={formal_script.className}>{props.emphasis}</span>{props.headerFinish}</h1>
                     <p className={styles.textWhite}>{props.blurb}</p>
                     <Button text={props.buttonText} variant={props.buttonVarient} icon={props.buttonIcon} enabled={true} href={props.buttonHref} />
