@@ -166,11 +166,11 @@ export default function Book() {
         <>
             <NavBar location={"book"} />
             <div>
-                <div>
+                <div className={styles.headerWrapper}>
                     <div>
                         <h1 className={styles.header}><span className={formal_script.className}>Enchant</span> Your Event</h1>
                     </div>
-                    <Swoop top={false} color={'#343B95'} direction={'center'} />
+                    <Swoop top={true} color={'white'} direction={'center'} />
                 </div>
                 <form>
                     <div className={styles.booking}>
