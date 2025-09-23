@@ -37,23 +37,23 @@ export default function EventOptions(props: { controller: Control<FormValues, an
             }
         }
 
-        // const fetchExtras = async () => {
-        //     setLoading(true);
-        //     setError(null);
-        //     try{
-        //         const res = await fetch(`api/addons/${selectedEventType}`);
-        //         if(!res.ok) throw new Error("Failed to fetch Extras");
-        //         const data: AddOns[] = await res.json();
-        //         setExtrasOptions(data)
-        //     } catch (err: any) {
-        //         setError(err.message || "Unknown error");
-        //     } finally {
-        //         setLoading(false);
-        //     }
-        // }
+        const fetchExtras = async () => {
+            setLoading(true);
+            setError(null);
+            try{
+                const res = await fetch(`api/addons/${selectedEventType}`);
+                if(!res.ok) throw new Error("Failed to fetch Extras");
+                const data: AddOns[] = await res.json();
+                setExtrasOptions(data)
+            } catch (err: any) {
+                setError(err.message || "Unknown error");
+            } finally {
+                setLoading(false);
+            }
+        }
 
         fetchPackages();
-        // fetchExtras();
+        fetchExtras();
     }, [selectedEventType]) 
 
 
