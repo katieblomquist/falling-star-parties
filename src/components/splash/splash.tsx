@@ -6,7 +6,6 @@ import Button from "../Button/button"
 import Swoop from "../swoop/swoop"
 import styles from "./splash.module.css"
 import Image from 'next/image'
-import { MobileFriendly } from "@mui/icons-material";
 
 export default function Splash(props: { locationLeft: boolean, home: boolean, image: string, gradient: string, headerStart: string, emphasis: string, headerFinish: string, blurb: string, buttonText: string, buttonVarient: number, buttonIcon: number, buttonHref: string, swoopTop: boolean, swoopColor: string, swoopDirection: string, mobileImage: string, mobileGradient?: string, height?: string }) {
 
