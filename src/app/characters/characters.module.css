@@ -33,7 +33,7 @@
     height: 550px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-end;
   }
   
   .splashText {
@@ -47,4 +47,8 @@
 
   .textWhite{
     color: white;
+  }
+
+  .swoop{
+    max-height: 100px;
   }
