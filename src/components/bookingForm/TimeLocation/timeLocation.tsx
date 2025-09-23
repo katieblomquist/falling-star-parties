@@ -2,7 +2,7 @@ import DateSelector from "@/components/form/DateSelector/dateSelector";
 import Dropdown from "@/components/form/Dropdown/dropdown";
 import styles from "./timeLocation.module.css";
 import { Control, Controller, UseFormSetValue, useWatch } from "react-hook-form";
-import PlacesAutocomplete, { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
+// import PlacesAutocomplete, { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 import { FormValues } from "@/app/book/page";
 import { time } from "@/app/mockdata";
 import TextInput from "@/components/form/Text Input/textInput";
