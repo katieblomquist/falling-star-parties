@@ -5,7 +5,7 @@ import Tabs from "@/components/tabs/tabs";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
 import { serviceTabs, servicesPage } from "../content";
-import { formal_script } from "../mockData";
+import { formal_script } from "../mockdata";
 import Button from "@/components/Button/button";
 import MasonryPhotos from "@/components/masonryPhotos/masonryPhotos";
 import Splash from "@/components/splash/splash";

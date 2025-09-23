@@ -13,7 +13,7 @@ import { DateTime } from "luxon";
 import { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 import PriceEstimate from "@/components/PriceEstimate/priceEstimate";
 import NavBar from "@/components/navbar/navbar";
-import { CharacterSelection, formal_script, numberCharacters } from "../mockData";
+import { CharacterSelection, formal_script, numberCharacters } from "../mockdata";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
 import Characters from "@/components/bookingForm/Characters/characters";

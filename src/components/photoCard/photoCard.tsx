@@ -1,6 +1,6 @@
 'use client';
 
-import { formal_script, dresses } from "@/app/mockData";
+import { formal_script, dresses } from "@/app/mockdata";
 import { useState, useEffect } from "react";
 import LightBox from "../lightBox/lightBox";
 import styles from "./photoCard.module.css"

@@ -1,4 +1,4 @@
-import { formal_script } from '@/app/mockData';
+import { formal_script } from '@/app/mockdata';
 import Button from '../Button/button';
 import styles from './serviceTabs.module.css'
 import Link from "next/link";

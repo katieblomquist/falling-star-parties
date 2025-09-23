@@ -1,7 +1,7 @@
 import { CharacterDress } from "@/app/content";
 import { useState, useEffect } from "react";
 import styles from "./characterInfo.module.css"
-import { formal_script } from "@/app/mockData";
+import { formal_script } from "@/app/mockdata";
 
 export default function CharacterInfo(props: { name: string, description: string, dresses: Array<CharacterDress> }) {
     const [selectedPhoto, setSelectedPhoto] = useState(0)

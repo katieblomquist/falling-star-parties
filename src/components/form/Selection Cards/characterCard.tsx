@@ -1,4 +1,4 @@
-import { Character, CharacterDress } from "@/app/mockData";
+import { Character, CharacterDress } from "@/app/mockdata";
 import styles from "./characterCard.module.css";
 
 export default function CharacterCard(props: { content: Character | CharacterDress }) {

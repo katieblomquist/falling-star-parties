@@ -4,7 +4,7 @@ import { Control, Controller, UseFormResetField, useWatch } from "react-hook-for
 import { FormValues } from "@/app/book/page";
 import HorizontalCard from "@/components/form/Selection Cards/horizontalCard";
 import VerticleCard from "@/components/form/Selection Cards/verticleCard";
-import { packages, extras } from "@/app/mockData";
+import { packages, extras } from "@/app/mockdata";
 import { Packages } from "@/db/entities/packages";
 import { useEffect, useState } from "react";
 import { AddOns } from "@/db/entities/addOns";

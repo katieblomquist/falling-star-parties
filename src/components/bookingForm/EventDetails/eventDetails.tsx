@@ -6,7 +6,7 @@ import { useState } from "react";
 import styles from "./eventDetails.module.css"
 import { Control, Controller } from "react-hook-form";
 import { FormValues } from "@/app/book/page";
-import { photos, location, event } from "@/app/mockData";
+import { photos, location, event } from "@/app/mockdata";
 
 export default function EventDetails(props: { controller: Control<FormValues, any>, eventType: string | undefined }) {
 

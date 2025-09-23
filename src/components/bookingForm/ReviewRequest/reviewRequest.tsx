@@ -1,5 +1,5 @@
 import { FormValues } from "@/app/book/page";
-import { packages, extras, characters, dresses, event, time } from "@/app/mockData";
+import { packages, extras, characters, dresses, event, time } from "@/app/mockdata";
 import { useEffect, useState } from "react";
 import styles from "./reviewRequest.module.css";
 import { useWatch } from "react-hook-form";

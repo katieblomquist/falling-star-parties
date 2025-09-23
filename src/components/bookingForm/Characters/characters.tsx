@@ -1,6 +1,6 @@
 import { FormValues } from "@/app/book/page"
 import { Control, Controller, UseFormResetField, useWatch } from "react-hook-form";
-import { Character, CharacterDress, CharacterSelection, characters, dresses, numberCharacters } from "@/app/mockData"
+import { Character, CharacterDress, CharacterSelection, characters, dresses, numberCharacters } from "@/app/mockdata"
 import CharacterCard from "@/components/form/Selection Cards/characterCard"
 import SelectionCard from "@/components/form/Selection Cards/selectionCard"
 import styles from "./characters.module.css"
