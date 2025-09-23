@@ -3,7 +3,7 @@
 import { IconCircle, IconCircleFilled } from "@tabler/icons-react";
 import styles from "./selectionCard.module.css";
 import { ComponentType } from "react";
-import { Services, Character, CharacterDress } from "@/app/mockData";
+import { Services, Character, CharacterDress } from "@/app/mockdata";
 
 type CardContentComponent<T> = ComponentType<{ content: T }>
 

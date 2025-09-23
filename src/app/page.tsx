@@ -1,7 +1,7 @@
 import styles from "./page.module.css";
 import { Open_Sans } from "next/font/google";
 import NavBar from "@/components/navbar/navbar";
-import { formal_script } from "./mockData";
+import { formal_script } from "./mockdata";
 import Link from 'next/link';
 import Bubbles from "@/components/bubbles/bubbles";
 import Swoop from "@/components/swoop/swoop";

@@ -1,4 +1,4 @@
-import { formal_script } from "@/app/mockData"
+import { formal_script } from "@/app/mockdata"
 import Button from "../Button/button"
 import Bubbles from "../bubbles/bubbles"
 import styles from "./contentBlock.module.css"

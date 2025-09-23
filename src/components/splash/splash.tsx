@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
-import { formal_script } from "@/app/mockData"
+import { formal_script } from "@/app/mockdata"
 import Button from "../Button/button"
 import Swoop from "../swoop/swoop"
 import styles from "./splash.module.css"
