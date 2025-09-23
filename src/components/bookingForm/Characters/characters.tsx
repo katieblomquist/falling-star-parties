@@ -186,6 +186,7 @@ export default function Characters(props: { controller: Control<FormValues, any>
                                 {characterOptions.map((item) => {
                                     return (
                                         <Controller
+                                            key={item.id}
                                             control={props.controller}
                                             name="Character"
                                             render={({ field: { onChange, value } }) => (

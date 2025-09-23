@@ -25,7 +25,7 @@ export default function Tos() {
                     If you have any questions regarding the company, pricing, costumes, etc, please talk to the attendant in a location where it will not ruin the magic.
                 </p>
                 <p>
-                    For your guest's safety, we also require that 1 adult be present for every 5 children in attendance. This helps to guarantee your children's safety while allowing us to entertain and delight.
+                    For your guest&apos;s safety, we also require that 1 adult be present for every 5 children in attendance. This helps to guarantee your children&apos;s safety while allowing us to entertain and delight.
                 </p>
                 <p>
                     Falling Star Parties, LLC may choose to send an attendant along with the performer. This is to help the event run smoothly and assist with safety. If you have any questions or concerns, please first approach the attendant to make sure to keep
@@ -41,7 +41,7 @@ export default function Tos() {
                     to attend your event. Full payment is required upfront for any party booked less than 10 days in advance.
                 </p>
                 <p>
-                    Falling Star Parties LLC will travel up to 30 miles free of charge from your performer's location. We are happy to travel beyond that for a small travel fee of $1 per mile for bookings 30-50 miles away and $2 per mile for each additional mile
+                    Falling Star Parties LLC will travel up to 30 miles free of charge from your performer&apos;s location. We are happy to travel beyond that for a small travel fee of $1 per mile for bookings 30-50 miles away and $2 per mile for each additional mile
                     after 50. All clients regardless of location must pay for tolls.
                 </p>
                 <p>
@@ -63,7 +63,7 @@ export default function Tos() {
                 </p>
                 <p>
                     Customers acknowledge that Falling Star Parties, LLC is not associated or affiliated with the Walt Disney Company or other third parties owning rights to well known fairytale or other characters and associated stories. As a result, customers
-                    choosing to advertise their event are required by Falling Star Parties to use our character names and images. Customers retaining our services are responsible for any and all advertising decisions that violate Walt Disney Company or other third party's copyright.
+                    choosing to advertise their event are required by Falling Star Parties to use our character names and images. Customers retaining our services are responsible for any and all advertising decisions that violate Walt Disney Company or other third party&apos;s copyright.
                 </p>
             </div>
         <Footer />

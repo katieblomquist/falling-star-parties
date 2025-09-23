@@ -17,7 +17,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
             {props.eventType === "Birthday Party" ? (
                 <div>
                     <div>
-                        <h3 className={styles.header}>Child's Name and Age</h3>
+                        <h3 className={styles.header}>Child&apos;s Name and Age</h3>
                         <div className={styles.nameAge}>
                             <Controller
                                 control={props.controller}

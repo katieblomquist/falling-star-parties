@@ -34,8 +34,8 @@ export default function About() {
                         <h2 className={styles.enchantment}>Enchantment Explained</h2>
                         <p className={styles.enchantmentBlurb}>
                             Planning the perfect princess party can feel like navigating an enchanted kingdom. Magical, but sometimes overwhelming! At Falling
-                            Star Parties, we're here to help turn your party dreams into reality. To make your journey as smooth as glass slippers, we've
-                            compiled answers to the questions we're asked most frequently.
+                            Star Parties, we&apos;re here to help turn your party dreams into reality. To make your journey as smooth as glass slippers, we&apos;ve
+                            compiled answers to the questions we&apos;re asked most frequently.
                         </p>
                         <Tabs content={tabs} blue={false} />
                     </div>
