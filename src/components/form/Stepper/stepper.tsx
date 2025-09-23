@@ -18,14 +18,18 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
 
     // Scroll to the header of the active tab
     useEffect(() => {
-        if (current !== 0 && headerRefs.current[current]) {
-          const offset = 100;
-          const element = headerRefs.current[current];
-          const elementPosition = element.getBoundingClientRect().top;
-          const scrollPosition = window.pageYOffset + elementPosition - offset;
-          window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+        if (current !== 0) {
+            const offset = 100;
+            const element = headerRefs.current[current];
+            if (element !== null) {
+                const elementPosition = element.getBoundingClientRect().top;
+                const scrollPosition = window.pageYOffset + elementPosition - offset;
+                window.scrollTo({ top: scrollPosition, behavior: 'smooth' });
+            }
+
+
         }
-      }, [current]);
+    }, [current]);
 
     const handleNext = () => {
         if (current < stepperContent.length) {
@@ -95,7 +99,8 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
                 <div
                     className={styles.header}
                     onClick={() => handleClick(step.id)}
-                    ref={el => headerRefs.current[step.id] = el}
+                    ref={el => { headerRefs.current[step.id] = el; }}
+
                 >
                     {step.completed ? (
                         <IconCircleCheckFilled width={34} height={34} strokeWidth={1} />
