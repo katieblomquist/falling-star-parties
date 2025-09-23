@@ -22,7 +22,7 @@ export default function CharacterInfo(props: { name: string, description: string
                             classNames += ` ${styles['dressActive']}`
                         }
 
-                        return <div className={classNames} style={{ backgroundImage: `url(${dress.img})` }} onClick={() => setSelected(index)}></div>
+                        return <div key={index} className={classNames} style={{ backgroundImage: `url(${dress.img})` }} onClick={() => setSelected(index)}></div>
                     })}
                 </div>
             </div>

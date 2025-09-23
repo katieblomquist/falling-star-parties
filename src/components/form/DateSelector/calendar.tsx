@@ -13,25 +13,6 @@ export default function Calendar(props: {selected: DateTime, setSelected: (date:
     const [weekStart, setWeekStart] = useState(0);
     const today = DateTime.local();
 
-    function loadDates() {
-        const max = currentDate.daysInMonth;
-        if(max == null || max == undefined){
-            throw new Error('Could not find the number of days in the month');
-        }
-        const monthStart = DateTime.local(currentDate.year, currentDate.month, 1);
-        const dates = [];
-        for (let i = 1; i <= max; i++) {
-            dates.push(i);
-        }
-        setDates([...dates]);
-        let start = monthStart.weekday;
-        if (start < 7) {
-            start++
-        } else {
-            start = 1;
-        }
-        setWeekStart(start);
-    }
 
     function handlePrevious() {
         setCurrentDate(currentDate.minus({ months: 1 }));
@@ -49,11 +30,30 @@ export default function Calendar(props: {selected: DateTime, setSelected: (date:
         
     }
 
-    function clickAway(){
-        props.setSelected(props.selected);
-    }
+    // function clickAway(){
+    //     props.setSelected(props.selected);
+    // }
 
     useEffect(() => {
+        function loadDates() {
+            const max = currentDate.daysInMonth;
+            if(max == null || max == undefined){
+                throw new Error('Could not find the number of days in the month');
+            }
+            const monthStart = DateTime.local(currentDate.year, currentDate.month, 1);
+            const dates = [];
+            for (let i = 1; i <= max; i++) {
+                dates.push(i);
+            }
+            setDates([...dates]);
+            let start = monthStart.weekday;
+            if (start < 7) {
+                start++
+            } else {
+                start = 1;
+            }
+            setWeekStart(start);
+        }
         loadDates();
     }, [currentDate]);
 
@@ -81,7 +81,7 @@ export default function Calendar(props: {selected: DateTime, setSelected: (date:
 
                     {dates.map((date, index) => {
                         return (
-                            <div style={index === 0 ? { gridColumnStart: weekStart } : undefined}>
+                            <div key={index} style={index === 0 ? { gridColumnStart: weekStart } : undefined}>
                                 {currentDate.month === today.month && date <= today.day ? (
                                     <Date day={date} selected={(date == props.selected.day && currentDate.month == props.selected.month)} disabled={true} setInput={handleSelected} />
                                 ) : (

@@ -61,7 +61,7 @@ export default function Tabs(props: { content: TabArray, blue: boolean }) {
             return (
                 <>
                     {props.content.map((tab, index) => (
-                        <div className={styles.mobileTab} onClick={() => setMobile(index)}>
+                        <div key={index} className={styles.mobileTab} onClick={() => setMobile(index)}>
                             <h3>{tab.label}</h3>
                             <IconChevronRight />
                         </div>

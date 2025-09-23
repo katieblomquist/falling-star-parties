@@ -52,9 +52,9 @@ export default function Carousel(props: { content: Array<ReactNode> }) {
                 <div>
                     {content.map((item, index) => (
                         index === selected ? (
-                            <IconCircleFilled className={styles.navItem} width="16" height="16" color="#A4A8B0" />
+                            <IconCircleFilled key={index} className={styles.navItem} width="16" height="16" color="#A4A8B0" />
                         ) : (
-                            < IconCircle className={styles.navItem} width="16" height="16" color="#A4A8B0" onClick={() => setSelected(index)} />
+                            < IconCircle key={index} className={styles.navItem} width="16" height="16" color="#A4A8B0" onClick={() => setSelected(index)} />
                         )
                     ))}
                 </div>

@@ -54,13 +54,13 @@ export default function EventOptions(props: { controller: Control<FormValues, an
 
         fetchPackages();
         fetchExtras();
-    }, []) 
+    }, [selectedEventType]) 
 
 
-    function getExtras() {
-        const selectedEventType = useWatch({ control, name: "EventType" });
-        return (extras.filter(item => item.type === selectedEventType));
-    }
+    // function getExtras() {
+    //     const selectedEventType = useWatch({ control, name: "EventType" });
+    //     return (extras.filter(item => item.type === selectedEventType));
+    // }
 
 
     function setExtras(id: number, selectedState: boolean, value: number[] = []): number[] {
@@ -100,6 +100,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                     {packageOptions.map((item) => {
                         return (
                             <Controller
+                                key={item.id}
                                 control={props.controller}
                                 name="Package"
                                 render={({ field: { onChange, value } }) => (
@@ -123,6 +124,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                     {extrasOptions.map((item) => {
                         return (
                             <Controller
+                                key={item.id}
                                 control={props.controller}
                                 name="Extras"
                                 render={({ field: { onChange, value } }) => (

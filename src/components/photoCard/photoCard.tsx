@@ -22,6 +22,16 @@ export default function PhotoCard(props: { name: string, description: string, dr
     }
 
     useEffect(() => {
+        function lightBox() {
+            if (lightBoxOpen) {
+                setLightBox(false);
+                document.body.classList.remove('no-scroll');
+            } else {
+                setLightBox(true);
+                document.body.classList.add('no-scroll');
+            }
+        }
+        
         if (!lightBoxOpen) return;
 
         function handleKeyDown(e: KeyboardEvent) {
