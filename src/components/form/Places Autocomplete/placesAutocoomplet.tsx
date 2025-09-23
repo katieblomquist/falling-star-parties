@@ -10,7 +10,7 @@
 //     lng: number;
 // }
 
-// export default function PlacesAutocomplete(props: { value: Location | undefined, placeSelection: (location: Location) => void }) {
+export default function PlacesAutocomplete(props: { value: Location | undefined, placeSelection: (location: Location) => void }) {
 
 //     if (!apiKey) {
 //         console.error('Google Maps API key is missing');
@@ -61,4 +61,4 @@
 //         </div>
 
 //     );
-// };
+};
