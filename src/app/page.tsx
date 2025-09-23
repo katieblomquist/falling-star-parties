@@ -16,7 +16,7 @@ import Splash from "@/components/splash/splash";
 export const open_Sans = Open_Sans({ weight: "400", subsets: ["latin"], variable: '--open-sans', preload: false })
 
 const reviewArray = reviews.map(review => (
-  <ReviewCard title={review.title} review={review.review} client={review.client} />
+  <ReviewCard key={review.client} title={review.title} review={review.review} client={review.client} />
 ));
 
 

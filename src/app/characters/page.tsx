@@ -30,7 +30,7 @@ export default function About() {
                 <div className={styles.princesses}>
                     {
                         characters.map(({name, desc, dresses, background}) => (
-                            <PhotoCard name={name} description={desc} dresses={dresses} background={background}/>
+                            <PhotoCard key={name} name={name} description={desc} dresses={dresses} background={background}/>
                         ))
                     }
                 </div>

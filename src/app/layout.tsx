@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={dhyana.className}>
       <head>
-      <script src="https://www.google.com/recaptcha/api.js?render=6LcyB3krAAAAABVOBfqHSsrDxAxR42OqmE33W7fa"></script>
+      {/* <script src="https://www.google.com/recaptcha/api.js?render=6LcyB3krAAAAABVOBfqHSsrDxAxR42OqmE33W7fa"></script> */}
       </head>
       <body>
         {children}
