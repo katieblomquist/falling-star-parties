@@ -29,6 +29,21 @@ export default function MasonryPhotos() {
     }
 
     useEffect(() => {
+        function lightBox(index?: number) {
+            if (lightBoxOpen) {
+                setIndex(-1)
+                setLightBox(false);
+                document.body.classList.remove('no-scroll');
+            } else {
+                if (index || index === 0) {
+                    setIndex(index)
+                    setLightBox(true);
+                    document.body.classList.add('no-scroll');
+                }
+    
+            }
+        }
+        
         if (!lightBoxOpen) return;
 
         function handleKeyDown(e: KeyboardEvent) {

@@ -48,6 +48,16 @@ export default function DateSelector(props: { date: DateTime, selectDate: (date:
     }
 
     useEffect(() => {
+        function handleToggle() {
+            if (calendarToggle) {
+                toggleCalendar(false);
+                document.body.classList.remove('no-scroll');
+            } else {
+                toggleCalendar(true);
+                document.body.classList.add('no-scroll');
+            }
+        }
+        
         if (!toggleCalendar) return;
 
         function handleKeyDown(e: KeyboardEvent) {
