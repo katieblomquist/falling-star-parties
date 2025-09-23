@@ -12,9 +12,6 @@ export default function About() {
     return (
         <>
             <NavBar location={"characters"} />
-            {/* <Splash locationLeft={false} home={false} image={'/IMG_2565.jpg'} gradient={"linear-gradient(90deg, transparent, transparent)"} headerStart={""} emphasis={""} headerFinish={""}
-                blurb={""}
-                buttonText={""} buttonVarient={0} buttonIcon={0} buttonHref={""} swoopTop={true} swoopColor={"white"} swoopDirection={"center"}  mobileImage={'/IMG_2565.jpg'} height="550px"/> */}
             <div className={styles.splash} style={{ backgroundImage: `url('/IMG_2565.jpg')` }}>
                 <div className={styles.swoop}>
                     <Swoop top={true} color={'white'} direction={'center'} />
