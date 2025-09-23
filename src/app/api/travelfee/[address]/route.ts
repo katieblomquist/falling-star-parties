@@ -1,4 +1,4 @@
-// import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // type LatLng = {
 //     lat: number,
@@ -31,26 +31,28 @@
 
 // const METERS_IN_MILE = 1609.344;
 
-// export async function GET(
-//     _: NextRequest,
-//     { params }: { params: { address: string } }
-// ) {
-//     const clientAddress: Place = await getClientAddress(params.address);
-//     const routeThere: Route = await getRoute(owner, clientAddress.location);
-//     let fee: Number;
+export async function GET(
+    _: NextRequest,
+    { params }: { params: { address: string } }
+) {
+    // const clientAddress: Place = await getClientAddress(params.address);
+    // const routeThere: Route = await getRoute(owner, clientAddress.location);
+    let fee: Number;
 
-//     //When altered for broader use, this will need to be revisited to calculate tolls both directions every time. 
+    // //When altered for broader use, this will need to be revisited to calculate tolls both directions every time. 
 
-//     if (routeThere.estimatedTolls != null) {
-//         const routeBack = await getRoute(clientAddress.location, owner);
-//         fee = calculateFee(routeThere, routeBack);
+    // if (routeThere.estimatedTolls != null) {
+    //     const routeBack = await getRoute(clientAddress.location, owner);
+    //     fee = calculateFee(routeThere, routeBack);
 
-//     } else {
-//         fee = calculateFee(routeThere);
-//     }
+    // } else {
+        // fee = calculateFee(routeThere);
+    // }
 
-//     return NextResponse.json(fee);
-// }
+    fee = 0;
+
+    return NextResponse.json(fee);
+}
 
 
 // async function getClientAddress(address: string): Promise<Place> {
