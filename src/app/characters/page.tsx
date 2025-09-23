@@ -12,17 +12,14 @@ export default function About() {
     return (
         <>
             <NavBar location={"characters"} />
-            <Splash locationLeft={false} home={false} image={'/IMG_2565.jpg'} gradient={"linear-gradient(90deg, transparent, transparent)"} headerStart={""} emphasis={""} headerFinish={""}
+            {/* <Splash locationLeft={false} home={false} image={'/IMG_2565.jpg'} gradient={"linear-gradient(90deg, transparent, transparent)"} headerStart={""} emphasis={""} headerFinish={""}
                 blurb={""}
-                buttonText={""} buttonVarient={0} buttonIcon={0} buttonHref={""} swoopTop={true} swoopColor={"white"} swoopDirection={"center"}  mobileImage={'/IMG_2565.jpg'} height="550px"/>
-            {/* <div className={styles.splash} style={{ backgroundImage: `linear-gradient(90deg, rgba(52, 59, 149, 0.6), rgba(52, 59, 149, 0.6)), url('/IMG_2565.jpg')` }}>
-                <div className={styles.splashText}>
-                    
-                </div>
+                buttonText={""} buttonVarient={0} buttonIcon={0} buttonHref={""} swoopTop={true} swoopColor={"white"} swoopDirection={"center"}  mobileImage={'/IMG_2565.jpg'} height="550px"/> */}
+            <div className={styles.splash} style={{ backgroundImage: `url('/IMG_2565.jpg')` }}>
                 <div className={styles.swoop}>
                     <Swoop top={true} color={'white'} direction={'center'} />
                 </div>
-            </div>     */}
+            </div>    
             <div className={styles.characterHeader}>
                 <h1>Meet Our <span className={formal_script.className}>Enchanted</span> Characters</h1>
             </div>
