@@ -1,4 +1,4 @@
-import { Services } from "@/app/book/page";
+import { Services } from "@/app/mockdata";
 import styles from "./verticleCard.module.css";
 
 export default function VerticleCard(props: { content: Services }) {
