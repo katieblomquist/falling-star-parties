@@ -13,7 +13,7 @@ import ContentBlock from "@/components/contentBlock/contentBlock";
 import Carousel from "@/components/carousel/carousel";
 import Splash from "@/components/splash/splash";
 
-export const open_Sans = Open_Sans({ weight: "400", subsets: ["latin"], variable: '--open-sans', preload: false })
+const open_Sans = Open_Sans({ weight: "400", subsets: ["latin"], variable: '--open-sans', preload: false })
 
 const reviewArray = reviews.map(review => (
   <ReviewCard key={review.client} title={review.title} review={review.review} client={review.client} />
