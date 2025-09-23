@@ -9,7 +9,7 @@ import { IconMenu2, IconX } from '@tabler/icons-react'
 export default function NavBar(props: { location: string }) {
 
     const [dropdownOpen, setOpen] = useState(false);
-    const [width, setWidth] = useState(window.innerWidth);
+    const [width, setWidth] = useState(0);
 
     function setDropdown() {
         setOpen(!dropdownOpen);
@@ -17,9 +17,11 @@ export default function NavBar(props: { location: string }) {
 
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
-    }, []);
 
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
     if (width > 900) {
         return (
             <nav className={styles.navbar}>
