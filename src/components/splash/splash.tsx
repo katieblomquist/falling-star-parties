@@ -9,11 +9,14 @@ import Image from 'next/image'
 
 export default function Splash(props: { locationLeft: boolean, home: boolean, image: string, gradient: string, headerStart: string, emphasis: string, headerFinish: string, blurb: string, buttonText: string, buttonVarient: number, buttonIcon: number, buttonHref: string, swoopTop: boolean, swoopColor: string, swoopDirection: string, mobileImage: string, mobileGradient?: string, height?: string }) {
 
-    const [width, setWidth] = useState(window.innerWidth);
+    const [width, setWidth] = useState(0);
 
     useEffect(() => {
         const handleResize = () => setWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
+
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     if (props.locationLeft && width > 900) {

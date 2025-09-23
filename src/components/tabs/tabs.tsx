@@ -9,12 +9,16 @@ import { IconChevronRight, IconChevronLeft } from '@tabler/icons-react'
 export default function Tabs(props: { content: TabArray, blue: boolean }) {
 
     const [active, setActive] = useState(0);
-    const [width, setWidth] = useState(window.innerWidth);
+    const [width, setWidth] = useState(0);
     const [home, setHome] = useState(true);
 
     useEffect(() => {
+        // This effect only runs in the browser
         const handleResize = () => setWidth(window.innerWidth);
-        window.addEventListener('resize', handleResize);
+        // Set initial width when the component mounts
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     function setMobile(index: number){
