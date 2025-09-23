@@ -4,11 +4,11 @@
 
 // const libraries = ['places'];
 // const apiKey = "AIzaSyDrIu7-K0NjzMKOmnE6_JBjtoVJhYbtEXw";
-// export type Location = {
-//     address: string;
-//     lat: number;
-//     lng: number;
-// }
+export type Location = {
+    address: string;
+    lat: number;
+    lng: number;
+}
 
 export default function PlacesAutocomplete(props: { value: Location | undefined, placeSelection: (location: Location) => void }) {
 
