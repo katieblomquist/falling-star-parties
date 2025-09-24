@@ -30,10 +30,10 @@ export default function Service() {
                 blurb={servicesPage[0].blurb}
                 buttonText={servicesPage[0].button} buttonVarient={servicesPage[0].variant} buttonIcon={0} buttonHref={servicesPage[0].href} swoopTop={true} swoopColor={"white"} swoopDirection={"right"} mobileImage={'/IMG_4261.jpg'} />
             <div className={styles.servicesBlock}>
-                <div className={styles.services}>
+                {/* <div className={styles.services}>
                     <h2 className={styles.servicesHeader}>Our Services</h2>
                     <Tabs content={tabArray} blue={true} />
-                </div>
+                </div> */}
                 <div className={styles.photosBlock}>
                     <h2 className={styles.photosHeader}>A <span className={formal_script.className}>Glimpse</span> of Past Events</h2>
                     <MasonryPhotos />
