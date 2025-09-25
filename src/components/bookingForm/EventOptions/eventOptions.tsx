@@ -57,10 +57,10 @@ export default function EventOptions(props: { controller: Control<FormValues, an
     }, [selectedEventType]) 
 
 
-    // function getExtras() {
-    //     const selectedEventType = useWatch({ control, name: "EventType" });
-    //     return (extras.filter(item => item.type === selectedEventType));
-    // }
+    function getExtras() {
+        const selectedEventType = useWatch({ control, name: "EventType" });
+        return (extras.filter(item => item.type === selectedEventType));
+    }
 
 
     function setExtras(id: number, selectedState: boolean, value: number[] = []): number[] {

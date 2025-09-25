@@ -238,45 +238,90 @@ export const servicesPage = [
     }
 ]
 
-export const serviceTabs = [
+export const privateParties = [
     {
-        title: 'DREAM',
-        topBlurb: 'Step into a world of enchantment with our Dream Package! Delight awaits with:',
-        listItems: ['30 Minutes with 1 Magical Character', 'A Story Time filled with live singing!', 'Princess Lessons straight from the enchanted kingdom', 'The Grandeur of a Royal Coronation Ceremony, complete with a shimmering crystal tiara to cherish!', 'Commemorate the occasion with an enchanting photo opportunity', 'Finish the fairy tale with a Happy Birthday Song!'],
-        bottomBlurb: 'Starting at $200 Add more enchanting characters for $100 each!'
+        primary: false,
+        type: 'Private',
+        title: 'Dream',
+        time: '30 Minutes',
+        activities: ['An Enchanting Story Time', 'Princess Lessons and Coronation', 'Magical Photo Opportunity', 'Happy Birthday Song'],
+        basePrice: 200,
+        addCharacter: 100
     },
     {
-        title: 'SPARKLE',
-        topBlurb: 'Experience the magic at its fullest with our Sparkle Package! Your royal celebration includes:',
-        listItems: ['60 Minutes with 1 Magical Character', 'A Story Time filled with live singing!', 'Princess Lessons straight from the enchanted kingdom', 'The Grandeur of a Royal Coronation Ceremony, complete with a shimmering crystal tiara to cherish!', 'Games and activities led by your character', 'Commemorate the occasion with an enchanting photo opportunity', 'Finish the fairy tale with a Happy Birthday Song!'],
-        bottomBlurb: 'Starting at $275 Add more enchanting characters for $150 each!'
+        primary: true,
+        type: 'Private',
+        title: 'Sparkle',
+        time: '60 Minutes',
+        activities: ['An Enchanting Story Time', 'Princess Lessons and Coronation', 'Party Games', 'Magical Photo Opportunity', 'Happy Birthday Song'],
+        basePrice: 275,
+        addCharacter: 150
     },
     {
-        title: 'SHINE',
-        topBlurb: 'Turn your party into a fairy tale come true with the Ultimate Dream Package! Enjoy:',
-        listItems: ['90 Minutes with 1 Magical Character', 'A Story Time filled with live singing!', 'Princess Lessons straight from the enchanted kingdom', 'The Grandeur of a Royal Coronation Ceremony, complete with a shimmering crystal tiara to cherish!', 'Magical Face Painting for all your guests', 'Games and activities led by your character', 'Commemorate the occasion with an enchanting photo opportunity', 'Finish the fairy tale with a Happy Birthday Song!'],
-        bottomBlurb: 'Starting at $350 Add more enchanting characters for $200 each!'
+        primary: false,
+        type: 'Private',
+        title: 'Shine',
+        time: '90 Minutes',
+        activities: ['An Enchanting Story Time', 'Princess Lessons and Coronation', 'Party Games', 'Fanciful Face Painting', 'Magical Photo Opportunity', 'Happy Birthday Song'],
+        basePrice: 350,
+        addCharacter: 200
+    },
+]
+
+export const privateExtras = [
+    {
+        title: 'Stoyrbook Keepsake',
+        price: 'Starting at $20',
+        description: 'Take home the very storybook your character reads at the party! This beautifully illustrated keepsake is personalized, so your child can relive the magical tale again and again.',
+        icon: '/icons/book'
     },
     {
-        title: 'PUBLIC EVENTS',
-        topBlurb: 'Bring unforgettable magic to your next business, community, school, or charity event with our interactive Meet & Greet packages, designed to delight kids of all ages! Choose from classic character appearances, story time adventures, or immersive experiences that let every child become part of the story!',
-        listItems: ['One or Two Hour Meet & Greet with a Magical Character', 'Smiles, Hugs, and Memorable Photo Opportunities', 'Option to Add Classic Story Time or Interactive Story Time (Kids act out the story and join with props!)', 'Option to add Signature Keepsake Cards for Each Child'],
-        bottomBlurb: 'Starting at $250 for public appearances and $175 for charity events!'
+        title: 'Deluxe Princess Set',
+        price: '$30',
+        description: 'Let your little royal shine with an upgraded sparkling crown and a themed sash, perfect for a grand coronation and magical photo moments!',
+        icon: '/icons/crown'
     },
     {
-        title: 'MAGIC MIRROR',
-        topBlurb: 'Bring the enchantment home—no matter where you are! With our Virtual Magic Visit, your child’s dreams come to life on screen with:',
-        listItems: ['A live 20-minute video call with your chosen princess or character', 'Personalized greetings and interactive conversation', 'A captivating story time, complete with live singing', 'Time for your child to ask questions and share their favorite moments'],
-        bottomBlurb: 'Starting at $65 Add more magical friends for $35 each'
+        title: 'Gift Bags',
+        price: '$10 per child',
+        description: 'Send every guest home with a touch of fairy tale wonder! Each themed gift bag is filled with enchanting surprises and treasures—and now includes an upgrade to the Deluxe Princess Set!',
+        icon: '/icons/giftBag'
+    },
+]
+
+export const publicEvents = [
+    {
+        primary: false,
+        type: 'Public',
+        title: 'Meet and Greet',
+        time: 'Varies',
+        activities: ['Magical Encounters', 'Smiles and Warm Hugs', 'Magical Photo Opportunity'],
+        basePrice: 250,
+        addCharacter: 150
     },
     {
-        title: 'ENCHANTING EXTRAS',
-        topBlurb: `Add an extra touch of wonder to your celebration with our delightful party add-ons! Each extra is designed to create lasting memories and make your child's special day even more magical:`,
-        listItems: ['Storybook Keepsake $20 - Take home the very storybook your character reads at the party! This beautifully illustrated keepsake is personalized, so your child can relive the magical tale again and again.',
-            'Deluxe Storybook Keepsake $40 - Make story time even more enchanting with our deluxe edition! This special book features over 10 different princess stories, and gorgeous illustrations — a treasure trove of fairy tales to enjoy for years to come.',
-            'Deluxe Princess Set $30 - Let your little royal shine with an upgraded sparkling crown and a themed sash, perfect for a grand coronation and magical photo moments!',
-            'Magical Gift Bags $10 per child - Send every guest home with a touch of fairy tale wonder! Each themed gift bag is filled with enchanting surprises and treasures—and now includes an upgrade to the Deluxe Princess Set, featuring a sparkling crown and themed sash for the birthday child. Every child will feel like royalty as they take the magic home!'],
-        bottomBlurb: 'Add any of these extras to your party package and let the magic continue long after the celebration ends!'
+        primary: false,
+        type: 'Private',
+        title: 'Story Time',
+        time: 'Varies',
+        activities: ['An Enchanting Story Time', 'Magical Encounters', 'Smiles and Warm Hugs', 'Magical Photo Opportunity'],
+        basePrice: 250,
+        addCharacter: 150
+    },
+]
+
+export const publicExtras = [
+    {
+        title: 'Interactive Story Time',
+        price: '$75',
+        description: 'Step into the story with our interactive adventure! Children get to use special props to help act out the tale alongside our character, making story time an engaging, hands-on experience they’ll remember long after the day is over.',
+        icon: '/icons/book'
+    },
+    {
+        title: 'Character Cards',
+        price: '$10 per child',
+        description: 'Take home a special memory from your magical day! Each child receives a dazzling character signature card, signed by their favorite storybook friend—a cherished keepsake to remember their enchanting encounter.',
+        icon: '/icons/crown'
     },
 ]
 

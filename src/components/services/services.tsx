@@ -1,6 +1,6 @@
 
 
-import { serviceTabs } from "@/app/content";
+import { privateParties } from "@/app/content";
 import ServiceTabs from "@/components/serviceTabs/serviceTabs";
 import { useState, useEffect } from "react";
 import Tabs from "../tabs/tabs";
@@ -9,7 +9,7 @@ import Carousel from "../carousel/carousel";
 
 export default function Services() {
 
-    const tabArray = serviceTabs.map(tab => ({
+    const tabArray = privateParties.map(tab => ({
         label: tab.title,
         content: (
             <ServiceTabs
