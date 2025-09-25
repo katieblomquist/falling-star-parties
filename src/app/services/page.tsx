@@ -38,9 +38,10 @@ export default function Service() {
                 {toggle === 'private' ? (
                     <>
                         <div className={styles.cardWrapper}>
-                            {privateParties.map((item) => {
+                            {privateParties.map((item, i) => {
                                 return (
                                     <ServicesCard
+                                        key={i}
                                         primary={item.primary}
                                         type={item.type}
                                         title={item.title}
@@ -57,9 +58,9 @@ export default function Service() {
                             <div className={styles.extrasText}>
                                 <h2 className={styles.extrasTitle}><span className={formal_script.className}>Enchanting</span> Extras</h2>
                                 <div className={styles.extras}>
-                                    {privateExtras.map((item) => {
+                                    {privateExtras.map((item, i) => {
                                         return (
-                                            <ExtrasItem title={item.title} price={item.price} description={item.description} icon={item.icon} />
+                                            <ExtrasItem key={i} title={item.title} price={item.price} description={item.description} icon={item.icon} />
                                         )
                                     })}
                                 </div>
@@ -72,9 +73,10 @@ export default function Service() {
                 ) : (
                     <>
                         <div className={styles.cardWrapper}>
-                            {publicEvents.map((item) => {
+                            {publicEvents.map((item, i) => {
                                 return (
                                     <ServicesCard
+                                        key={i}
                                         primary={item.primary}
                                         type={item.type}
                                         title={item.title}
@@ -90,9 +92,9 @@ export default function Service() {
                             <Swoop top={true} color={"#343B95"} direction={"left"} />
                             <h2><span className={formal_script.className}>Enchanting</span> Extras</h2>
                             <div className={styles.extras}>
-                                {publicExtras.map((item) => {
+                                {publicExtras.map((item, i) => {
                                     return (
-                                        <ExtrasItem title={item.title} price={item.price} description={item.description} icon={item.icon} />
+                                        <ExtrasItem key={i} title={item.title} price={item.price} description={item.description} icon={item.icon} />
                                     )
                                 })}
                             </div>
