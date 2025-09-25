@@ -294,7 +294,7 @@ export const publicEvents = [
         primary: false,
         type: 'Public',
         title: 'Meet and Greet',
-        time: 'Varies',
+        time: '',
         activities: ['Magical Encounters', 'Smiles and Warm Hugs', 'Magical Photo Opportunity'],
         basePrice: 250,
         addCharacter: 150
@@ -303,7 +303,7 @@ export const publicEvents = [
         primary: false,
         type: 'Private',
         title: 'Story Time',
-        time: 'Varies',
+        time: '',
         activities: ['An Enchanting Story Time', 'Magical Encounters', 'Smiles and Warm Hugs', 'Magical Photo Opportunity'],
         basePrice: 250,
         addCharacter: 150
