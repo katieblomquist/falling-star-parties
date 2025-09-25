@@ -1,0 +1,20 @@
+.toggleWrapper{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    width: 100%;
+    border: 1px solid;
+    border-radius: 15px;
+    gap: 25px;
+}
+
+.toggle {
+    padding: 20px 50px;
+}
+
+.toggleActive{
+    padding: 20px 50px;
+    border-radius: 15px;
+    background: #343B95;
+    color: white;
+}

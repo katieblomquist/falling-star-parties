@@ -11,13 +11,14 @@ import ServicesCard from "./components/servicesCard/servicesCard";
 import { useState } from "react";
 import Swoop from "@/components/swoop/swoop";
 import ExtrasItem from "./components/extrasItem/extrasItem";
+import Toggle from "@/components/toggle/toggle";
 
 export default function Service() {
 
     const [toggle, setToggle] = useState('private');
 
-    function manageToggle() {
-        if (toggle === 'private') {
+    function manageToggle(index: number) {
+        if (index === 1) {
             setToggle('public');
         } else {
             setToggle('private');
@@ -32,7 +33,7 @@ export default function Service() {
                 buttonText={servicesPage[0].button} buttonVarient={servicesPage[0].variant} buttonIcon={0} buttonHref={servicesPage[0].href} swoopTop={true} swoopColor={"white"} swoopDirection={"right"} mobileImage={'/IMG_4261.jpg'} />
             <div className={styles.servicesBlock}>
                 <div className={styles.toggleSwitch}>
-
+                    <Toggle options={["Private Parties", "Public Events"]} onClick={manageToggle} />
                 </div>
                 {toggle === 'private' ? (
                     <>
