@@ -33,7 +33,7 @@ import { formal_script } from "@/app/mockdata"
             </div>
             <div className={styles.footerWrapper}>
                 <h3>Starting at ${props.basePrice.toString()}</h3>
-                <h3>Add more characters for ${props.addCharacter.toString()} each! </h3>
+                <h3 className={styles.moreCharacters}>Add more characters for ${props.addCharacter.toString()} each! </h3>
                 {props.type === "public" ? (
                     <p>*Non Profit Rates Available</p>
                 ): null}

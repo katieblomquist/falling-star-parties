@@ -1,0 +1,19 @@
+.headerWrapper{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: white;
+}
+
+.headerText{
+    margin-bottom: 25px;
+}
+
+.bodyWrapper{
+    max-width: 400px;
+    min-width: 300px;
+}
+
+.body {
+    color: white;
+}
