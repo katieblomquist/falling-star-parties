@@ -14,7 +14,7 @@ export default function ExtrasItem(props: {title: String, price: String, descrip
                 </div>
             </div>
             <div className={styles.bodyWrapper}>
-                <p>{props.description}</p>
+                <p className={styles.body}>{props.description}</p>
             </div>
         </div>
     )

@@ -273,19 +273,19 @@ export const privateExtras = [
         title: 'Stoyrbook Keepsake',
         price: 'Starting at $20',
         description: 'Take home the very storybook your character reads at the party! This beautifully illustrated keepsake is personalized, so your child can relive the magical tale again and again.',
-        icon: '/icons/book'
+        icon: '/icons/book.svg'
     },
     {
         title: 'Deluxe Princess Set',
         price: '$30',
         description: 'Let your little royal shine with an upgraded sparkling crown and a themed sash, perfect for a grand coronation and magical photo moments!',
-        icon: '/icons/crown'
+        icon: '/icons/crown.svg'
     },
     {
         title: 'Gift Bags',
         price: '$10 per child',
         description: 'Send every guest home with a touch of fairy tale wonder! Each themed gift bag is filled with enchanting surprises and treasures—and now includes an upgrade to the Deluxe Princess Set!',
-        icon: '/icons/giftBag'
+        icon: '/icons/giftBag.svg'
     },
 ]
 
@@ -315,13 +315,13 @@ export const publicExtras = [
         title: 'Interactive Story Time',
         price: '$75',
         description: 'Step into the story with our interactive adventure! Children get to use special props to help act out the tale alongside our character, making story time an engaging, hands-on experience they’ll remember long after the day is over.',
-        icon: '/icons/book'
+        icon: '/icons/book.svg'
     },
     {
         title: 'Character Cards',
         price: '$10 per child',
         description: 'Take home a special memory from your magical day! Each child receives a dazzling character signature card, signed by their favorite storybook friend—a cherished keepsake to remember their enchanting encounter.',
-        icon: '/icons/crown'
+        icon: '/icons/crown.svg'
     },
 ]
 

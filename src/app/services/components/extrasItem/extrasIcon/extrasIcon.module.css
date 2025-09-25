@@ -1,0 +1,14 @@
+.iconWrapper{
+    width: 100px;
+    height: 100px;
+    background-color: white;
+    border-radius: 100px;
+    margin: 0 25px 25px 0;
+}
+
+.icon{
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
