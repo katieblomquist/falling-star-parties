@@ -25,9 +25,9 @@ import { formal_script } from "@/app/mockdata"
                 <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>Invite your child's favorite princess for: </p>
             </div>
             <div className={styles.bodyWrapper}>
-                {props.activities.map((item) => {
+                {props.activities.map((item, i) => {
                     return(
-                        <p className={styles[`listItem${props.primary ? "Primary" : ""}`]}>{item}</p>
+                        <p key={i} className={styles[`listItem${props.primary ? "Primary" : ""}`]}>{item}</p>
                     )
                 })}
             </div>
