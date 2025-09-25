@@ -90,14 +90,17 @@ export default function Service() {
                         </div>
                         <div className={styles.extrasWrapper}>
                             <Swoop top={true} color={"#343B95"} direction={"left"} />
-                            <h2><span className={formal_script.className}>Enchanting</span> Extras</h2>
-                            <div className={styles.extras}>
-                                {publicExtras.map((item, i) => {
-                                    return (
-                                        <ExtrasItem key={i} title={item.title} price={item.price} description={item.description} icon={item.icon} />
-                                    )
-                                })}
+                            <div className={styles.extrasText}>
+                                <h2 className={styles.extrasTitle}><span className={formal_script.className}>Enchanting</span> Extras</h2>
+                                <div className={styles.extras}>
+                                    {publicExtras.map((item, i) => {
+                                        return (
+                                            <ExtrasItem key={i} title={item.title} price={item.price} description={item.description} icon={item.icon} />
+                                        )
+                                    })}
+                                </div>
                             </div>
+
                             <Swoop top={false} color={"#343B95"} direction={"right"} />
                         </div>
                     </>

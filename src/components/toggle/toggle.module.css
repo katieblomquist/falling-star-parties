@@ -3,17 +3,17 @@
     flex-direction: row;
     justify-content: space-evenly;
     width: 100%;
-    border: 1px solid;
+    border: 1px solid #343B95;
     border-radius: 15px;
-    gap: 25px;
 }
 
 .toggle {
-    padding: 15px 50px;
+    padding: 10px 40px;
+    cursor: pointer;
 }
 
 .toggleActive{
-    padding: 15px 50px;
+    padding: 10px 40px;
     border-radius: 15px;
     background: #343B95;
     color: white;
