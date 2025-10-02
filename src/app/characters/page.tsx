@@ -5,7 +5,6 @@ import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
 import { characters } from "../content";
 import PhotoCard from "@/components/photoCard/photoCard";
-import Splash from "@/components/splash/splash";
 
 export default function About() {
 
