@@ -57,3 +57,39 @@
     justify-content: center;
     gap: 5px;
 }
+
+.mobileCardWrapper{
+    width: 85vw;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    border: 2px solid #343B95;
+    gap: 35px;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.mobileCardWrapperPrimary{
+    width: 85vw;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #343B95 0%, #1B1E4E 100%);
+    gap: 50px;
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.mobileActivityList {
+    display: none;
+}
+
+.mobileActivityListOpen {
+    display: flex;
+    flex-direction: column;
+}

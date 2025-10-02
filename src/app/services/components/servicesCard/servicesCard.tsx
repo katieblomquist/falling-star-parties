@@ -1,9 +1,28 @@
 import Button from "@/components/Button/button"
 import styles from "./servicesCard.module.css"
 import { formal_script } from "@/app/mockdata"
+import { useEffect, useState } from "react";
 
 export default function ServicesCard(props: { primary: boolean, type: String, title: String, time: String, activities: Array<String>, basePrice: Number, addCharacter: Number }) {
 
+    const [open, setOpen] = useState(false);
+    const [width, setWidth] = useState(0);
+
+    useEffect(() => {
+        function handleResize() {
+            setWidth(window.innerWidth);
+        }
+
+        // Set width initially
+        handleResize();
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    function toggleActivities(){
+        setOpen(!open);
+    }
 
     function AddButton() {
         if (props.primary) {
@@ -17,36 +36,73 @@ export default function ServicesCard(props: { primary: boolean, type: String, ti
         )
     }
 
-    return (
-        <div className={styles[`cardWrapper${props.primary ? "Primary" : ""}`]}>
-            <div className={styles.headerWrapper}>
-                <h2 className={styles[`title${props.primary ? "Primary" : ""}`]}><span className={formal_script.className}>{props.title}</span></h2>
+    if (width > 1250) {
+        return (
+            <div className={styles[`cardWrapper${props.primary ? "Primary" : ""}`]}>
+                <div className={styles.headerWrapper}>
+                    <h2 className={styles[`title${props.primary ? "Primary" : ""}`]}><span className={formal_script.className}>{props.title}</span></h2>
 
-                {props.time != '' ? (
-                    <div>
-                        <h3 className={styles[`time${props.primary ? "Primary" : ""}`]}>{props.time}</h3>
-                        <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>Invite your child's favorite princess for: </p>
+                    {props.time != '' ? (
+                        <div>
+                            <h3 className={styles[`time${props.primary ? "Primary" : ""}`]}>{props.time}</h3>
+                            <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>Invite your child's favorite princess for: </p>
+                        </div>
+                    ) : (
+                        <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>Bring magic to your next event with: </p>
+                    )}
+
+                </div>
+                <div className={styles.bodyWrapper}>
+                    {props.activities.map((item, i) => {
+                        return (
+                            <p key={i} className={styles[`listItem${props.primary ? "Primary" : ""}`]}>{item}</p>
+                        )
+                    })}
+                </div>
+                <div className={styles.footerWrapper}>
+                    <h3>Starting at ${props.basePrice.toString()}</h3>
+                    <h3 className={styles.moreCharacters}>Add more characters for ${props.addCharacter.toString()} each! </h3>
+                    {props.type === "public" ? (
+                        <p>*Non Profit Rates Available</p>
+                    ) : null}
+                    {AddButton()}
+                </div>
+            </div>
+        )
+    } else {
+        return (
+            <div className={styles[`mobileCardWrapper${props.primary ? "Primary" : ""}`]}>
+                <div className={styles.mobileHeader}>
+                    <h2 className={styles[`title${props.primary ? "Primary" : ""}`]}><span className={formal_script.className}>{props.title}</span></h2>
+                    {props.time != '' ? (
+                        <div>
+                            <h3 className={styles[`time${props.primary ? "Primary" : ""}`]}>{props.time}</h3>
+                        </div>
+                    ) : null}
+
+                </div>
+                <div className={styles.mobileActivities} onClick={toggleActivities}>
+                    <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>What's Included </p>
+                    <div className={styles[`mobileActivityList${open ? "Open" : ""}`]}>
+                        {props.activities.map((item, i) => {
+                            return (
+                                <p key={i} className={styles[`listItem${props.primary ? "Primary" : ""}`]}>{item}</p>
+                            )
+                        })}
                     </div>
-                ) : (
-                    <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>Bring magic to your next event with: </p>
-                )}
 
+                </div>
+                <div className={styles.footerWrapper}>
+                    <h3>Starting at ${props.basePrice.toString()}</h3>
+                    <h3 className={styles.moreCharacters}>Add more characters for ${props.addCharacter.toString()} each! </h3>
+                    {props.type === "public" ? (
+                        <p>*Non Profit Rates Available</p>
+                    ) : null}
+                    {AddButton()}
+                </div>
             </div>
-            <div className={styles.bodyWrapper}>
-                {props.activities.map((item, i) => {
-                    return (
-                        <p key={i} className={styles[`listItem${props.primary ? "Primary" : ""}`]}>{item}</p>
-                    )
-                })}
-            </div>
-            <div className={styles.footerWrapper}>
-                <h3>Starting at ${props.basePrice.toString()}</h3>
-                <h3 className={styles.moreCharacters}>Add more characters for ${props.addCharacter.toString()} each! </h3>
-                {props.type === "public" ? (
-                    <p>*Non Profit Rates Available</p>
-                ) : null}
-                {AddButton()}
-            </div>
-        </div>
-    )
+        )
+    }
+
+
 }
