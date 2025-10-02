@@ -3,7 +3,6 @@ import { useRef, useEffect } from "react";
 import styles from "./placesAutocomplete.module.css"
 
 const libraries = ['places'];
-const apiKey = "AIzaSyDrIu7-K0NjzMKOmnE6_JBjtoVJhYbtEXw";
 export type Location = {
     address: string;
     lat: number;
