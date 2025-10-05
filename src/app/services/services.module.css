@@ -79,6 +79,10 @@
   color: white;
 }
 
+.toggleSwitch{
+  margin: 0 20px;
+}
+
 @media screen and (max-width: 900px) {
   .splashText {
     height: 100%;

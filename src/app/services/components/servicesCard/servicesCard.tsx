@@ -2,6 +2,7 @@ import Button from "@/components/Button/button"
 import styles from "./servicesCard.module.css"
 import { formal_script } from "@/app/mockdata"
 import { useEffect, useState } from "react";
+import { IconChevronUp, IconChevronDown } from "@tabler/icons-react";
 
 export default function ServicesCard(props: { primary: boolean, type: String, title: String, time: String, activities: Array<String>, basePrice: Number, addCharacter: Number }) {
 
@@ -20,7 +21,7 @@ export default function ServicesCard(props: { primary: boolean, type: String, ti
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    function toggleActivities(){
+    function toggleActivities() {
         setOpen(!open);
     }
 
@@ -82,7 +83,15 @@ export default function ServicesCard(props: { primary: boolean, type: String, ti
 
                 </div>
                 <div className={styles.mobileActivities} onClick={toggleActivities}>
-                    <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>What's Included </p>
+                    <div className={styles.mobileActivitiesHeader}>
+                        <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>What's Included </p>
+                        {open ? (
+                            <IconChevronUp />
+                        ) : (
+                            <IconChevronDown />
+                        )}
+                    </div>
+
                     <div className={styles[`mobileActivityList${open ? "Open" : ""}`]}>
                         {props.activities.map((item, i) => {
                             return (
