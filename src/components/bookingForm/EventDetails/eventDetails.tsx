@@ -1,14 +1,14 @@
 import Dropdown from "@/components/form/Dropdown/dropdown";
 import TextArea from "@/components/form/Text Area/textArea";
 import TextInput from "@/components/form/Text Input/textInput";
-import { truncate } from "fs";
-import { useState } from "react";
 import styles from "./eventDetails.module.css"
-import { Control, Controller } from "react-hook-form";
+import { Control, Controller, FieldErrors } from "react-hook-form";
 import { FormValues } from "@/app/book/page";
-import { photos, location, event } from "@/app/mockdata";
+import { photos, location } from "@/app/mockdata";
 
-export default function EventDetails(props: { controller: Control<FormValues, any>, eventType: string | undefined }) {
+const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.25rem" };
+
+export default function EventDetails(props: { controller: Control<FormValues, any>, eventType: string | undefined, errors: FieldErrors<FormValues> }) {
 
 
 
@@ -22,17 +22,46 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                             <Controller
                                 control={props.controller}
                                 name="ChildName"
+                                rules={{
+                                    validate: (value) => {
+                                        if (props.eventType !== "Birthday Party") {
+                                            return true;
+                                        }
+                                        return value?.trim().length > 0 || "Child name is required.";
+                                    }
+                                }}
                                 render={({ field: { onChange, value } }) => (
-                                    <TextInput type={"text"} placeholder={"Child's Name"} required={true} id={"childName"} label={"Child's Name"} input={value ? value : ''} onChange={onChange} />
+                                    <TextInput type={"text"} placeholder={"Child's Name"} required={true} id={"childName"} label={"Child's Name"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.ChildName)} />
                                 )}
                             />
+                            {props.errors.ChildName?.message ? (
+                                <p style={errorTextStyle}>{props.errors.ChildName.message}</p>
+                            ) : null}
                             <Controller
                                 control={props.controller}
                                 name="ChildAge"
+                                rules={{
+                                    validate: (value) => {
+                                        if (props.eventType !== "Birthday Party") {
+                                            return true;
+                                        }
+                                        if (!value) {
+                                            return "Child age is required.";
+                                        }
+                                        const age = Number(value);
+                                        if (Number.isNaN(age) || age <= 0) {
+                                            return "Enter a valid age.";
+                                        }
+                                        return true;
+                                    }
+                                }}
                                 render={({ field: { onChange, value } }) => (
-                                    <TextInput type={"number"} placeholder={"Child's Age"} required={true} id={"childAge"} label={"Child's Age"} input={value ? value : ''} onChange={onChange} />
+                                    <TextInput type={"number"} placeholder={"Child's Age"} required={true} id={"childAge"} label={"Child's Age"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.ChildAge)} />
                                 )}
                             />
+                            {props.errors.ChildAge?.message ? (
+                                <p style={errorTextStyle}>{props.errors.ChildAge.message}</p>
+                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -45,10 +74,21 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                             <Controller
                                 control={props.controller}
                                 name="OrganizationName"
+                                rules={{
+                                    validate: (value) => {
+                                        if (props.eventType === "Birthday Party") {
+                                            return true;
+                                        }
+                                        return value?.trim().length > 0 || "Organization name is required.";
+                                    }
+                                }}
                                 render={({ field: { onChange, value } }) => (
-                                    <TextInput type={"text"} placeholder={"Organization Name"} required={true} id={"organizationName"} label={"Organization Name"} input={value ? value : ''} onChange={onChange} />
+                                    <TextInput type={"text"} placeholder={"Organization Name"} required={true} id={"organizationName"} label={"Organization Name"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.OrganizationName)} />
                                 )}
                             />
+                            {props.errors.OrganizationName?.message ? (
+                                <p style={errorTextStyle}>{props.errors.OrganizationName.message}</p>
+                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -59,30 +99,51 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                 <Controller
                     control={props.controller}
                     name="Attendance"
+                    rules={{
+                        required: "Please enter attendance.",
+                        validate: (value) => {
+                            const count = Number(value);
+                            if (Number.isNaN(count) || count <= 0) {
+                                return "Enter a valid attendance count.";
+                            }
+                            return true;
+                        }
+                    }}
                     render={({ field: { onChange, value } }) => (
-                        <TextInput type={"number"} placeholder={"Children in Attendance"} required={true} id={"attendance"} label={"Number of Children in Attendance"} input={value} onChange={onChange} />
+                        <TextInput type={"number"} placeholder={"Children in Attendance"} required={true} id={"attendance"} label={"Number of Children in Attendance"} input={value} onChange={onChange} invalid={Boolean(props.errors.Attendance)} />
                     )}
                 />
+                {props.errors.Attendance?.message ? (
+                    <p style={errorTextStyle}>{props.errors.Attendance.message}</p>
+                ) : null}
             </div>
             <div>
                 <h3 className={styles.header}>Location Preference</h3>
                 <Controller
                     control={props.controller}
                     name="LocationPref"
+                    rules={{ required: "Please select a location preference." }}
                     render={({ field: { onChange, value } }) => (
                         <Dropdown options={location} selected={value} setData={onChange} />
                     )}
                 />
+                {props.errors.LocationPref?.message ? (
+                    <p style={errorTextStyle}>{props.errors.LocationPref.message}</p>
+                ) : null}
             </div>
             <div>
                 <h3 className={styles.header}>May we take photos of your event for our social media and website?</h3>
                 <Controller
                     control={props.controller}
                     name="PhotoPref"
+                    rules={{ required: "Please select a photo preference." }}
                     render={({ field: { onChange, value } }) => (
                         <Dropdown options={photos} selected={value} setData={onChange} />
                     )}
                 />
+                {props.errors.PhotoPref?.message ? (
+                    <p style={errorTextStyle}>{props.errors.PhotoPref.message}</p>
+                ) : null}
             </div>
             <div>
                 <h3 className={styles.header}>Additional Comments (Optional)</h3>

@@ -46,11 +46,8 @@ export default function ServicesCard(props: { primary: boolean, type: String, ti
                     {props.time != '' ? (
                         <div>
                             <h3 className={styles[`time${props.primary ? "Primary" : ""}`]}>{props.time}</h3>
-                            <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>Invite your child's favorite princess for: </p>
                         </div>
-                    ) : (
-                        <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>Bring magic to your next event with: </p>
-                    )}
+                    ) : null}
 
                 </div>
                 <div className={styles.bodyWrapper}>
