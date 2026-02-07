@@ -26,6 +26,10 @@
     border-radius: 15px;
 }
 
+.inputInvalid {
+    border-color: #b3261e;
+}
+
 .inputActive:hover {
     cursor: pointer;
 }

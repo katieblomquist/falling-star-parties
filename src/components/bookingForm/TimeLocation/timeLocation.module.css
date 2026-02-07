@@ -11,3 +11,20 @@
 .timeInput{
     min-width: 200px;
 }
+
+.addressGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.addressRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.addressField {
+    flex: 1 1 180px;
+    min-width: 180px;
+}

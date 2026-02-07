@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import styles from "./dropdown.module.css";
 
-export default function Dropdown(props: { options: string[], selected: string, setData: (data: string) => void }) {
+export default function Dropdown(props: { options: string[], selected: string, setData: (data: string) => void, invalid?: boolean }) {
 
     const options = props.options;
     const selected = props.selected;
@@ -37,7 +37,7 @@ export default function Dropdown(props: { options: string[], selected: string, s
     return (
         <>
             <div id="nick-test" className={styles.dropdown} ref={dropdownRef}>
-                <div className={styles.selected}
+                <div className={`${styles.selected}${props.invalid ? ` ${styles.selectedInvalid}` : ""}`}
                     onClick={handleToggle}
                     tabIndex={0}
                     onKeyDown={(e) => {

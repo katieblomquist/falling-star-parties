@@ -6,7 +6,7 @@ import { IconCalendarStar } from "@tabler/icons-react";
 import { DateTime } from "luxon";
 import styles from "./dateSelector.module.css";
 
-export default function DateSelector(props: { date: DateTime, selectDate: (date: DateTime) => void }) {
+export default function DateSelector(props: { date: DateTime, selectDate: (date: DateTime) => void, invalid?: boolean }) {
     const [calendarToggle, toggleCalendar] = useState(false);
     const calendarRef = useRef<HTMLDivElement | null>(null);
     const touchStartY = useRef<number | null>(null);
@@ -80,7 +80,7 @@ export default function DateSelector(props: { date: DateTime, selectDate: (date:
         <div className={styles.selector} ref={calendarRef}>
 
 
-            <div className={styles[`input${calendarToggle ? "Active" : ""}`]} onClick={handleToggle}>
+            <div className={`${styles[`input${calendarToggle ? "Active" : ""}`]}${props.invalid ? ` ${styles.inputInvalid}` : ""}`} onClick={handleToggle}>
                 {props.date === null ? (
                     <p className={styles.nonSelected}>MM/DD/YYYY</p>
                 ) : (
