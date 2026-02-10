@@ -11,32 +11,23 @@ export default function PhotoCard(props: { name: string, description: string, dr
 
     const [lightBoxOpen, setLightBox] = useState(false);
 
-    function lightBox() {
-        if (lightBoxOpen) {
-            setLightBox(false);
-            document.body.classList.remove('no-scroll');
-        } else {
-            setLightBox(true);
-            document.body.classList.add('no-scroll');
-        }
+
+    function openLightBox() {
+        setLightBox(true);
+        document.body.classList.add('no-scroll');
+    }
+
+    function closeLightBox() {
+        setLightBox(false);
+        document.body.classList.remove('no-scroll');
     }
 
     useEffect(() => {
-        function lightBox() {
-            if (lightBoxOpen) {
-                setLightBox(false);
-                document.body.classList.remove('no-scroll');
-            } else {
-                setLightBox(true);
-                document.body.classList.add('no-scroll');
-            }
-        }
-        
         if (!lightBoxOpen) return;
 
         function handleKeyDown(e: KeyboardEvent) {
             if (e.key === "Escape") {
-                lightBox();
+                closeLightBox();
             }
         }
 
@@ -47,12 +38,11 @@ export default function PhotoCard(props: { name: string, description: string, dr
     return (
         <>
             {lightBoxOpen ? (
-                <LightBox close={lightBox} backgroundImage={props.background}>
+                <LightBox close={closeLightBox} backgroundImage={props.background}>
                     <CharacterInfo name={props.name} description={props.description} dresses={props.dresses} />
                 </LightBox>
-
             ) : null}
-            <div className={styles.character} onClick={lightBox}>
+            <div className={styles.character} onClick={openLightBox}>
                 <div className={styles.photo} style={{ backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.00) 30%, #1D1E1FEE 95%), url('${props.dresses[0].img}')` }}>
                     <h3 className={styles.characterName}> <span className={formal_script.className}>{props.name}</span></h3>
                 </div>
