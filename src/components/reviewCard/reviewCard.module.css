@@ -37,7 +37,7 @@
     color: #5a62b8;
     text-decoration: underline;
 }
-
+/* Hover effect removed from testimonial cards */
 .navItem{
     cursor: pointer;
 }
@@ -78,13 +78,6 @@
     font-family: Georgia, serif;
     line-height: 1;
 }
-
-.blurb:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(52, 59, 149, 0.08), 0 2px 4px rgba(52, 59, 149, 0.06);
-    border-color: #b8c0de;
-}
-
 .blurb h3 {
     font-size: 1.3em;
     color: #5a62b8;
