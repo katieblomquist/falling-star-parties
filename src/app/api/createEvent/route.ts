@@ -6,6 +6,9 @@ import { characters, dresses, extras, packages } from "@/app/mockdata";
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const notionDatabaseId = process.env.NOTION_DATABASE_ID;
+const RECAPTCHA_V3_SECRET = process.env.RECAPTCHA_V3_SECRET_KEY ?? '';
+const RECAPTCHA_V2_SECRET = process.env.RECAPTCHA_V2_SECRET_KEY ?? '';
+const SCORE_THRESHOLD = 0.5;
 
 type CharacterSelection = { characterId: number; dressId: number };
 
@@ -72,7 +75,36 @@ export async function POST(request: NextRequest) {
       locationPref,
       photoPref,
       additionalInfo,
+      captchaToken,
+      captchaVersion,
     } = body;
+
+    // --- reCAPTCHA verification ---
+    if (!captchaToken) {
+      return NextResponse.json({ error: "Captcha verification required" }, { status: 400 });
+    }
+
+    const captchaSecret = captchaVersion === 'v2' ? RECAPTCHA_V2_SECRET : RECAPTCHA_V3_SECRET;
+    if (!captchaSecret) {
+      console.error(`Missing RECAPTCHA secret key for ${captchaVersion}`);
+      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
+    }
+
+    const captchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({ secret: captchaSecret, response: captchaToken }),
+    });
+    const captchaData = await captchaResponse.json();
+
+    if (!captchaData.success) {
+      return NextResponse.json({ error: "Captcha verification failed" }, { status: 403 });
+    }
+
+    if (captchaVersion === 'v3' && (captchaData.score ?? 0) < SCORE_THRESHOLD) {
+      return NextResponse.json({ error: "Captcha score too low" }, { status: 403 });
+    }
+    // --- End reCAPTCHA verification ---
 
     if (!notionDatabaseId) {
       return NextResponse.json({ error: "Missing NOTION_DATABASE_ID" }, { status: 500 });

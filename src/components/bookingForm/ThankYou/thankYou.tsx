@@ -31,7 +31,7 @@ export default function ThankYou({ requestId, firstName }: ThankYouProps) {
                 <div className={styles.nextSteps}>
                     <h2 className={styles.subtitle}>What happens next?</h2>
                     <ul className={styles.stepsList}>
-                        <li>We&apos;ll review your event details within 24-48 hours</li>
+                        <li>We&apos;ll review your event details within 72 hours</li>
                         <li>You&apos;ll receive a confirmation email with pricing and availability</li>
                         <li>Once confirmed, you&apos;ll receive all the event details</li>
                     </ul>

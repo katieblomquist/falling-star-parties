@@ -16,6 +16,7 @@ import { CharacterSelection, formal_script } from "../mockdata";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
 import Characters from "@/components/bookingForm/Characters/characters";
+import { useRecaptcha } from "@/components/recaptcha/useRecaptcha";
 
 export type FormValues = {
     FirstName: string,
@@ -46,6 +47,8 @@ export default function Book() {
 
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [requestId, setRequestId] = useState<string>('');
+    const [isLoading, setIsLoading] = useState(false);
+    const recaptcha = useRecaptcha();
 
     const {
         handleSubmit,
@@ -135,12 +138,22 @@ export default function Book() {
     }
 
     const submit = handleSubmit((data) => {
+        if (!recaptcha.isVerified || !recaptcha.captchaToken) {
+            alert("Please complete the captcha verification before submitting.");
+            return;
+        }
+        setIsLoading(true);
+        const body = {
+            ...mapFormValuesToRequestBody(data),
+            captchaToken: recaptcha.captchaToken,
+            captchaVersion: recaptcha.captchaVersion,
+        };
         fetch("/api/createEvent", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(mapFormValuesToRequestBody(data)),
+            body: JSON.stringify(body),
         })
             .then(response => {
                 if (!response.ok) {
@@ -154,9 +167,11 @@ export default function Book() {
             .then(responseData => {
                 setRequestId(responseData.pageId);
                 setIsSubmitted(true);
+                setIsLoading(false);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             })
             .catch(error => {
+                setIsLoading(false);
                 alert("Error submitting event: " + error.message);
             });
     });
@@ -181,11 +196,16 @@ export default function Book() {
                 </div>
                 <form>
                     <div className={styles.booking}>
-                        {isSubmitted ? (
+                        {isLoading ? (
+                            <div style={{textAlign: 'center', padding: '40px 0'}}>
+                                <div className={styles.spinner}></div>
+                                <p style={{marginTop: 16}}>Sending your request...</p>
+                            </div>
+                        ) : isSubmitted ? (
                             <ThankYou requestId={requestId} firstName={formValues.FirstName} />
                         ) : (
                             <div className={styles.stepper}>
-                                <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} />
+                                <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} recaptcha={recaptcha} />
                             </div>
                         )}
 

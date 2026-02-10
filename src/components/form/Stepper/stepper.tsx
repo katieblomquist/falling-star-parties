@@ -5,8 +5,16 @@ import styles from "./stepper.module.css";
 import { IconCircleCheckFilled } from '@tabler/icons-react'
 import Button from "@/components/Button/button";
 import { StepperContent } from "@/app/mockdata";
+import RecaptchaV2Fallback from "@/components/recaptcha/RecaptchaV2Fallback";
 
-export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string, submit: () => void }) {
+interface RecaptchaState {
+    isVerified: boolean;
+    requiresV2Fallback: boolean;
+    isLoading: boolean;
+    onV2Verify: (token: string) => void;
+}
+
+export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string, submit: () => void, recaptcha?: RecaptchaState }) {
 
     const [current, setCurrent] = useState(0);
     const [inReview, setReview] = useState(false);
@@ -66,13 +74,20 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
 
     function buildStepper(step: StepperContent) {
         let content;
+        const allStepsComplete = stepperContent.every((x) => x.completed);
+        const captchaReady = props.recaptcha ? props.recaptcha.isVerified : true;
+        const showV2Fallback = props.recaptcha?.requiresV2Fallback && !props.recaptcha?.isVerified;
+
         if (step.id === current && step.id === last) {
             content =
                 <div className={styles.stepContent}>
                     <div className={styles.stepContentInput}>{step.content}</div>
+                    {showV2Fallback && (
+                        <RecaptchaV2Fallback onVerify={props.recaptcha!.onV2Verify} />
+                    )}
                     <div className={styles.stepFiveButtons}>
                         <Button text={props.secondaryFinalStepButton} action={handleEdit} variant={2} icon={0} enabled={true} fullWidth={true} />
-                        <Button text={props.primaryFinalStepButton} action={handleSubmit} variant={1} icon={2} enabled={stepperContent.every((x) => x.completed)} fullWidth={true} />
+                        <Button text={props.primaryFinalStepButton} action={handleSubmit} variant={1} icon={2} enabled={allStepsComplete && captchaReady} fullWidth={true} />
                     </div>
                 </div>
         } else if (step.id === current && step.id === 0) {

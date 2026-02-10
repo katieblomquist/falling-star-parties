@@ -12,6 +12,7 @@ export default function Footer(){
                     <p ><a href='/tos' className={styles.link}>Terms of Service</a></p>
                     <p className={styles.link}>Media Kit</p>
                 </div>
+                <p className={styles.recaptcha}>This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.</p>
         </div>
     )
 }
