@@ -19,17 +19,11 @@ export default function Dropdown(props: { options: string[], selected: string, s
     }
 
     function handleToggle() {
-        if (toggled) {
-            setToggle(false);
-            document.body.classList.remove('no-scroll');
-        } else {
-            setToggle(true);
-            document.body.classList.add('no-scroll');
-        }
+        setToggle(!toggled);
     }
 
-    const handleClickOutside = (event: MouseEvent) => { if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) { setToggle(false) } };
-    const handleEscapeKey = (event: KeyboardEvent) => { if (event.key === 'Escape' && !dropdownRef.current?.contains(event.target as Node)) { setToggle(false) } };
+    const handleClickOutside = (event: MouseEvent) => { if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) { setToggle(false); } };
+    const handleEscapeKey = (event: KeyboardEvent) => { if (event.key === 'Escape' && !dropdownRef.current?.contains(event.target as Node)) { setToggle(false); } };
 
     useEffect(() => { document.addEventListener('mousedown', handleClickOutside); return () => { document.removeEventListener('mousedown', handleClickOutside); }; }, []);
     useEffect(() => { document.addEventListener('keydown', handleEscapeKey) }, []);
