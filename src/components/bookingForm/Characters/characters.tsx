@@ -1,11 +1,12 @@
-import { FormValues } from "@/app/book/page"
+import React, { useMemo } from "react";
+import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
+import { FormValues } from "@/app/book/page";
 import { Control, Controller, FieldErrors, UseFormResetField, useController, useWatch } from "react-hook-form";
-import { Character, CharacterSelection, characters, numberCharacters, dresses } from "@/app/mockdata"
-import CharacterCard from "@/components/form/Selection Cards/characterCard"
-import SelectionCard from "@/components/form/Selection Cards/selectionCard"
-import styles from "./characters.module.css"
+import { Character, CharacterSelection, characters, numberCharacters, dresses } from "@/app/mockdata";
+import CharacterCard from "@/components/form/Selection Cards/characterCard";
+import SelectionCard from "@/components/form/Selection Cards/selectionCard";
+import styles from "./characters.module.css";
 import Dropdown from "@/components/form/Dropdown/dropdown";
-import { useMemo } from "react";
 
 const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.25rem" };
 
@@ -66,6 +67,12 @@ export default function Characters(props: { controller: Control<FormValues, any>
         return updatedValue;
     }
 
+    // Toggle state for each character in dress selection
+    const [openDress, setOpenDress] = React.useState<{ [characterId: number]: boolean }>({});
+
+    // Only show unselected characters if selection limit not reached
+    const canSelectMore = (characterField.value?.length ?? 0) < parseInt(numCharacters || '0');
+
     return (
         <>
             <div>
@@ -86,77 +93,46 @@ export default function Characters(props: { controller: Control<FormValues, any>
                         {props.errors.NumCharacters?.message ? (
                             <p style={errorTextStyle}>{props.errors.NumCharacters.message}</p>
                         ) : null}
-
                     </div>
                 </div>
             </div>
             {parseInt(numCharacters) ? (
                 <div className={styles.characters}>
-                    {/* {
-                        selectedCharacters?.length === parseInt(numCharacters) ? (
-                            <div>
-                                <h4 className={styles.subheader}>Characters</h4>
-                                <div className={styles.selections}>
-                                    {selectedCharacters.map((item) => {
-                                        return (
-                                            <Controller
-                                                control={props.controller}
-                                                name="Character"
-                                                render={({ field: { onChange, value } }) => (
-
-                                                    <SelectionCard CardContent={CharacterCard} content={{
-                                                        id: characters[item.characterId - 1].id,
-                                                        name: characters[item.characterId - 1].name,
-                                                        img: characters[item.characterId - 1].img
-
-                                                    }} selected={value?.map((selected) => selected.characterId).includes(item.characterId)} makeSelection={(id, selected) => {
-                                                        onChange(setCharacters(id, selected, value))
-                                                    }} />
-                                                )}
-                                            />
-                                        )
-                                    })}
-                                </div>
-                                <Controller
-                                    control={props.controller}
-                                    name="Character"
-                                    render={({ field: { onChange, value } }) => (
-                                        <h4 className={styles.changeSelection} onClick={handleChangeCharacters} >Change Selection</h4>
-                                    )}
-                                />
-
-                            </div>
-                        ) : ( */}
                     <div>
-                        <div>
-                            <h4 className={styles.subheader}>Characters</h4>
-                            <div className={styles.selections}>
-                                {characterOptions.map((item) => {
-                                    return (
-                                        <SelectionCard
-                                            key={item.id}
-                                            CardContent={CharacterCard}
-                                            content={{
-                                                id: item.id,
-                                                name: item.name,
-                                                img: item.img
-
-                                            }}
-                                            selected={selectedCharacterIds.includes(item.id)}
-                                            makeSelection={(id, selected) => {
-                                                characterField.onChange(setCharacters(id, selected, characterField.value ?? []))
-                                            }}
-                                        />
-                                    )
-                                })}
-                            </div>
-                            {props.errors.Character?.message ? (
-                                <p style={errorTextStyle}>{props.errors.Character.message}</p>
-                            ) : null}
-
+                        <h4 className={styles.subheader}>Characters</h4>
+                        <div className={styles.selections}>
+                            {characterOptions.filter(item =>
+                                selectedCharacterIds.includes(item.id) || canSelectMore
+                            ).map((item) => (
+                                <SelectionCard
+                                    key={item.id}
+                                    CardContent={CharacterCard}
+                                    content={{
+                                        id: item.id,
+                                        name: item.name,
+                                        img: item.img
+                                    }}
+                                    selected={selectedCharacterIds.includes(item.id)}
+                                    makeSelection={(id, selected) => {
+                                        characterField.onChange(setCharacters(id, selected, characterField.value ?? []))
+                                    }}
+                                />
+                            ))}
                         </div>
+                        {props.errors.Character?.message ? (
+                            <p style={errorTextStyle}>{props.errors.Character.message}</p>
+                        ) : null}
+                        {selectedCharacterIds.length > 0 && (
+                            <div style={{ marginTop: 12 }}>
+                                <span
+                                    style={{ color: '#343B95', textDecoration: 'underline', cursor: 'pointer' }}
+                                    onClick={() => characterField.onChange([])}
+                                >
+                                    Clear Character Selection
+                                </span>
+                            </div>
+                        )}
                     </div>
-
                     <div>
                         {characterField.value?.length === parseInt(numCharacters) && numCharacters !== undefined ? (
                             <>
@@ -164,31 +140,71 @@ export default function Characters(props: { controller: Control<FormValues, any>
                                 <div className={styles.dressSelection}>
                                     {characterField.value.map((character) => {
                                         const characterData = characterOptions.find(c => c.id === character.characterId);
-                                        // Note: mock data uses characterId (0-based) = character.id - 1
                                         const characterCostumes = dresses.filter((item) => item.characterId === character.characterId - 1);
-                                        
-                                        if (characterCostumes.length === 0) return null;
-                                        
+                                        if (!characterData || characterCostumes.length === 0) return null;
+                                        const isOpen = openDress[character.characterId] ?? false;
                                         return (
-                                            <div key={character.characterId}>
-                                                <h4 className={styles.subheader}>{characterData?.name}</h4>
-                                                <div className={styles.selections}>
-                                                    {characterCostumes.map((dress) => (
-                                                        <SelectionCard 
-                                                            key={dress.id}
-                                                            CardContent={CharacterCard} 
-                                                            content={{
-                                                                id: dress.id,
-                                                                name: dress.name,
-                                                                img: dress.img
-                                                            }} 
-                                                            selected={character.dressId === dress.id}
-                                                            makeSelection={(id) => {
-                                                                characterField.onChange(setDress(id, character.characterId, characterField.value ?? []))
-                                                            }} 
-                                                        />
-                                                    ))}
+                                            <div
+                                                key={character.characterId}
+                                                style={{
+                                                    border: '1px solid #E0E0E0',
+                                                    borderRadius: 12,
+                                                    padding: 16,
+                                                    background: '#FAFAFA',
+                                                    boxShadow: '0 1px 4px rgba(52,59,149,0.04)',
+                                                }}
+                                            >
+                                                <div
+                                                    className={styles.subheader}
+                                                    style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', justifyContent: 'space-between' }}
+                                                    onClick={() => setOpenDress(prev => ({ ...prev, [character.characterId]: !isOpen }))}
+                                                >
+                                                    <span>{characterData.name}</span>
+                                                    {isOpen ? (
+                                                        <IconChevronUp size={20} />
+                                                    ) : (
+                                                        <IconChevronDown size={20} />
+                                                    )}
                                                 </div>
+                                                {isOpen && (
+                                                    <div className={styles.selections}>
+                                                        {characterCostumes
+                                                            .filter(dress => dress.id === character.dressId || character.dressId === -1)
+                                                            .map((dress) => (
+                                                                <SelectionCard
+                                                                    key={dress.id}
+                                                                    CardContent={CharacterCard}
+                                                                    content={{
+                                                                        id: dress.id,
+                                                                        name: dress.name,
+                                                                        img: dress.img
+                                                                    }}
+                                                                    selected={character.dressId === dress.id}
+                                                                    makeSelection={(id) => {
+                                                                        characterField.onChange(setDress(id, character.characterId, characterField.value ?? []))
+                                                                    }}
+                                                                />
+                                                            ))}
+                                                        {character.dressId !== -1 && (
+                                                            <div style={{ width: '100%' }}>
+                                                                <span
+                                                                    style={{
+                                                                        color: '#343B95',
+                                                                        textDecoration: 'underline',
+                                                                        cursor: 'pointer',
+                                                                        display: 'block',
+                                                                        marginTop: 16
+                                                                    }}
+                                                                    onClick={() => {
+                                                                        characterField.onChange(setDress(-1, character.characterId, characterField.value ?? []))
+                                                                    }}
+                                                                >
+                                                                    Clear Dress Selection
+                                                                </span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )}
                                             </div>
                                         )
                                     })}

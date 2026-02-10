@@ -11,3 +11,7 @@
     color: #1D1E1F;
     justify-content: center;
 }
+
+.headerActive {
+    color: #fff;
+}

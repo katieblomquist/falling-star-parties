@@ -5,7 +5,7 @@
     border-radius: 15px;
     padding: 20px;
     width: fit-content;
-    min-width: 175px;
+    min-width: 185px;
 }
 .characterCard:hover{
     cursor: pointer;
@@ -19,7 +19,7 @@
     border-radius: 15px;
     padding: 20px;
     width: fit-content;
-    min-width: 175px;
+    min-width: 185px;
 }
 .characterCardActive:hover{
     cursor: pointer;
