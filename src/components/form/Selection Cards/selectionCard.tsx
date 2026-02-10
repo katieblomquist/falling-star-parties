@@ -1,6 +1,7 @@
 'use client';
 
-import { IconCircle, IconCircleFilled } from "@tabler/icons-react";
+import { IconCircle } from "@tabler/icons-react";
+import IconCircleCheck from "./IconCircleCheck";
 import styles from "./selectionCard.module.css";
 import { ComponentType } from "react";
 import { Services, Character, CharacterDress } from "@/app/mockdata";
@@ -21,7 +22,7 @@ function TextCard<T extends Services | Character | CharacterDress>(props: { Card
         <div className={styles[`textCard${props.selected ? "Active" : ""}`]} onClick={handleClick}>
         <div className={styles.selectionName}>
             {props.selected ? (
-                <IconCircleFilled stroke={1} color="#343B95" />
+                <IconCircleCheck size={24} color="#343B95" stroke={2} />
             ) : (<IconCircle stroke={1} color="#A4A8B0" />)}
         </div>
         <props.CardContent content={props.content} />
@@ -37,7 +38,9 @@ function CharacterCard<T extends Services | Character | CharacterDress>(props: {
     }
     const cardBackground = isCharacterOrDress(props.content)
         ? {
-            backgroundImage: `linear-gradient(180deg, rgba(255, 255, 255, 0.00) 50%, #FFF 100%), url(${props.content.img})`,
+            backgroundImage: props.selected
+                ? `linear-gradient(180deg, rgba(52,59,149,0.00) 35%, #343B95 100%), url(${props.content.img})`
+                : `linear-gradient(180deg, rgba(255, 255, 255, 0.00) 50%, #FFF 100%), url(${props.content.img})`,
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat'
         }
@@ -55,10 +58,10 @@ function CharacterCard<T extends Services | Character | CharacterDress>(props: {
         <div className={styles[`characterCard${props.selected ? "Active" : ""}`]} style={cardBackground} onClick={handleClick}>
             <div className={styles.selectionName}>
                 {props.selected ? (
-                    <IconCircleFilled stroke={1} color="#343B95" />
+                    <IconCircleCheck size={24} color="#343B95" stroke={2} />
                 ) : (<IconCircle stroke={1} color="#A4A8B0" />)}
             </div>
-            <props.CardContent content={props.content} />
+            <props.CardContent content={props.content} selected={props.selected} />
         </div>
     )
 

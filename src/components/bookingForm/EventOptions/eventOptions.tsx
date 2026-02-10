@@ -104,7 +104,10 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                     <SelectionCard CardContent={HorizontalCard} content={{
                                         id: item.id,
                                         type: item.type,
-                                        title: item.title + " - $" + item.cost + " per child",
+                                        title:
+                                            item.cost === 0
+                                                ? item.title + " - No additional charge!"
+                                                : item.title + " - $" + item.cost + " per child",
                                         description: item.description,
                                         duration: "",
                                         cost: item.cost,

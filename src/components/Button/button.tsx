@@ -2,7 +2,7 @@ import { IconArrowRight, IconBrandTelegram, IconSend, IconArrowLeft } from "@tab
 import styles from "./button.module.css";
 import Link from 'next/link';
 
-export default function Button(props: { text: string, action?: () => void, variant: number, icon: number, enabled: boolean, href?: string }) {
+export default function Button(props: { text: string, action?: () => void, variant: number, icon: number, enabled: boolean, href?: string, fullWidth?: boolean }) {
 
     const variant = props.variant;
     const text = props.text
@@ -34,9 +34,10 @@ export default function Button(props: { text: string, action?: () => void, varia
     }
 
 
+    const fullWidthClass = props.fullWidth ? styles.fullWidth : '';
     if (variant === 1 && props.action) {
         return (
-            <div className={styles[`primary${props.enabled ? "" : "Disabled"}`]} onClick={buttonAction}>
+            <div className={fullWidthClass ? `${styles[`primary${props.enabled ? "" : "Disabled"}`]} ${fullWidthClass}` : styles[`primary${props.enabled ? "" : "Disabled"}`]} onClick={buttonAction}>
                 <p className={styles[`primaryText${props.enabled ? "" : "Disabled"}`]}>{text}</p>
                 {icon > 0 ? (
                     <div className={styles.icon}>{addIcon()}</div>
@@ -45,7 +46,7 @@ export default function Button(props: { text: string, action?: () => void, varia
         )
     } else if (variant === 2 && props.action) {
         return (
-            <div className={styles.secondary} onClick={buttonAction}>
+            <div className={fullWidthClass ? `${styles.secondary} ${fullWidthClass}` : styles.secondary} onClick={buttonAction}>
                 <p className={styles.secondaryText}>{text}</p>
                 {icon > 0 ? (
                     <div className={styles.icon}>{addIcon()}</div>

@@ -163,9 +163,9 @@ export default function Book() {
 
     const stepperTest = [
         { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} resetField={resetField} errors={errors} /> },
-        { id: 1, title: "Time and Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} errors={errors} /> },
+        { id: 1, title: "Time & Location", completed: TimeLocationIsComplete, content: <TimeLocation controller={control} errors={errors} /> },
         { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} errors={errors} /> },
-        { id: 3, title: "Character Selection", completed: CharacterSelectionIsComplete, content: <Characters controller={control} resetField={resetField} errors={errors} /> },
+        { id: 3, title: "Characters", completed: CharacterSelectionIsComplete, content: <Characters controller={control} resetField={resetField} errors={errors} /> },
         { id: 4, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete, content: <EventDetails controller={control} eventType={formValues.EventType} errors={errors} /> },
         { id: 5, title: "Review Request", completed: InformationIsComplete && TimeLocationIsComplete && EventOptionsIsComplete && (EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete), content: formIsValid ? <ReviewRequest values={formValues} /> : null }
     ];
@@ -185,7 +185,7 @@ export default function Book() {
                             <ThankYou requestId={requestId} firstName={formValues.FirstName} />
                         ) : (
                             <div className={styles.stepper}>
-                                <Stepper content={stepperTest} nextButtonText={"Continue"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} />
+                                <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} />
                             </div>
                         )}
 

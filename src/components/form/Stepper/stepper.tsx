@@ -71,8 +71,8 @@ export default function Stepper(props: { content: StepperContent[], nextButtonTe
                 <div className={styles.stepContent}>
                     <div className={styles.stepContentInput}>{step.content}</div>
                     <div className={styles.stepFiveButtons}>
-                        <Button text={props.secondaryFinalStepButton} action={handleEdit} variant={2} icon={0} enabled={true} />
-                        <Button text={props.primaryFinalStepButton} action={handleSubmit} variant={1} icon={2} enabled={stepperContent.every((x) => x.completed)} />
+                        <Button text={props.secondaryFinalStepButton} action={handleEdit} variant={2} icon={0} enabled={true} fullWidth={true} />
+                        <Button text={props.primaryFinalStepButton} action={handleSubmit} variant={1} icon={2} enabled={stepperContent.every((x) => x.completed)} fullWidth={true} />
                     </div>
                 </div>
         } else if (step.id === current && step.id === 0) {
