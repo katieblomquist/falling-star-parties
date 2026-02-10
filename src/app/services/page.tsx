@@ -1,27 +1,29 @@
+'use client'
+
 import NavBar from "@/components/navbar/navbar";
 import styles from "./services.module.css"
-import ServiceTabs from "@/components/serviceTabs/serviceTabs";
-import Tabs from "@/components/tabs/tabs";
-import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
-import { serviceTabs, servicesPage } from "../content";
+import { privateExtras, privateParties, publicEvents, publicExtras, servicesPage } from "../content";
 import { formal_script } from "../mockdata";
-import Button from "@/components/Button/button";
 import MasonryPhotos from "@/components/masonryPhotos/masonryPhotos";
 import Splash from "@/components/splash/splash";
+import ServicesCard from "./components/servicesCard/servicesCard";
+import { useState } from "react";
+import Swoop from "@/components/swoop/swoop";
+import ExtrasItem from "./components/extrasItem/extrasItem";
+import Toggle from "@/components/toggle/toggle";
 
 export default function Service() {
 
-    const tabArray = serviceTabs.map(tab => ({
-        label: tab.title,
-        content: (
-            <ServiceTabs
-                beginningBlurb={tab.topBlurb}
-                listItems={tab.listItems}
-                endBlurb={tab.bottomBlurb}
-            />
-        ),
-    }));
+    const [toggle, setToggle] = useState('private');
+
+    function manageToggle(index: number) {
+        if (index === 1) {
+            setToggle('public');
+        } else {
+            setToggle('private');
+        }
+    }
 
     return (
         <>
@@ -30,10 +32,80 @@ export default function Service() {
                 blurb={servicesPage[0].blurb}
                 buttonText={servicesPage[0].button} buttonVarient={servicesPage[0].variant} buttonIcon={0} buttonHref={servicesPage[0].href} swoopTop={true} swoopColor={"white"} swoopDirection={"right"} mobileImage={'/IMG_4261.jpg'} />
             <div className={styles.servicesBlock}>
-                <div className={styles.services}>
-                    <h2 className={styles.servicesHeader}>Our Services</h2>
-                    <Tabs content={tabArray} blue={true} />
+                <div className={styles.toggleSwitch}>
+                    <Toggle options={["Private Parties", "Public Events"]} onClick={manageToggle} />
                 </div>
+                {toggle === 'private' ? (
+                    <>
+                        <div className={styles.cardWrapper}>
+                            {privateParties.map((item, i) => {
+                                return (
+                                    <ServicesCard
+                                        key={i}
+                                        primary={item.primary}
+                                        type={item.type}
+                                        title={item.title}
+                                        time={item.time}
+                                        activities={item.activities}
+                                        basePrice={item.basePrice}
+                                        addCharacter={item.addCharacter}
+                                    />
+                                );
+                            })}
+                        </div>
+                        <div className={styles.extrasWrapper}>
+                            <Swoop top={true} color={"#343B95"} direction={"left"} />
+                            <div className={styles.extrasText}>
+                                <h2 className={styles.extrasTitle}><span className={formal_script.className}>Enchanting</span> Extras</h2>
+                                <div className={styles.extras}>
+                                    {privateExtras.map((item, i) => {
+                                        return (
+                                            <ExtrasItem key={i} title={item.title} price={item.price} description={item.description} icon={item.icon} />
+                                        )
+                                    })}
+                                </div>
+                            </div>
+
+                            <Swoop top={false} color={"#343B95"} direction={"right"} />
+                        </div>
+                    </>
+
+                ) : (
+                    <>
+                        <div className={styles.cardWrapper}>
+                            {publicEvents.map((item, i) => {
+                                return (
+                                    <ServicesCard
+                                        key={i}
+                                        primary={item.primary}
+                                        type={item.type}
+                                        title={item.title}
+                                        time={item.time}
+                                        activities={item.activities}
+                                        basePrice={item.basePrice}
+                                        addCharacter={item.addCharacter}
+                                    />
+                                );
+                            })}
+                        </div>
+                        <div className={styles.extrasWrapper}>
+                            <Swoop top={true} color={"#343B95"} direction={"left"} />
+                            <div className={styles.extrasText}>
+                                <h2 className={styles.extrasTitle}><span className={formal_script.className}>Enchanting</span> Extras</h2>
+                                <div className={styles.extras}>
+                                    {publicExtras.map((item, i) => {
+                                        return (
+                                            <ExtrasItem key={i} title={item.title} price={item.price} description={item.description} icon={item.icon} />
+                                        )
+                                    })}
+                                </div>
+                            </div>
+
+                            <Swoop top={false} color={"#343B95"} direction={"right"} />
+                        </div>
+                    </>
+                )}
+
                 <div className={styles.photosBlock}>
                     <h2 className={styles.photosHeader}>A <span className={formal_script.className}>Glimpse</span> of Past Events</h2>
                     <MasonryPhotos />

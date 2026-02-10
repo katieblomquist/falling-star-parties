@@ -1,3 +1,10 @@
+/* Prevent body scroll when lightbox is open */
+.no-scroll {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100vw;
+}
+
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
@@ -97,4 +104,8 @@ h2 {
 
 h3{
   font-weight: 400;
+}
+
+.grecaptcha-badge {
+  visibility: hidden !important;
 }

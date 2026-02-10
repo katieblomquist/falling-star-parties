@@ -6,7 +6,7 @@ import { IconCalendarStar } from "@tabler/icons-react";
 import { DateTime } from "luxon";
 import styles from "./dateSelector.module.css";
 
-export default function DateSelector(props: { date: DateTime, selectDate: (date: DateTime) => void }) {
+export default function DateSelector(props: { date: DateTime, selectDate: (date: DateTime) => void, invalid?: boolean }) {
     const [calendarToggle, toggleCalendar] = useState(false);
     const calendarRef = useRef<HTMLDivElement | null>(null);
     const touchStartY = useRef<number | null>(null);
@@ -25,7 +25,6 @@ export default function DateSelector(props: { date: DateTime, selectDate: (date:
             const distance = touchStartY.current - touchEndY.current;
             if (distance > 50 && calendarToggle) { // Adjust threshold for sensitivity
                 toggleCalendar(false);
-                document.body.classList.remove('no-scroll');
             }
         }
         touchStartY.current = null;
@@ -33,13 +32,7 @@ export default function DateSelector(props: { date: DateTime, selectDate: (date:
     }
 
     function handleToggle() {
-        if (calendarToggle) {
-            toggleCalendar(false);
-            document.body.classList.remove('no-scroll');
-        } else {
-            toggleCalendar(true);
-            document.body.classList.add('no-scroll');
-        }
+        toggleCalendar(!calendarToggle);
     }
 
     function setSelection(date: DateTime) {
@@ -49,13 +42,7 @@ export default function DateSelector(props: { date: DateTime, selectDate: (date:
 
     useEffect(() => {
         function handleToggle() {
-            if (calendarToggle) {
-                toggleCalendar(false);
-                document.body.classList.remove('no-scroll');
-            } else {
-                toggleCalendar(true);
-                document.body.classList.add('no-scroll');
-            }
+            toggleCalendar(!calendarToggle);
         }
         
         if (!toggleCalendar) return;
@@ -80,7 +67,7 @@ export default function DateSelector(props: { date: DateTime, selectDate: (date:
         <div className={styles.selector} ref={calendarRef}>
 
 
-            <div className={styles[`input${calendarToggle ? "Active" : ""}`]} onClick={handleToggle}>
+            <div className={`${styles[`input${calendarToggle ? "Active" : ""}`]}${props.invalid ? ` ${styles.inputInvalid}` : ""}`} onClick={handleToggle}>
                 {props.date === null ? (
                     <p className={styles.nonSelected}>MM/DD/YYYY</p>
                 ) : (

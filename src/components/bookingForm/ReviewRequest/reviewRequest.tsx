@@ -62,7 +62,7 @@ export default function ReviewRequest(props: { values: FormValues }) {
         )}
 
         <p className={styles.subline}><b>When:</b> {props.values.Date.monthLong} {props.values.Date.day}{getOrdinal(props.values.Date?.day)}, {props.values.Date.year} at {props.values.Time} </p>
-        <p className={styles.subline}><b>Where:</b> {props.values.Location}</p>
+        <p className={styles.subline}><b>Where:</b> {props.values.StreetAddress}, {props.values.City}, {props.values.State} {props.values.Zip}</p>
         {eventType === "Birthday Party" ? (
           <p className={styles.subline}><b>Event Package: </b>{packages[props.values.Package].title} - {packages[props.values.Package].duration}</p>
         ) : (

@@ -1,0 +1,38 @@
+.extrasWrapper {
+    margin: 20px;
+}
+
+.headerWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    color: white;
+    margin-top: 35px;
+}
+
+.headerText {
+    margin-bottom: 25px;
+}
+
+.bodyWrapper {
+    max-width: 400px;
+    min-width: 300px;
+}
+
+.body {
+    color: white;
+}
+
+@media screen and (max-width: 900px) {
+    .extrasWrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .headerWrapper {
+        justify-content: flex-start;
+        width: 100%;
+    }
+}
