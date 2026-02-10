@@ -18,6 +18,17 @@
     width: 20px;
 }
 
+.readMoreBtn {
+    background: none;
+    border: none;
+    color: #343B95;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 8px;
+    text-decoration: underline;
+    padding: 0;
+}
+
 .navItem{
     cursor: pointer;
 }
