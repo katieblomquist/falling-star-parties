@@ -48,18 +48,18 @@ export default function Carousel(props: { content: Array<ReactNode> }) {
             </div>
             
             <div className={styles.navigation}>
-                {selected === 0 ? (<div className={styles.placeholder}></div>) : (<IconChevronLeft className={styles.navItem} width="20" height="20" color="#A4A8B0" onClick={() => setSelected(selected - 1)} />)}
+                {selected === 0 ? (<div className={styles.placeholder}></div>) : (<IconChevronLeft className={`${styles.navItem} ${styles.chevron}`} width="20" height="20" onClick={() => setSelected(selected - 1)} />)}
                 <div>
                     {content.map((item, index) => (
                         index === selected ? (
-                            <IconCircleFilled key={index} className={styles.navItem} width="16" height="16" color="#A4A8B0" />
+                            <IconCircleFilled key={index} className={`${styles.navItem} ${styles.dotActive}`} width="16" height="16" />
                         ) : (
-                            < IconCircle key={index} className={styles.navItem} width="16" height="16" color="#A4A8B0" onClick={() => setSelected(index)} />
+                            < IconCircle key={index} className={`${styles.navItem} ${styles.dot}`} width="16" height="16" onClick={() => setSelected(index)} />
                         )
                     ))}
                 </div>
 
-                {selected === content.length - 1 ? (<div className={styles.placeholder}></div>) : (<IconChevronRight className={styles.navItem} width="20" height="20" color="#A4A8B0" onClick={() => setSelected(selected + 1)} />)}
+                {selected === content.length - 1 ? (<div className={styles.placeholder}></div>) : (<IconChevronRight className={`${styles.navItem} ${styles.chevron}`} width="20" height="20" onClick={() => setSelected(selected + 1)} />)}
             </div>
 
         </>
