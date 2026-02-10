@@ -1,0 +1,101 @@
+.cardWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border: 2px solid #d8d8e3;
+    border-radius: 15px;
+    gap: 35px;
+    text-align: center;
+    padding: 30px 10px;
+    height: 550px;
+    width: 350px;
+}
+
+.cardWrapperPrimary {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #343B95 0%, #1B1E4E 100%);
+    gap: 50px;
+    text-align: center;
+    color: white;
+    padding: 40px 20px;
+    height: 600px;
+    width: 400px;
+}
+
+.headerWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.titlePrimary, .invitePrimary, .listItemPrimary{
+    color: white;
+}
+
+.invite, .invitePrimary {
+    font-weight: bold;
+}
+
+.bodyWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.moreCharacters{
+    margin-bottom: 10px;
+}
+
+.footerWrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.mobileCardWrapper{
+    width: 85vw;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    text-align: center;
+    border: 2px solid #d8d8e3;
+    gap: 35px;
+    padding: 10px;
+    border-radius: 15px;
+}
+
+.mobileCardWrapperPrimary{
+    width: 85vw;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    border-radius: 15px;
+    background: linear-gradient(180deg, #343B95 0%, #1B1E4E 100%);
+    gap: 50px;
+    text-align: center;
+    color: white;
+    padding: 20px;
+}
+
+.mobileActivityList {
+    display: none;
+}
+
+.mobileActivityListOpen {
+    display: flex;
+    flex-direction: column;
+}
+
+.mobileActivitiesHeader {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,3 +1,13 @@
+@media (max-width: 600px) {
+    .fullWidth {
+        width: 100% !important;
+        justify-content: center;
+    }
+}
+.stepFiveButton {
+    width: 100% !important;
+    justify-content: center;
+}
 .primary {
     display: flex;
     flex-direction: row;

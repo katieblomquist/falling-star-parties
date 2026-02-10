@@ -1,15 +1,3 @@
-.lightBox {
-    min-width: 50vw;
-    max-width: 75vw;
-    min-height: 50vh;
-    display: flex;
-    flex-direction: column;
-    padding: 25px;
-    background-size: cover;
-    background-position: 'center';
-    background-repeat: 'no-repeat';
-    border-radius: 15px;
-}
 
 .parent {
     position: fixed;
@@ -17,12 +5,30 @@
     left: 0;
     width: 100vw;
     height: 100vh;
+    z-index: 9999;
+    background: rgba(0,0,0,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #1D1E1FEE;
-    backdrop-filter: blur(10px);
-    z-index: 9999;
+}
+
+.lightBox {
+    position: relative;
+    max-width: 90vw;
+    max-height: 90vh;
+    min-width: 320px;
+    min-height: 200px;
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 15px;
+    box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+    overflow: auto;
 }
 
 .icon {
@@ -34,7 +40,7 @@
     cursor: pointer;
 }
 
-@media screen and (max-width: 1000px){
+/* @media screen and (max-width: 1000px){
     .parent{
         position: fixed;
         overflow: hidden;
@@ -47,4 +53,4 @@
         border-radius: 0;
         max-width: 100%;
     }
-}
+} */

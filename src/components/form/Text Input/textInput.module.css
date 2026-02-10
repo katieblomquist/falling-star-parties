@@ -12,3 +12,7 @@
     align-items: center;
     font-family: var(--font-dhyana);
 }
+
+.inputInvalid {
+    border-color: #b3261e;
+}

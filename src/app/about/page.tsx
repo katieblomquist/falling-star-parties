@@ -9,10 +9,10 @@ import ContentBlock from "@/components/contentBlock/contentBlock";
 import Splash from "@/components/splash/splash";
 
 const tabs = [
-    { label: "BOOKING", content: <Accordian content={bookingFaqs} /> },
-    { label: "VIDEO CALLS", content: <Accordian content={videoCallsFaqs} /> }, 
-    { label: "IN PERSON SERVICES", content: <Accordian content={inPersonFaqs} /> },
-    { label: "GENERAL QUESTIONS", content: <Accordian content={generalFaqs} /> }
+    { label: "BOOKING", content: <Accordian key="BOOKING" content={bookingFaqs} /> },
+    { label: "VIDEO CALLS", content: <Accordian key="VIDEO CALLS" content={videoCallsFaqs} /> }, 
+    { label: "IN PERSON SERVICES", content: <Accordian key="IN PERSON SERVICES" content={inPersonFaqs} /> },
+    { label: "GENERAL QUESTIONS", content: <Accordian key="GENERAL QUESTIONS" content={generalFaqs} /> }
 ];
 
 export default function About() {

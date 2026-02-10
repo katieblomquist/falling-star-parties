@@ -1,66 +1,34 @@
 import SelectionCard from "@/components/form/Selection Cards/selectionCard";
 import styles from "./eventOptions.module.css"
-import { Control, Controller, UseFormResetField, useWatch } from "react-hook-form";
+import { Control, Controller, FieldErrors, UseFormResetField, useWatch } from "react-hook-form";
 import { FormValues } from "@/app/book/page";
 import HorizontalCard from "@/components/form/Selection Cards/horizontalCard";
 import VerticleCard from "@/components/form/Selection Cards/verticleCard";
 import { packages, extras } from "@/app/mockdata";
-import { Packages } from "@/db/entities/packages";
-import { useEffect, useState } from "react";
-import { AddOns } from "@/db/entities/addOns";
+import { useMemo } from "react";
 
 
 //Need to create and Add Character cards and Costume Cards
 
-export default function EventOptions(props: { controller: Control<FormValues, any>, resetField: UseFormResetField<FormValues> }) {
+const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.25rem" };
+
+export default function EventOptions(props: { controller: Control<FormValues, any>, resetField: UseFormResetField<FormValues>, errors: FieldErrors<FormValues> }) {
 
     const control = props.controller
     const selectedEventType = useWatch({ control, name: "EventType" });
-    const [packageOptions, setPackages] = useState<Packages[]>([]);
-    const [extrasOptions, setExtrasOptions] = useState<AddOns[]>([]);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect (() => {
-        const fetchPackages = async () => {
-            setLoading(true);
-            setError(null);
-            try{
-                const res = await fetch(`api/packages/${selectedEventType}`);
-                if (!res.ok) throw new Error("Failed to fetch packages");
-                const data: Packages[] = await res.json();
-                setPackages(data);
-            } catch (err: any){
-                setError(err.message || "Unknown error");
-            } finally {
-                setLoading(false);
-            }
+    const packageOptions = useMemo(() => {
+        if (!selectedEventType) {
+            return [];
         }
+        return packages.filter(item => item.type === selectedEventType);
+    }, [selectedEventType]);
 
-        const fetchExtras = async () => {
-            setLoading(true);
-            setError(null);
-            try{
-                const res = await fetch(`api/addons/${selectedEventType}`);
-                if(!res.ok) throw new Error("Failed to fetch Extras");
-                const data: AddOns[] = await res.json();
-                setExtrasOptions(data)
-            } catch (err: any) {
-                setError(err.message || "Unknown error");
-            } finally {
-                setLoading(false);
-            }
+    const extrasOptions = useMemo(() => {
+        if (!selectedEventType) {
+            return [];
         }
-
-        fetchPackages();
-        fetchExtras();
-    }, [selectedEventType]) 
-
-
-    // function getExtras() {
-    //     const selectedEventType = useWatch({ control, name: "EventType" });
-    //     return (extras.filter(item => item.type === selectedEventType));
-    // }
+        return extras.filter(item => item.type === selectedEventType);
+    }, [selectedEventType]);
 
 
     function setExtras(id: number, selectedState: boolean, value: number[] = []): number[] {
@@ -103,6 +71,7 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                 key={item.id}
                                 control={props.controller}
                                 name="Package"
+                                rules={{ required: "Please select a package." }}
                                 render={({ field: { onChange, value } }) => (
                                     <SelectionCard CardContent={HorizontalCard} content={{
                                         id: item.id,
@@ -111,12 +80,15 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                         description: item.description,
                                         duration: item.duration,
                                         cost: item.cost,
-                                        additionalCharacterCost: item.additionalcharactercost
+                                        additionalCharacterCost: item.additionalCharacterCost
                                     }} selected={value === item.id ? true : false} makeSelection={onChange} />
                                 )} />
                         )
                     })}
                 </div>
+                {props.errors.Package?.message ? (
+                    <p style={errorTextStyle}>{props.errors.Package.message}</p>
+                ) : null}
             </div>
             <div>
                 <h3 className={styles.header}>Select Your Enchanting Extras (Optional)</h3>
@@ -132,7 +104,10 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                     <SelectionCard CardContent={HorizontalCard} content={{
                                         id: item.id,
                                         type: item.type,
-                                        title: item.title + " - $" + item.cost + " per child",
+                                        title:
+                                            item.cost === 0
+                                                ? item.title + " - No additional charge!"
+                                                : item.title + " - $" + item.cost + " per child",
                                         description: item.description,
                                         duration: "",
                                         cost: item.cost,
