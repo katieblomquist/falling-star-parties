@@ -11,19 +11,19 @@ export default function MasonryPhotos() {
     const [index, setIndex] = useState(-1);
     const [lightBoxOpen, setLightBox] = useState(false);
 
-    function lightBox(index?: number) {
-        if (lightBoxOpen) {
-            setIndex(-1)
-            setLightBox(false);
-            document.body.classList.remove('no-scroll');
-        } else {
-            if (index || index === 0) {
-                setIndex(index)
-                setLightBox(true);
-                document.body.classList.add('no-scroll');
-            }
 
+    function openLightBox(index?: number) {
+        if (index || index === 0) {
+            setIndex(index);
+            setLightBox(true);
+            document.body.classList.add('no-scroll');
         }
+    }
+
+    function closeLightBox() {
+        setIndex(-1);
+        setLightBox(false);
+        document.body.classList.remove('no-scroll');
     }
 
     function goToNext() {
@@ -39,26 +39,11 @@ export default function MasonryPhotos() {
     }
 
     useEffect(() => {
-        function lightBox(index?: number) {
-            if (lightBoxOpen) {
-                setIndex(-1)
-                setLightBox(false);
-                document.body.classList.remove('no-scroll');
-            } else {
-                if (index || index === 0) {
-                    setIndex(index)
-                    setLightBox(true);
-                    document.body.classList.add('no-scroll');
-                }
-    
-            }
-        }
-        
         if (!lightBoxOpen) return;
 
         function handleKeyDown(e: KeyboardEvent) {
             if (e.key === "Escape") {
-                lightBox();
+                closeLightBox();
             }
         }
 
@@ -91,7 +76,7 @@ export default function MasonryPhotos() {
         <>
             {lightBoxOpen && index >= 0 ? (
                 <PhotoLightBox 
-                    close={lightBox} 
+                    close={closeLightBox} 
                     imageUrl={masonryPhotos[index].src}
                     alt={`Gallery photo ${index + 1}`}
                 />
@@ -101,7 +86,7 @@ export default function MasonryPhotos() {
                 columns={columns}
                 spacing={spacing}
                 sizes={sizes}
-                onClick={({ index }) => lightBox(index)}
+                onClick={({ index }) => openLightBox(index)}
             />
         </>
     )

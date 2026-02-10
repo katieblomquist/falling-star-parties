@@ -6,7 +6,7 @@
     border-radius: 15px;
     gap: 35px;
     text-align: center;
-    padding: 10px;
+    padding: 30px 10px;
     height: 550px;
     width: 350px;
 }
@@ -21,7 +21,7 @@
     gap: 50px;
     text-align: center;
     color: white;
-    padding: 20px;
+    padding: 40px 20px;
     height: 600px;
     width: 400px;
 }
