@@ -1,8 +1,9 @@
 'use client';
 
 import { IconX, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import Spinner from "./spinner";
 import styles from "./photoLightBox.module.css";
 
 export default function PhotoLightBox(props: { 
@@ -21,6 +22,9 @@ export default function PhotoLightBox(props: {
     const touchStartX = useRef<number>(0);
     const touchEndX = useRef<number>(0);
     const [swiping, setSwiping] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    // Removed scroll lock to prevent page jump
 
     const handleTouchStart = (e: React.TouchEvent) => {
         touchStartX.current = e.touches[0].clientX;
@@ -68,13 +72,11 @@ export default function PhotoLightBox(props: {
                 >
                     <IconX size={28} />
                 </button>
-                
                 {showCounter && (
                     <div className={styles.counter}>
                         {currentIndex + 1} / {totalImages}
                     </div>
                 )}
-
                 {showNavigation && (
                     <>
                         <button 
@@ -95,8 +97,8 @@ export default function PhotoLightBox(props: {
                         </button>
                     </>
                 )}
-
                 <div className={styles.imageWrapper}>
+                    {loading && <Spinner />}
                     <Image 
                         src={props.imageUrl} 
                         alt={props.alt}
@@ -104,6 +106,8 @@ export default function PhotoLightBox(props: {
                         width={800}
                         height={600}
                         priority
+                        onLoad={() => setLoading(false)}
+                        onError={() => setLoading(false)}
                     />
                 </div>
             </div>
