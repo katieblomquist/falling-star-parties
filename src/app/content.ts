@@ -246,7 +246,10 @@ export const privateParties = [
         time: '30 Minutes',
         activities: ['An Enchanting Story Time', 'Princess Lessons and Coronation', 'Magical Photo Opportunity', 'Happy Birthday Song'],
         basePrice: 200,
-        addCharacter: 100
+        addCharacter: 100,
+        topBlurb: 'Perfect for a magical introduction to the fairy tale world.',
+        bottomBlurb: 'Add a second character for even more fun!',
+        listItems: ['Story Time', 'Coronation', 'Photo Opportunity', 'Birthday Song']
     },
     {
         primary: true,
@@ -255,7 +258,10 @@ export const privateParties = [
         time: '60 Minutes',
         activities: ['An Enchanting Story Time', 'Princess Lessons and Coronation', 'Party Games', 'Magical Photo Opportunity', 'Happy Birthday Song'],
         basePrice: 275,
-        addCharacter: 150
+        addCharacter: 150,
+        topBlurb: 'A full hour of sparkle and fun for your little royal.',
+        bottomBlurb: 'Upgrade your party with extra games and activities!',
+        listItems: ['Story Time', 'Coronation', 'Party Games', 'Photo Opportunity', 'Birthday Song']
     },
     {
         primary: false,
@@ -264,7 +270,10 @@ export const privateParties = [
         time: '90 Minutes',
         activities: ['An Enchanting Story Time', 'Princess Lessons and Coronation', 'Party Games', 'Fanciful Face Painting', 'Magical Photo Opportunity', 'Happy Birthday Song'],
         basePrice: 350,
-        addCharacter: 200
+        addCharacter: 200,
+        topBlurb: 'The ultimate fairy tale experience with face painting and more.',
+        bottomBlurb: 'Make it unforgettable with deluxe extras!',
+        listItems: ['Story Time', 'Coronation', 'Party Games', 'Face Painting', 'Photo Opportunity', 'Birthday Song']
     },
 ]
 
