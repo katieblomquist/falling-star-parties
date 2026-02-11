@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing NOTION_TOKEN" }, { status: 500 });
     }
 
-    const fullName = `${firstName} ${lastName}`.trim();
+    const fullName = `${firstName ?? ''} ${lastName ?? ''}`.trim();
     const rawPackageName = packages.find((item) => item.id === packageId)?.title ?? "Unknown";
     const packageName = packageNameMap[rawPackageName] ?? rawPackageName;
     const eventTypeName = eventType ?? "Unknown";
