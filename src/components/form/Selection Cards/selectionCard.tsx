@@ -6,7 +6,7 @@ import styles from "./selectionCard.module.css";
 import { ComponentType } from "react";
 import { Services, Character, CharacterDress } from "@/app/mockdata";
 
-type CardContentComponent<T> = ComponentType<{ content: T }>
+type CardContentComponent<T> = ComponentType<{ content: T; selected?: boolean }>
 
 //This errors out if you removew services. Why??
 function TextCard<T extends Services | Character | CharacterDress>(props: { CardContent: CardContentComponent<T>, content: T, selected: boolean, makeSelection: (id: number, selected: boolean) => void }) {
@@ -25,7 +25,7 @@ function TextCard<T extends Services | Character | CharacterDress>(props: { Card
                 <IconCircleCheck size={24} color="#343B95" stroke={2} />
             ) : (<IconCircle stroke={1} color="#A4A8B0" />)}
         </div>
-        <props.CardContent content={props.content} />
+        <props.CardContent content={props.content} selected={props.selected} />
     </div>
     )
 
