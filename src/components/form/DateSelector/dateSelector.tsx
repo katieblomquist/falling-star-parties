@@ -55,7 +55,7 @@ export default function DateSelector(props: { date: DateTime, selectDate: (date:
 
         window.addEventListener("keydown", handleKeyDown);
         return () => window.removeEventListener("keydown", handleKeyDown);
-    }, [toggleCalendar]);
+    }, [toggleCalendar, calendarToggle]);
 
     const handleClickOutside = (event: MouseEvent) => { if (calendarRef.current && !calendarRef.current.contains(event.target as Node)) { toggleCalendar(false) } };
     const handleEscapeKey = (event: KeyboardEvent) => { if (event.key === 'Escape' && !calendarRef.current?.contains(event.target as Node)) { toggleCalendar(false) } };
