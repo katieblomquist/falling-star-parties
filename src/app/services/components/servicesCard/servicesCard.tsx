@@ -81,7 +81,7 @@ export default function ServicesCard(props: { primary: boolean, type: String, ti
                 </div>
                 <div className={styles.mobileActivities} onClick={toggleActivities}>
                     <div className={styles.mobileActivitiesHeader}>
-                        <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>What's Included </p>
+                        <p className={styles[`invite${props.primary ? "Primary" : ""}`]}>What&apos;s Included </p>
                         {open ? (
                             <IconChevronUp />
                         ) : (

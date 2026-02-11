@@ -2,6 +2,7 @@
 
 import { IconX, IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useState, useRef } from "react";
+import Image from "next/image";
 import styles from "./photoLightBox.module.css";
 
 export default function PhotoLightBox(props: { 
@@ -96,10 +97,13 @@ export default function PhotoLightBox(props: {
                 )}
 
                 <div className={styles.imageWrapper}>
-                    <img 
+                    <Image 
                         src={props.imageUrl} 
                         alt={props.alt}
                         className={styles.image}
+                        width={800}
+                        height={600}
+                        priority
                     />
                 </div>
             </div>
