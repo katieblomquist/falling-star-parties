@@ -34,21 +34,45 @@ export const characters = [{ id: 1, name: "Ice Queen", img: "/DSC_0729.jpg" },
 { id: 2, name: "Snow Princess", img: "/IMG_1962.jpg" },
 { id: 3, name: "Mermaid Princess", img: "/IMG_6126.jpg" },
 { id: 4, name: "Rose Princess", img: "/IMG_3422.jpg" },
-{ id: 5, name: "Glass Slipper Princess", img: "/IMG_4976.jpg" },
-{ id: 6, name: "Sleeping Princess", img: "/IMG_4976.jpg" },
-{ id: 7, name: "Tower Princess", img: "/IMG_4976.jpg" },
+{ id: 5, name: "Glass Slipper Princess", img: "/bubbles/characters/IMG_2752.jpg" },
+{ id: 6, name: "Sleeping Princess", img: "/bubbles/characters/IMG_3291.jpg" },
+{ id: 7, name: "Tower Princess", img: "/bubbles/characters/IMG_0078.jpg" },
 { id: 8, name: "Bubble Queen", img: "/bubbles/characters/IMG_5468.jpg"}
 ];
 
 //abstract to DB
-export const dresses = [{ id: 0, name: "Ice Dress", img: "/DSC_0729.jpg", characterId: 0 }, { id: 1, name: "Elements Dress", img: "/IMG_4976.jpg", characterId: 0 },
-{ id: 2, name: "Adventure Dress", img: "/IMG_4976.jpg", characterId: 0 }, { id: 3, name: "Yuletide Dress", img: "/IMG_2153.jpg", characterId: 0 },
-{ id: 4, name: "Coronation Dress", img: "/IMG_1962.jpg", characterId: 1 }, { id: 5, name: "Queen Dress", img: "/IMG_9963.jpg", characterId: 1 },
-{ id: 6, name: "Adventure Dress", img: "/IMG_7410.jpg", characterId: 1 }, { id: 7, name: "Yuletide Dress", img: "/IMG_3821.jpg", characterId: 1 },
-{ id: 8, name: "Walking Tail", img: "/IMG_6126.jpg", characterId: 2 }, { id: 9, name: "Ballgown", img: "/IMG_3063.jpg", characterId: 2 },
-{ id: 10, name: "Ballgown", img: "/IMG_3422.jpg", characterId: 3 }, { id: 11, name: "Holiday Dress", img: "/IMG_1230.jpg", characterId: 3 },
-{ id: 12, name: "Ballgown", img: "/IMG_4976.jpg", characterId: 4 }, { id: 13, name: "Ballgown", img: "/IMG_4976.jpg", characterId: 5 },
-{ id: 14, name: "Adventure Dress", img: "/IMG_4976.jpg", characterId: 6 }]
+export const dresses = [
+    // Ice Queen (characterId: 0)
+    { id: 0, name: "Ice Dress", img: "/DSC_0729.jpg", characterId: 0 },
+    { id: 1, name: "Elements Dress", img: "/IMG_4976.jpg", characterId: 0 },
+    { id: 2, name: "Adventure Dress", img: "/IMG_4976.jpg", characterId: 0 },
+    { id: 3, name: "Yuletide Dress", img: "/IMG_2153.jpg", characterId: 0 },
+    { id: -1, name: "Any", img: "", characterId: 0 },
+    // Snow Princess (characterId: 1)
+    { id: 4, name: "Coronation Dress", img: "/IMG_1962.jpg", characterId: 1 },
+    { id: 5, name: "Queen Dress", img: "/IMG_9963.jpg", characterId: 1 },
+    { id: 6, name: "Adventure Dress", img: "/IMG_7410.jpg", characterId: 1 },
+    { id: 7, name: "Yuletide Dress", img: "/IMG_3821.jpg", characterId: 1 },
+    { id: -1, name: "Any", img: "", characterId: 1 },
+    // Mermaid Princess (characterId: 2)
+    { id: 8, name: "Walking Tail", img: "/IMG_6126.jpg", characterId: 2 },
+    { id: 9, name: "Ballgown", img: "/IMG_3063.jpg", characterId: 2 },
+    { id: -1, name: "Any", img: "", characterId: 2 },
+    // Rose Princess (characterId: 3)
+    { id: 10, name: "Ballgown", img: "/IMG_3422.jpg", characterId: 3 },
+    { id: 11, name: "Holiday Dress", img: "/IMG_1230.jpg", characterId: 3 },
+    { id: -1, name: "Any", img: "", characterId: 3 },
+    // Glass Slipper Princess (characterId: 4)
+    { id: 12, name: "Ballgown", img: "/bubbles/characters/IMG_2752.jpg", characterId: 4 },
+    // Sleeping Princess (characterId: 5)
+    { id: 13, name: "Ballgown", img: "/bubbles/characters/IMG_3291.jpg", characterId: 5 },
+    // Tower Princess (characterId: 6)
+    { id: 14, name: "Adventure Dress", img: "/bubbles/characters/IMG_0078.jpg", characterId: 6 },
+    { id: 15, name: "Holiday Dress", img: "/bubbles/characters/IMG_3827.jpg", characterId: 6 },
+    { id: -1, name: "Any", img: "", characterId: 6 },
+    // Bubble Queen (characterId: 7)
+    { id: 16, name: "Bubble Dress", img: "/bubbles/characters/IMG_5468.jpg", characterId: 7 },
+]
 
 export const numberCharacters = ["1", "2", "3", "4", "5", "6"];
 
@@ -64,19 +88,29 @@ export const time = ["10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM", "11:00 AM",
 ]
 
 export const iceQueen = [
-    { id: 0, name: "Ice Dress", img: "/DSC_0729.jpg", characterId: 0 }, { id: 1, name: "Elements Dress", img: "/IMG_4976.jpg", characterId: 0 },
-{ id: 2, name: "Adventure Dress", img: "/IMG_4976.jpg", characterId: 0 }, { id: 3, name: "Yuletide Dress", img: "/IMG_2153.jpg", characterId: 0 }
+    { id: 0, name: "Ice Dress", img: "/DSC_0729.jpg", characterId: 0 },
+    { id: 1, name: "Elements Dress", img: "/IMG_4976.jpg", characterId: 0 },
+    { id: 2, name: "Adventure Dress", img: "/IMG_4976.jpg", characterId: 0 },
+    { id: 3, name: "Yuletide Dress", img: "/IMG_2153.jpg", characterId: 0 },
+    { id: -1, name: "Any", img: "", characterId: 0 }
 ];
 
 export const snowPrincess = [
-    { id: 4, name: "Coronation Dress", img: "/IMG_1962.jpg", characterId: 1 }, { id: 5, name: "Queen Dress", img: "/IMG_9963.jpg", characterId: 1 },
-{ id: 6, name: "Adventure Dress", img: "/IMG_7410.jpg", characterId: 1 }, { id: 7, name: "Yuletide Dress", img: "/IMG_3821.jpg", characterId: 1 }
+    { id: 4, name: "Coronation Dress", img: "/IMG_1962.jpg", characterId: 1 },
+    { id: 5, name: "Queen Dress", img: "/IMG_9963.jpg", characterId: 1 },
+    { id: 6, name: "Adventure Dress", img: "/IMG_7410.jpg", characterId: 1 },
+    { id: 7, name: "Yuletide Dress", img: "/IMG_3821.jpg", characterId: 1 },
+    { id: -1, name: "Any", img: "", characterId: 1 }
 ];
 
 export const mermaidPrincess = [
-    { id: 8, name: "Walking Tail", img: "/IMG_6126.jpg", characterId: 2 }, { id: 9, name: "Ballgown", img: "/IMG_3063.jpg", characterId: 2 }
+    { id: 8, name: "Walking Tail", img: "/IMG_6126.jpg", characterId: 2 },
+    { id: 9, name: "Ballgown", img: "/IMG_3063.jpg", characterId: 2 },
+    { id: -1, name: "Any", img: "", characterId: 2 }
 ];
 
 export const rosePrincess = [
-    { id: 10, name: "Ballgown", img: "/IMG_3422.jpg", characterId: 3 }, { id: 11, name: "Holiday Dress", img: "/IMG_1230.jpg", characterId: 3 }
+    { id: 10, name: "Ballgown", img: "/IMG_3422.jpg", characterId: 3 },
+    { id: 11, name: "Holiday Dress", img: "/IMG_1230.jpg", characterId: 3 },
+    { id: -1, name: "Any", img: "", characterId: 3 }
 ]
