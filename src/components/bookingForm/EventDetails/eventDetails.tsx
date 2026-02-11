@@ -31,12 +31,19 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                                     }
                                 }}
                                 render={({ field: { onChange, value } }) => (
-                                    <TextInput type={"text"} placeholder={"Child's Name"} required={true} id={"childName"} label={"Child's Name"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.ChildName)} />
+                                    <TextInput
+                                        type={"text"}
+                                        placeholder={"Child's Name"}
+                                        required={true}
+                                        id={"childName"}
+                                        label={"Child's Name"}
+                                        input={value ? value : ''}
+                                        onChange={onChange}
+                                        invalid={Boolean(props.errors.ChildName)}
+                                        errorMessage={props.errors.ChildName?.message}
+                                    />
                                 )}
                             />
-                            {props.errors.ChildName?.message ? (
-                                <p style={errorTextStyle}>{props.errors.ChildName.message}</p>
-                            ) : null}
                             <Controller
                                 control={props.controller}
                                 name="ChildAge"
@@ -56,12 +63,19 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                                     }
                                 }}
                                 render={({ field: { onChange, value } }) => (
-                                    <TextInput type={"number"} placeholder={"Child's Age"} required={true} id={"childAge"} label={"Child's Age"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.ChildAge)} />
+                                    <TextInput
+                                        type={"number"}
+                                        placeholder={"Child's Age"}
+                                        required={true}
+                                        id={"childAge"}
+                                        label={"Child's Age"}
+                                        input={value ? value : ''}
+                                        onChange={onChange}
+                                        invalid={Boolean(props.errors.ChildAge)}
+                                        errorMessage={props.errors.ChildAge?.message}
+                                    />
                                 )}
                             />
-                            {props.errors.ChildAge?.message ? (
-                                <p style={errorTextStyle}>{props.errors.ChildAge.message}</p>
-                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -83,12 +97,19 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                                     }
                                 }}
                                 render={({ field: { onChange, value } }) => (
-                                    <TextInput type={"text"} placeholder={"Organization Name"} required={true} id={"organizationName"} label={"Organization Name"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.OrganizationName)} />
+                                    <TextInput
+                                        type={"text"}
+                                        placeholder={"Organization Name"}
+                                        required={true}
+                                        id={"organizationName"}
+                                        label={"Organization Name"}
+                                        input={value ? value : ''}
+                                        onChange={onChange}
+                                        invalid={Boolean(props.errors.OrganizationName)}
+                                        errorMessage={props.errors.OrganizationName?.message}
+                                    />
                                 )}
                             />
-                            {props.errors.OrganizationName?.message ? (
-                                <p style={errorTextStyle}>{props.errors.OrganizationName.message}</p>
-                            ) : null}
                         </div>
                     </div>
                 </div>
