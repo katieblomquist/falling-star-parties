@@ -57,7 +57,7 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
                                 name="StreetAddress"
                                 rules={{
                                     required: "Street address is required.",
-                                    validate: (value) => value?.trim().length > 0 || "Street address is required."
+                                    validate: (value) => value && value.trim().length > 0 || "Street address is required."
                                 }}
                                 render={({ field: { onChange, value } }) => (
                                     <TextInput type={"text"} placeholder={"Street Address"} required={true} id={"streetAddress"} label={"Street Address"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.StreetAddress)} />
@@ -73,7 +73,7 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
                                         name="City"
                                         rules={{
                                             required: "City is required.",
-                                            validate: (value) => value?.trim().length > 0 || "City is required."
+                                            validate: (value) => value && value.trim().length > 0 || "City is required."
                                         }}
                                         render={({ field: { onChange, value } }) => (
                                             <TextInput type={"text"} placeholder={"City"} required={true} id={"city"} label={"City"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.City)} />
@@ -89,7 +89,7 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
                                         name="State"
                                         rules={{
                                             required: "State is required.",
-                                            validate: (value) => value?.trim().length > 0 || "State is required."
+                                            validate: (value) => value && value.trim().length > 0 || "State is required."
                                         }}
                                         render={({ field: { onChange, value } }) => (
                                             <TextInput type={"text"} placeholder={"State"} required={true} id={"state"} label={"State"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.State)} />
@@ -105,7 +105,7 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
                                         name="Zip"
                                         rules={{
                                             required: "Zip is required.",
-                                            validate: (value) => value?.trim().length > 0 || "Zip is required."
+                                            validate: (value) => value && value.trim().length > 0 || "Zip is required."
                                         }}
                                         render={({ field: { onChange, value } }) => (
                                             <TextInput type={"text"} placeholder={"Zip"} required={true} id={"zip"} label={"Zip"} input={value ? value : ''} onChange={onChange} invalid={Boolean(props.errors.Zip)} />
