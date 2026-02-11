@@ -40,7 +40,7 @@
     height: 75%;
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: flex-end;
     margin-bottom: 100px;
     color: white;
   }
