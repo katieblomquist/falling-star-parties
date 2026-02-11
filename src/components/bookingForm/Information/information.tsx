@@ -30,7 +30,7 @@ export default function Information(props: { control: Control<FormValues, any>, 
                         name="FirstName"
                         rules={{
                             required: "First name is required.",
-                            validate: (value) => value?.trim().length > 0 || "First name is required."
+                            validate: (value) => value && value.trim().length > 0 || "First name is required."
                         }}
                         render={({ field: { onChange, value } }) => (
                             <TextInput type="text" placeholder="First Name" required={true} id="firstName" label="First Name" input={value} onChange={onChange} invalid={Boolean(props.errors.FirstName)} />
@@ -44,7 +44,7 @@ export default function Information(props: { control: Control<FormValues, any>, 
                         name="LastName"
                         rules={{
                             required: "Last name is required.",
-                            validate: (value) => value?.trim().length > 0 || "Last name is required."
+                            validate: (value) => value && value.trim().length > 0 || "Last name is required."
                         }}
                         render={({ field: { onChange, value } }) => (
                             <TextInput type="text" placeholder="Last Name" required={true} id="lastName" label={"Last Name"} input={value} onChange={onChange} invalid={Boolean(props.errors.LastName)} />

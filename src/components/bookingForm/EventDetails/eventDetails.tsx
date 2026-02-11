@@ -27,7 +27,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                                         if (props.eventType !== "Birthday Party") {
                                             return true;
                                         }
-                                        return value?.trim().length > 0 || "Child name is required.";
+                                        return value && value.trim().length > 0 || "Child name is required.";
                                     }
                                 }}
                                 render={({ field: { onChange, value } }) => (
@@ -79,7 +79,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                                         if (props.eventType === "Birthday Party") {
                                             return true;
                                         }
-                                        return value?.trim().length > 0 || "Organization name is required.";
+                                        return value && value.trim().length > 0 || "Organization name is required.";
                                     }
                                 }}
                                 render={({ field: { onChange, value } }) => (
