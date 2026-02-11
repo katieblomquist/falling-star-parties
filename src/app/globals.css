@@ -1,8 +1,6 @@
 /* Prevent body scroll when lightbox is open */
 .no-scroll {
   overflow: hidden !important;
-  position: fixed;
-  width: 100vw;
 }
 
 :root {
