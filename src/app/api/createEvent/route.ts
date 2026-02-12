@@ -7,7 +7,7 @@ import { emailService } from "@/lib/emailService";
 import { generateEmailTemplate } from "@/lib/emailTemplate";
 import { logger } from "@/lib/logger";
 
-const notion = new Client({ auth: process.env.NOTION_TOKEN });
+const notion = new Client({ auth: process.env.NOTION_KEY });
 const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 
 type CharacterSelection = { characterId: number; dressId: number };
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
 
   // Debug log to check presence of Notion environment variables (safe for production)
   requestLogger.info("Notion env debug", {
-    hasNotionToken: Boolean(process.env.NOTION_TOKEN),
+    hasNotionToken: Boolean(process.env.NOTION_KEY),
     hasNotionDatabaseId: Boolean(process.env.NOTION_DATABASE_ID)
   });
 
@@ -98,9 +98,9 @@ export async function POST(request: NextRequest) {
     });
 
     // ...existing code...
-    if (!process.env.NOTION_TOKEN) {
-      requestLogger.error("Missing NOTION_TOKEN configuration", { email });
-      return NextResponse.json({ error: "Missing NOTION_TOKEN" }, { status: 500 });
+    if (!process.env.NOTION_KEY) {
+      requestLogger.error("Missing NOTION_KEY configuration", { email });
+      return NextResponse.json({ error: "Missing NOTION_KEY" }, { status: 500 });
     }
 
     // Process form data
@@ -306,7 +306,7 @@ export async function POST(request: NextRequest) {
       if (error.message.includes('NOTION')) {
         publicErrorMessage = "Failed to save booking to database";
         requestLogger.error("Notion integration error", {
-          hasNotionToken: !!process.env.NOTION_TOKEN,
+          hasNotionToken: !!process.env.NOTION_KEY,
           hasNotionDatabaseId: !!notionDatabaseId,
           notionDatabaseId
         }, error);
