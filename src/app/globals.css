@@ -1,3 +1,7 @@
+/* Hide reCAPTCHA v3 badge */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}
 /* Prevent body scroll when lightbox is open */
 .no-scroll {
   overflow: hidden !important;
@@ -104,6 +108,3 @@ h3{
   font-weight: 400;
 }
 
-.grecaptcha-badge {
-  visibility: hidden !important;
-}

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { dhyana } from "./fonts";
 import "reflect-metadata"
-import RecaptchaProvider from "@/components/recaptcha/RecaptchaProvider";
 
 
 
@@ -21,9 +20,7 @@ export default function RootLayout({
       <head>
       </head>
       <body>
-        <RecaptchaProvider>
-          {children}
-        </RecaptchaProvider>
+        {children}
       </body>
     </html>
   );

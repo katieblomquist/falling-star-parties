@@ -3,12 +3,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Client } from "@notionhq/client";
 import { characters, dresses, extras, packages } from "@/app/mockdata";
+import { emailService } from "@/lib/emailService";
+import { generateEmailTemplate } from "@/lib/emailTemplate";
+import { logger } from "@/lib/logger";
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 const notionDatabaseId = process.env.NOTION_DATABASE_ID;
-const RECAPTCHA_V3_SECRET = process.env.RECAPTCHA_V3_SECRET_KEY ?? '';
-const RECAPTCHA_V2_SECRET = process.env.RECAPTCHA_V2_SECRET_KEY ?? '';
-const SCORE_THRESHOLD = 0.5;
 
 type CharacterSelection = { characterId: number; dressId: number };
 
@@ -54,9 +54,13 @@ function toTextProperty(content: string) {
 }
 
 export async function POST(request: NextRequest) {
+  const requestId = logger.generateRequestId();
+  const requestLogger = logger.withContext({ requestId });
+  const startTime = Date.now();
+
   try {
     const body = await request.json();
-
+    
     const {
       firstName,
       lastName,
@@ -75,45 +79,25 @@ export async function POST(request: NextRequest) {
       locationPref,
       photoPref,
       additionalInfo,
-      captchaToken,
-      captchaVersion,
+      // ...existing code...
     } = body;
 
-    // --- reCAPTCHA verification ---
-    if (!captchaToken) {
-      return NextResponse.json({ error: "Captcha verification required" }, { status: 400 });
-    }
-
-    const captchaSecret = captchaVersion === 'v2' ? RECAPTCHA_V2_SECRET : RECAPTCHA_V3_SECRET;
-    if (!captchaSecret) {
-      console.error(`Missing RECAPTCHA secret key for ${captchaVersion}`);
-      return NextResponse.json({ error: "Server configuration error" }, { status: 500 });
-    }
-
-    const captchaResponse = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ secret: captchaSecret, response: captchaToken }),
+    requestLogger.info("Form submission received", {
+      email,
+      eventType,
+      packageId,
+      characterCount: characterSelections.length,
+      extrasCount: extrasIds.length,
+      // ...existing code...
     });
-    const captchaData = await captchaResponse.json();
 
-    if (!captchaData.success) {
-      return NextResponse.json({ error: "Captcha verification failed" }, { status: 403 });
-    }
-
-    if (captchaVersion === 'v3' && (captchaData.score ?? 0) < SCORE_THRESHOLD) {
-      return NextResponse.json({ error: "Captcha score too low" }, { status: 403 });
-    }
-    // --- End reCAPTCHA verification ---
-
-    if (!notionDatabaseId) {
-      return NextResponse.json({ error: "Missing NOTION_DATABASE_ID" }, { status: 500 });
-    }
-
+    // ...existing code...
     if (!process.env.NOTION_TOKEN) {
+      requestLogger.error("Missing NOTION_TOKEN configuration", { email });
       return NextResponse.json({ error: "Missing NOTION_TOKEN" }, { status: 500 });
     }
 
+    // Process form data
     const fullName = `${firstName ?? ''} ${lastName ?? ''}`.trim();
     const rawPackageName = packages.find((item) => item.id === packageId)?.title ?? "Unknown";
     const packageName = packageNameMap[rawPackageName] ?? rawPackageName;
@@ -145,6 +129,16 @@ export async function POST(request: NextRequest) {
       .filter(Boolean) as string[];
 
     const additionalComments = buildAdditionalComments(orgName ?? null, additionalInfo ?? null);
+
+    requestLogger.debug("Processed form data", {
+      email,
+      fullName,
+      packageName,
+      eventTypeName,
+      characterNames: characterNames.map(c => c.name),
+      dressNames,
+      extrasNames
+    });
 
     const properties: Record<string, any> = {
       "Client name": toTitleProperty(fullName),
@@ -180,17 +174,174 @@ export async function POST(request: NextRequest) {
       properties["Number of Children"] = { number: numChildren };
     }
 
-    const page = await notion.pages.create({
-      parent: { database_id: notionDatabaseId },
-      properties,
+    requestLogger.debug("Creating Notion database entry", {
+      email,
+      databaseId: notionDatabaseId,
+      propertyCount: Object.keys(properties).length
+    });
+
+    if (!notionDatabaseId) {
+      requestLogger.error("Missing NOTION_DATABASE_ID configuration", { email });
+      return NextResponse.json({ error: "Missing NOTION_DATABASE_ID" }, { status: 500 });
+    }
+    const page = await requestLogger.time(
+      "Notion page creation",
+      () => notion.pages.create({
+        parent: { database_id: notionDatabaseId as string },
+        properties,
+      }),
+      { email, operation: "notion_create" }
+    );
+
+    requestLogger.info("Notion entry created successfully", {
+      email,
+      pageId: page.id,
+      databaseId: notionDatabaseId
+    });
+
+    // Send email notification
+    let emailResult: { success: boolean; error?: string } = { success: false };
+    try {
+      requestLogger.debug("Preparing email notification", { email });
+      
+      const emailData = {
+        firstName,
+        lastName,
+        email,
+        phone,
+        dateTime,
+        address,
+        packageId,
+        characterSelections: characterSelections as { characterId: number; dressId: number }[],
+        extrasIds: extrasIds as number[],
+        eventType,
+        childName,
+        childAge,
+        orgName,
+        numChildren,
+        locationPref,
+        photoPref,
+        additionalInfo,
+      };
+
+      const { html, subject } = generateEmailTemplate(emailData);
+      
+      requestLogger.debug("Generated email template", {
+        email,
+        subject,
+        htmlLength: html.length
+      });
+      
+      await requestLogger.time(
+        "Email sending",
+        () => emailService.sendEmail({
+          to: 'info@fallingstarparties.com',
+          subject,
+          html,
+        }),
+        { email, operation: "email_send" }
+      );
+
+      requestLogger.info("Email notification sent successfully", {
+        email,
+        recipient: 'info@fallingstarparties.com',
+        subject
+      });
+      
+      emailResult.success = true;
+    } catch (emailError) {
+      const errorMessage = emailError instanceof Error ? emailError.message : String(emailError);
+      
+      requestLogger.error("Failed to send email notification", {
+        email,
+        recipient: 'info@fallingstarparties.com',
+        errorMessage,
+        errorType: emailError instanceof Error ? emailError.constructor.name : typeof emailError
+      }, emailError);
+      
+      emailResult = { success: false, error: errorMessage };
+    }
+
+    const totalDuration = Date.now() - startTime;
+    requestLogger.info("Form submission completed", {
+      email,
+      pageId: page.id,
+      emailSent: emailResult.success,
+      totalDuration,
+      emailError: emailResult.error
     });
 
     return NextResponse.json(
-      { message: "Event request successfully created", pageId: page.id },
+      { 
+        message: "Event request successfully created", 
+        pageId: page.id,
+        emailSent: emailResult.success,
+        emailError: emailResult.error
+      },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Error creating event request:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    const totalDuration = Date.now() - startTime;
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorType = error instanceof Error ? error.constructor.name : typeof error;
+
+    requestLogger.error("Form submission failed", {
+      errorMessage,
+      errorType,
+      totalDuration,
+      stack: error instanceof Error ? error.stack : undefined
+    }, error);
+
+    // Provide more specific error information for troubleshooting
+    let publicErrorMessage = "Internal server error";
+    let statusCode = 500;
+
+    if (error instanceof Error) {
+      if (error.message.includes('NOTION')) {
+        publicErrorMessage = "Failed to save booking to database";
+        requestLogger.error("Notion integration error", {
+          hasNotionToken: !!process.env.NOTION_TOKEN,
+          hasNotionDatabaseId: !!notionDatabaseId,
+          notionDatabaseId
+        }, error);
+      } else if (error.message.includes('fetch')) {
+        publicErrorMessage = "External service connection failed";
+      }
+    }
+
+    return NextResponse.json({ 
+      error: publicErrorMessage,
+      timestamp: new Date().toISOString(),
+      ...(process.env.NODE_ENV === 'development' && { 
+        debug: {
+          errorMessage,
+          errorType,
+          requestId
+        }
+      })
+    }, { status: statusCode });
   }
+}
+
+// Handle GET requests to provide endpoint information
+export async function GET() {
+  logger.info("GET request to createEvent endpoint");
+  
+  return NextResponse.json({
+    message: "Event creation endpoint",
+    method: "POST",
+    description: "Submit booking form data to create a new Falling Star Parties event request",
+    requiredFields: [
+      "firstName", "lastName", "email", "phone", "dateTime", 
+      "address", "packageId", "eventType"
+    ],
+    optionalFields: [
+      "characterSelections", "extrasIds", "childName", "childAge", 
+      "orgName", "numChildren", "locationPref", "photoPref", "additionalInfo"
+    ],
+    testEndpoints: {
+      diagnostics: "/api/form-diagnostics",
+      emailTest: "/api/test-email"
+    }
+  });
 }
