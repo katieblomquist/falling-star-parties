@@ -33,10 +33,10 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                                 render={({ field: { onChange, value } }) => (
                                     <TextInput
                                         type={"text"}
-                                        placeholder={"Child's Name"}
+                                        placeholder={"Child&apos;s Name"}
                                         required={true}
                                         id={"childName"}
-                                        label={"Child's Name"}
+                                        label={"Child&apos;s Name"}
                                         input={value ? value : ''}
                                         onChange={onChange}
                                         invalid={Boolean(props.errors.ChildName)}
@@ -65,7 +65,7 @@ export default function EventDetails(props: { controller: Control<FormValues, an
                                 render={({ field: { onChange, value } }) => (
                                     <TextInput
                                         type={"number"}
-                                        placeholder={"Child's Age"}
+                                        placeholder={"Child&apos;s Age"}
                                         required={true}
                                         id={"childAge"}
                                         label={"Child's Age"}
