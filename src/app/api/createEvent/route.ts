@@ -58,6 +58,12 @@ export async function POST(request: NextRequest) {
   const requestLogger = logger.withContext({ requestId });
   const startTime = Date.now();
 
+  // Debug log to check presence of Notion environment variables (safe for production)
+  requestLogger.info("Notion env debug", {
+    hasNotionToken: Boolean(process.env.NOTION_TOKEN),
+    hasNotionDatabaseId: Boolean(process.env.NOTION_DATABASE_ID)
+  });
+
   try {
     const body = await request.json();
     
