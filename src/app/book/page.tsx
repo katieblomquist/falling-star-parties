@@ -4,10 +4,12 @@ import styles from "./book.module.css"
 import { useMemo, useState } from "react";
 import Stepper from "@/components/form/Stepper/stepper";
 import Information from "@/components/bookingForm/Information/information";
-import TimeLocation from "@/components/bookingForm/TimeLocation/timeLocation";
+// ...existing code...
 import ThankYou from "@/components/bookingForm/ThankYou/thankYou";
+import SubmissionError from "@/components/bookingForm/SubmissionError/submissionError";
 import EventOptions from "@/components/bookingForm/EventOptions/eventOptions";
 import EventDetails from "@/components/bookingForm/EventDetails/eventDetails";
+import TimeLocation from "@/components/bookingForm/TimeLocation/timeLocation";
 import { useForm, useWatch } from "react-hook-form";
 import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest";
 import { DateTime } from "luxon";
@@ -16,7 +18,8 @@ import { CharacterSelection, formal_script } from "../mockdata";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
 import Characters from "@/components/bookingForm/Characters/characters";
-import { useRecaptcha } from "@/components/recaptcha/useRecaptcha";
+import { useRecaptchaV3 } from "@/lib/useRecaptchaV3";
+// ...existing code...
 
 export type FormValues = {
     FirstName: string,
@@ -48,7 +51,8 @@ export default function Book() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [requestId, setRequestId] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
-    const recaptcha = useRecaptcha();
+    const [submissionError, setSubmissionError] = useState<string | null>(null);
+    // ...existing code...
 
     const {
         handleSubmit,
@@ -137,17 +141,29 @@ export default function Book() {
         };
     }
 
-    const submit = handleSubmit((data) => {
-        if (!recaptcha.isVerified || !recaptcha.captchaToken) {
-            alert("Please complete the captcha verification before submitting.");
+    const getRecaptchaToken = useRecaptchaV3("booking_submit");
+
+    const submit = handleSubmit(async (data) => {
+        setIsLoading(true);
+        setSubmissionError(null);
+        let captchaToken: string | null = null;
+        try {
+            captchaToken = await getRecaptchaToken();
+        } catch (e) {
+            setIsLoading(false);
+            setSubmissionError("Captcha failed to load. Please try again.");
             return;
         }
-        setIsLoading(true);
-        const body = {
-            ...mapFormValuesToRequestBody(data),
-            captchaToken: recaptcha.captchaToken,
-            captchaVersion: recaptcha.captchaVersion,
-        };
+        if (!captchaToken) {
+            setIsLoading(false);
+            setSubmissionError("Captcha verification failed. Please try again.");
+            return;
+        }
+        submitForm(data, captchaToken);
+    });
+
+    const submitForm = (data: FormValues, captchaToken: string) => {
+        const body = { ...mapFormValuesToRequestBody(data), captchaToken, captchaVersion: "v3" };
         fetch("/api/createEvent", {
             method: "POST",
             headers: {
@@ -158,8 +174,7 @@ export default function Book() {
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(err => {
-                        alert("Failed to submit: " + (err.error || "Unknown error"));
-                        throw new Error(err.error || "Unknown error");
+                        throw err;
                     });
                 }
                 return response.json();
@@ -172,9 +187,16 @@ export default function Book() {
             })
             .catch(error => {
                 setIsLoading(false);
-                alert("Error submitting event: " + error.message);
+                setSubmissionError(error.error || "There was an error submitting your request. Please try again.");
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
-    });
+    };
+
+    const handleRetry = () => {
+        setSubmissionError(null);
+        setIsSubmitted(false);
+        setIsLoading(false);
+    };
 
     const stepperTest = [
         { id: 0, title: "Your Information", completed: InformationIsComplete, content: <Information control={control} resetField={resetField} errors={errors} /> },
@@ -201,11 +223,17 @@ export default function Book() {
                                 <div className={styles.spinner}></div>
                                 <p style={{marginTop: 16}}>Sending your request...</p>
                             </div>
+                        ) : submissionError ? (
+                            <SubmissionError 
+                                firstName={formValues.FirstName} 
+                                onRetry={handleRetry} 
+                                errorMessage={submissionError}
+                            />
                         ) : isSubmitted ? (
                             <ThankYou requestId={requestId} firstName={formValues.FirstName} />
                         ) : (
                             <div className={styles.stepper}>
-                                <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} recaptcha={recaptcha} />
+                                <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} />
                             </div>
                         )}
 
