@@ -17,6 +17,8 @@ interface LogEntry {
 
 class Logger {
   private isDevelopment = process.env.NODE_ENV === 'development';
+  // Enable debug logging in production via environment variable
+  private enableDebugInProduction = process.env.ENABLE_DEBUG_LOGS === 'true';
 
   private formatLog(entry: LogEntry): string {
     const contextStr = entry.context ? JSON.stringify(entry.context) : '';
@@ -47,8 +49,9 @@ class Logger {
         console.warn(formattedLog);
         break;
       case 'DEBUG':
-        if (this.isDevelopment) {
-          console.debug(formattedLog);
+        // Show debug logs in development OR if explicitly enabled in production
+        if (this.isDevelopment || this.enableDebugInProduction) {
+          console.log(formattedLog); // Use console.log instead of console.debug for better visibility
         }
         break;
       default:
