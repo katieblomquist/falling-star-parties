@@ -3,12 +3,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Client } from "@notionhq/client";
 import { characters, dresses, extras, packages } from "@/app/mockdata";
-import { emailService } from "@/lib/emailService";
+import { emailService } from "@/lib/emailService";  
 import { generateEmailTemplate } from "@/lib/emailTemplate";
 import { logger } from "@/lib/logger";
 
-// Remove module-level client instantiation
-const notionDatabaseId = process.env.NOTION_DATABASE_ID;
+// All environment variables will be read at runtime
 
 type CharacterSelection = { characterId: number; dressId: number };
 
@@ -91,12 +90,6 @@ export async function POST(request: NextRequest) {
       // ...existing code...
     });
 
-    // ...existing code...
-    if (!process.env.NOTION_KEY) {
-      requestLogger.error("Missing NOTION_KEY configuration", { email });
-      return NextResponse.json({ error: "Missing NOTION_KEY" }, { status: 500 });
-    }
-
     // Process form data
     const fullName = `${firstName ?? ''} ${lastName ?? ''}`.trim();
     const rawPackageName = packages.find((item) => item.id === packageId)?.title ?? "Unknown";
@@ -176,12 +169,14 @@ export async function POST(request: NextRequest) {
 
     requestLogger.debug("Creating Notion database entry", {
       email,
-      databaseId: notionDatabaseId,
       propertyCount: Object.keys(properties).length
     });
 
-    // ...existing code...
-    if (!process.env.NOTION_KEY) {
+    // Read environment variables at runtime to ensure they're available
+    const notionKey = process.env.NOTION_KEY;
+    const notionDatabaseId = process.env.NOTION_DATABASE_ID;
+
+    if (!notionKey) {
       requestLogger.error("Missing NOTION_KEY configuration", { email });
       return NextResponse.json({ error: "Missing NOTION_KEY" }, { status: 500 });
     }
@@ -192,7 +187,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create Notion client at runtime to ensure env vars are available
-    const notion = new Client({ auth: process.env.NOTION_KEY });
+    const notion = new Client({ auth: notionKey });
 
     const page = await requestLogger.time(
       "Notion page creation",
@@ -310,9 +305,9 @@ export async function POST(request: NextRequest) {
       if (error.message.includes('NOTION')) {
         publicErrorMessage = "Failed to save booking to database";
         requestLogger.error("Notion integration error", {
-          hasNotionToken: !!process.env.NOTION_KEY,
-          hasNotionDatabaseId: !!notionDatabaseId,
-          notionDatabaseId
+          hasNotionKey: !!process.env.NOTION_KEY,
+          hasNotionDatabaseId: !!process.env.NOTION_DATABASE_ID,
+          notionDatabaseId: process.env.NOTION_DATABASE_ID
         }, error);
       } else if (error.message.includes('fetch')) {
         publicErrorMessage = "External service connection failed";
