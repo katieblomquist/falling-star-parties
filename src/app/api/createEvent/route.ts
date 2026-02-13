@@ -176,8 +176,24 @@ export async function POST(request: NextRequest) {
     const notionKey = process.env.NOTION_KEY;
     const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 
+    // Detailed runtime debugging
+    requestLogger.info("Runtime environment check", {
+      email,
+      hasNotionKey: !!notionKey,
+      notionKeyLength: notionKey?.length || 0,
+      notionKeyPrefix: notionKey?.substring(0, 8) || 'undefined',
+      hasNotionDatabaseId: !!notionDatabaseId,
+      databaseIdLength: notionDatabaseId?.length || 0,
+      totalEnvVars: Object.keys(process.env).length,
+      nodeEnv: process.env.NODE_ENV
+    });
+
     if (!notionKey) {
-      requestLogger.error("Missing NOTION_KEY configuration", { email });
+      requestLogger.error("Missing NOTION_KEY configuration", { 
+        email,
+        allNotionKeys: Object.keys(process.env).filter(key => key.includes('NOTION')),
+        envKeysCount: Object.keys(process.env).length
+      });
       return NextResponse.json({ error: "Missing NOTION_KEY" }, { status: 500 });
     }
 
