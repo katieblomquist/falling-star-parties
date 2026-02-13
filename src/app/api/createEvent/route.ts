@@ -60,8 +60,13 @@ export async function POST(request: NextRequest) {
 
   // Debug log to check presence of Notion environment variables (safe for production)
   requestLogger.info("Notion env debug", {
-    hasNotionToken: Boolean(process.env.NOTION_KEY),
-    hasNotionDatabaseId: Boolean(process.env.NOTION_DATABASE_ID)
+    hasNotionKey: Boolean(process.env.NOTION_KEY),
+    hasNotionDatabaseId: Boolean(process.env.NOTION_DATABASE_ID),
+    notionKeyLength: process.env.NOTION_KEY?.length || 0,
+    notionKeyFirst10: process.env.NOTION_KEY?.substring(0, 10) || 'undefined',
+    allEnvKeys: Object.keys(process.env).filter(key => key.includes('NOTION')),
+    nodeEnv: process.env.NODE_ENV,
+    totalEnvVars: Object.keys(process.env).length
   });
 
   try {
