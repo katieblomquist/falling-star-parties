@@ -7,7 +7,7 @@ import { emailService } from "@/lib/emailService";
 import { generateEmailTemplate } from "@/lib/emailTemplate";
 import { logger } from "@/lib/logger";
 
-const notion = new Client({ auth: process.env.NOTION_KEY });
+// Remove module-level client instantiation
 const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 
 type CharacterSelection = { characterId: number; dressId: number };
@@ -57,17 +57,6 @@ export async function POST(request: NextRequest) {
   const requestId = logger.generateRequestId();
   const requestLogger = logger.withContext({ requestId });
   const startTime = Date.now();
-
-  // Debug log to check presence of Notion environment variables (safe for production)
-  requestLogger.info("Notion env debug", {
-    hasNotionKey: Boolean(process.env.NOTION_KEY),
-    hasNotionDatabaseId: Boolean(process.env.NOTION_DATABASE_ID),
-    notionKeyLength: process.env.NOTION_KEY?.length || 0,
-    notionKeyFirst10: process.env.NOTION_KEY?.substring(0, 10) || 'undefined',
-    allEnvKeys: Object.keys(process.env).filter(key => key.includes('NOTION')),
-    nodeEnv: process.env.NODE_ENV,
-    totalEnvVars: Object.keys(process.env).length
-  });
 
   try {
     const body = await request.json();
@@ -191,10 +180,20 @@ export async function POST(request: NextRequest) {
       propertyCount: Object.keys(properties).length
     });
 
+    // ...existing code...
+    if (!process.env.NOTION_KEY) {
+      requestLogger.error("Missing NOTION_KEY configuration", { email });
+      return NextResponse.json({ error: "Missing NOTION_KEY" }, { status: 500 });
+    }
+
     if (!notionDatabaseId) {
       requestLogger.error("Missing NOTION_DATABASE_ID configuration", { email });
       return NextResponse.json({ error: "Missing NOTION_DATABASE_ID" }, { status: 500 });
     }
+
+    // Create Notion client at runtime to ensure env vars are available
+    const notion = new Client({ auth: process.env.NOTION_KEY });
+
     const page = await requestLogger.time(
       "Notion page creation",
       () => notion.pages.create({
