@@ -6,6 +6,9 @@ frontend:
         - npm ci
     build:
       commands:
+        # Take NOTION vars from Amplify env and write them into Next.js env file
+        - env | grep -e NOTION_KEY -e NOTION_DATABASE_ID >> .env.production
+        - env | grep -e NEXT_PUBLIC_ >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
