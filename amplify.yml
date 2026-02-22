@@ -7,7 +7,7 @@ frontend:
     build:
       commands:
         # Take NOTION vars from Amplify env and write them into Next.js env file
-        - env | grep -e NOTION_KEY -e NOTION_DATABASE_ID >> .env.production
+        - env | grep -e NOTION_KEY -e NOTION_DATABASE_ID -e EMAIL_USER -e EMAIL_PASS -e EMAIL_FROM -e SMTP_HOST -e SMTP_PORT >> .env.production
         - env | grep -e NEXT_PUBLIC_ >> .env.production
         - npm run build
   artifacts:
