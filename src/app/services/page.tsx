@@ -1,117 +1,173 @@
-'use client'
+import type { Metadata } from "next";
+import ServicesClient from "./ServicesClient";
 
-import NavBar from "@/components/navbar/navbar";
-import styles from "./services.module.css"
-import Footer from "@/components/footer/footer";
-import { privateExtras, privateParties, publicEvents, publicExtras, servicesPage } from "../content";
-import { formal_script } from "../mockdata";
-import MasonryPhotos from "@/components/masonryPhotos/masonryPhotos";
-import Splash from "@/components/splash/splash";
-import ServicesCard from "./components/servicesCard/servicesCard";
-import { useState } from "react";
-import Swoop from "@/components/swoop/swoop";
-import ExtrasItem from "./components/extrasItem/extrasItem";
-import Toggle from "@/components/toggle/toggle";
+export const metadata: Metadata = {
+  title: "Services & Pricing",
+  description:
+    "Explore our princess party packages for private parties and public events throughout Maryland. See pricing, activities, and add-ons available for your celebration.",
+  alternates: {
+    canonical: "https://fallingstarparties.com/services",
+  },
+  openGraph: {
+    title: "Services & Pricing",
+    description:
+      "Explore our princess party packages for private parties and public events throughout Maryland. See pricing, activities, and add-ons.",
+    url: "https://fallingstarparties.com/services",
+  },
+};
 
-export default function Service() {
+const servicesJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Falling Star Parties — Princess Party Packages",
+  description:
+    "Princess character entertainment packages for private birthday parties, public events, and charity events throughout Maryland.",
+  url: "https://fallingstarparties.com/services",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      item: {
+        "@type": "Service",
+        name: "Dream Package",
+        description:
+          "30-minute private birthday party experience. Includes Story Time, Coronation Ceremony, Photo Opportunity, and Birthday Song. Base price covers one character; additional characters available for $100 each.",
+        provider: { "@type": "Organization", name: "Falling Star Parties" },
+        areaServed: { "@type": "State", name: "Maryland" },
+        offers: {
+          "@type": "Offer",
+          price: "200",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://fallingstarparties.com/book",
+        },
+      },
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      item: {
+        "@type": "Service",
+        name: "Sparkle Package",
+        description:
+          "60-minute private birthday party experience. Includes Story Time, Coronation Ceremony, Party Games, Photo Opportunity, and Birthday Song. Base price covers one character; additional characters available for $150 each.",
+        provider: { "@type": "Organization", name: "Falling Star Parties" },
+        areaServed: { "@type": "State", name: "Maryland" },
+        offers: {
+          "@type": "Offer",
+          price: "275",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://fallingstarparties.com/book",
+        },
+      },
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      item: {
+        "@type": "Service",
+        name: "Shine Package",
+        description:
+          "90-minute private birthday party experience. Includes Story Time, Coronation Ceremony, Party Games, Face Painting, Photo Opportunity, and Birthday Song. Base price covers one character; additional characters available for $200 each.",
+        provider: { "@type": "Organization", name: "Falling Star Parties" },
+        areaServed: { "@type": "State", name: "Maryland" },
+        offers: {
+          "@type": "Offer",
+          price: "350",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://fallingstarparties.com/book",
+        },
+      },
+    },
+    {
+      "@type": "ListItem",
+      position: 4,
+      item: {
+        "@type": "Service",
+        name: "Public Event — One Hour Meet and Greet",
+        description:
+          "60-minute princess character appearance for public events, festivals, school events, and corporate functions. Base price covers one character; additional characters available for $150 each.",
+        provider: { "@type": "Organization", name: "Falling Star Parties" },
+        areaServed: { "@type": "State", name: "Maryland" },
+        offers: {
+          "@type": "Offer",
+          price: "250",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://fallingstarparties.com/book",
+        },
+      },
+    },
+    {
+      "@type": "ListItem",
+      position: 5,
+      item: {
+        "@type": "Service",
+        name: "Public Event — Two Hour Meet and Greet",
+        description:
+          "120-minute princess character appearance for public events, festivals, school events, and corporate functions. Base price covers one character; additional characters available for $300 each.",
+        provider: { "@type": "Organization", name: "Falling Star Parties" },
+        areaServed: { "@type": "State", name: "Maryland" },
+        offers: {
+          "@type": "Offer",
+          price: "400",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://fallingstarparties.com/book",
+        },
+      },
+    },
+    {
+      "@type": "ListItem",
+      position: 6,
+      item: {
+        "@type": "Service",
+        name: "Charity Event — One Hour Meet and Greet",
+        description:
+          "60-minute princess character appearance for charity and nonprofit events. Base price covers one character; additional characters available for $75 each.",
+        provider: { "@type": "Organization", name: "Falling Star Parties" },
+        areaServed: { "@type": "State", name: "Maryland" },
+        offers: {
+          "@type": "Offer",
+          price: "175",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://fallingstarparties.com/book",
+        },
+      },
+    },
+    {
+      "@type": "ListItem",
+      position: 7,
+      item: {
+        "@type": "Service",
+        name: "Charity Event — Two Hour Meet and Greet",
+        description:
+          "120-minute princess character appearance for charity and nonprofit events. Base price covers one character; additional characters available for $150 each.",
+        provider: { "@type": "Organization", name: "Falling Star Parties" },
+        areaServed: { "@type": "State", name: "Maryland" },
+        offers: {
+          "@type": "Offer",
+          price: "250",
+          priceCurrency: "USD",
+          availability: "https://schema.org/InStock",
+          url: "https://fallingstarparties.com/book",
+        },
+      },
+    },
+  ],
+};
 
-    const [toggle, setToggle] = useState('private');
-
-    function manageToggle(index: number) {
-        if (index === 1) {
-            setToggle('public');
-        } else {
-            setToggle('private');
-        }
-    }
-
-    return (
-        <>
-            <NavBar location={"services"} />
-            <Splash locationLeft={true} home={false} image={'/IMG_4261.jpg'} gradient={"linear-gradient(90deg, rgba(52, 59, 149, 0.8), rgba(52, 59, 149, 0.8))"} headerStart={servicesPage[0].titleStart} emphasis={servicesPage[0].emphasis} headerFinish={servicesPage[0].titleEnd}
-                blurb={servicesPage[0].blurb}
-                buttonText={servicesPage[0].button} buttonVarient={servicesPage[0].variant} buttonIcon={0} buttonHref={servicesPage[0].href} swoopTop={true} swoopColor={"white"} swoopDirection={"right"} mobileImage={'/IMG_4261.jpg'} />
-            <div className={styles.servicesBlock}>
-                <div className={styles.toggleSwitch}>
-                    <Toggle options={["Private Parties", "Public Events"]} onClick={manageToggle} />
-                </div>
-                {toggle === 'private' ? (
-                    <>
-                        <div className={styles.cardWrapper}>
-                            {privateParties.map((item, i) => {
-                                return (
-                                    <ServicesCard
-                                        key={i}
-                                        primary={item.primary}
-                                        type={item.type}
-                                        title={item.title}
-                                        time={item.time}
-                                        activities={item.activities}
-                                        basePrice={item.basePrice}
-                                        addCharacter={item.addCharacter}
-                                    />
-                                );
-                            })}
-                        </div>
-                        <div className={styles.extrasWrapper}>
-                            <Swoop top={true} color={"#343B95"} direction={"left"} />
-                            <div className={styles.extrasText}>
-                                <h2 className={styles.extrasTitle}><span className={formal_script.className}>Enchanting</span> Extras</h2>
-                                <div className={styles.extras}>
-                                    {privateExtras.map((item, i) => {
-                                        return (
-                                            <ExtrasItem key={i} title={item.title} price={item.price} description={item.description} icon={item.icon} />
-                                        )
-                                    })}
-                                </div>
-                            </div>
-
-                            <Swoop top={false} color={"#343B95"} direction={"right"} />
-                        </div>
-                    </>
-
-                ) : (
-                    <>
-                        <div className={styles.cardWrapper}>
-                            {publicEvents.map((item, i) => {
-                                return (
-                                    <ServicesCard
-                                        key={i}
-                                        primary={item.primary}
-                                        type={item.type}
-                                        title={item.title}
-                                        time={item.time}
-                                        activities={item.activities}
-                                        basePrice={item.basePrice}
-                                        addCharacter={item.addCharacter}
-                                    />
-                                );
-                            })}
-                        </div>
-                        <div className={styles.extrasWrapper}>
-                            <Swoop top={true} color={"#343B95"} direction={"left"} />
-                            <div className={styles.extrasText}>
-                                <h2 className={styles.extrasTitle}><span className={formal_script.className}>Enchanting</span> Extras</h2>
-                                <div className={styles.extras}>
-                                    {publicExtras.map((item, i) => {
-                                        return (
-                                            <ExtrasItem key={i} title={item.title} price={item.price} description={item.description} icon={item.icon} />
-                                        )
-                                    })}
-                                </div>
-                            </div>
-
-                            <Swoop top={false} color={"#343B95"} direction={"right"} />
-                        </div>
-                    </>
-                )}
-
-                <div className={styles.photosBlock}>
-                    <h2 className={styles.photosHeader}>A <span className={formal_script.className}>Glimpse</span> of Past Events</h2>
-                    <MasonryPhotos />
-                </div>
-            </div>
-            <Footer />
-        </>
-    )
+export default function ServicesPage() {
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(servicesJsonLd) }}
+      />
+      <ServicesClient />
+    </>
+  );
 }

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import styles from "./characters.module.css";
 import { formal_script } from "../mockdata";
 import NavBar from "@/components/navbar/navbar";
@@ -5,6 +6,31 @@ import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
 import { characters } from "../content";
 import PhotoCard from "@/components/photoCard/photoCard";
+
+export const metadata: Metadata = {
+  title: "Our Characters",
+  description:
+    "Meet our enchanted princess characters, available for birthday parties and special events across Maryland. Book your favorite princess for your next celebration!",
+  keywords: [
+    "Elsa character Maryland",
+    "Ariel character Maryland",
+    "Belle character Maryland",
+    "Cinderella character Maryland",
+    "Rapunzel character Maryland",
+    "Aurora character Maryland",
+    "Snow White character Maryland",
+    "princess character appearances",
+  ],
+  alternates: {
+    canonical: "https://fallingstarparties.com/characters",
+  },
+  openGraph: {
+    title: "Our Characters",
+    description:
+      "Meet our enchanted princess characters, available for birthday parties and special events across Maryland.",
+    url: "https://fallingstarparties.com/characters",
+  },
+};
 
 export default function About() {
 

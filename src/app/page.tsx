@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import styles from "./page.module.css";
 import { Open_Sans } from "next/font/google";
 import NavBar from "@/components/navbar/navbar";
@@ -12,6 +13,12 @@ import { homePage, reviews } from "./content";
 import ContentBlock from "@/components/contentBlock/contentBlock";
 import Carousel from "@/components/carousel/carousel";
 import Splash from "@/components/splash/splash";
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: "https://fallingstarparties.com",
+  },
+};
 
 const open_Sans = Open_Sans({ weight: "400", subsets: ["latin"], variable: '--open-sans', preload: false })
 
