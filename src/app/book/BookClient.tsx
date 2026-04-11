@@ -47,6 +47,42 @@ export type FormValues = {
     AgreeToTOS: boolean,
 }
 
+export function mapFormValuesToRequestBody(formValues: FormValues) {
+    const dateInZone = formValues.Date.setZone("America/New_York", { keepLocalTime: true });
+    const parsedTime = DateTime.fromFormat(formValues.Time, "h:mm a", { zone: "America/New_York" });
+    const dateTimeISO = dateInZone.set({
+        hour: parsedTime.isValid ? parsedTime.hour : 0,
+        minute: parsedTime.isValid ? parsedTime.minute : 0,
+    }).toISO();
+
+    return {
+        firstName: formValues.FirstName,
+        lastName: formValues.LastName,
+        email: formValues.Email,
+        phone: formValues.Phone,
+
+        dateTime: dateTimeISO,
+        address: `${formValues.StreetAddress}, ${formValues.City}, ${formValues.State} ${formValues.Zip}`,
+
+        packageId: formValues.Package,
+        characterSelections: formValues.Character ?? [],
+        extrasIds: formValues.Extras || [],
+        eventType: formValues.EventType,
+
+        childName: formValues.ChildName || null,
+        childAge: formValues.ChildAge ? parseInt(formValues.ChildAge, 10) : null,
+        orgName: formValues.OrganizationName || null,
+
+        numChildren: parseInt(formValues.Attendance, 10),
+
+        locationPref: formValues.LocationPref,
+        photoPref: formValues.PhotoPref.toLowerCase() === "yes",
+
+        additionalInfo: formValues.AdditionalInfo || null,
+        agreeToTos: formValues.AgreeToTOS,
+    };
+}
+
 export default function Book() {
 
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -133,42 +169,6 @@ export default function Book() {
     const agreeToTOS = useWatch({ control, name: "AgreeToTOS" });
     const ReviewIsComplete = agreeToTOS === true;
 
-
-    function mapFormValuesToRequestBody(formValues: FormValues) {
-        const dateInZone = formValues.Date.setZone("America/New_York", { keepLocalTime: true });
-        const parsedTime = DateTime.fromFormat(formValues.Time, "h:mm a", { zone: "America/New_York" });
-        const dateTimeISO = dateInZone.set({
-            hour: parsedTime.isValid ? parsedTime.hour : 0,
-            minute: parsedTime.isValid ? parsedTime.minute : 0,
-        }).toISO();
-
-        return {
-            firstName: formValues.FirstName,
-            lastName: formValues.LastName,
-            email: formValues.Email,
-            phone: formValues.Phone,
-
-            dateTime: dateTimeISO,
-            address: `${formValues.StreetAddress}, ${formValues.City}, ${formValues.State} ${formValues.Zip}`,
-
-            packageId: formValues.Package,
-            characterSelections: formValues.Character ?? [],
-            extrasIds: formValues.Extras || [],
-            eventType: formValues.EventType,
-
-            childName: formValues.ChildName ?? null,
-            childAge: formValues.ChildAge ? parseInt(formValues.ChildAge, 10) : null,
-            orgName: formValues.OrganizationName ?? null,
-
-            numChildren: parseInt(formValues.Attendance, 10),
-
-            locationPref: formValues.LocationPref,
-            photoPref: formValues.PhotoPref.toLowerCase() === "yes",
-
-            additionalInfo: formValues.AdditionalInfo ?? null,
-            agreeToTos: formValues.AgreeToTOS,
-        };
-    }
 
     const getRecaptchaToken = useRecaptchaV3("booking_submit");
 
