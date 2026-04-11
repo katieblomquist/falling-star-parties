@@ -124,16 +124,6 @@ export async function POST(request: NextRequest) {
 
     const additionalComments = buildAdditionalComments(orgName ?? null, additionalInfo ?? null);
 
-    requestLogger.debug("Processed form data", {
-      email,
-      fullName,
-      packageName,
-      eventTypeName,
-      characterNames: characterNames.map(c => c.name),
-      dressNames,
-      extrasNames
-    });
-
     const properties: Record<string, any> = {
       "Client name": toTitleProperty(fullName),
       "Event date": { date: { start: dateTime } },
@@ -169,33 +159,12 @@ export async function POST(request: NextRequest) {
       properties["Number of Children"] = { number: numChildren };
     }
 
-    requestLogger.debug("Creating Notion database entry", {
-      email,
-      propertyCount: Object.keys(properties).length
-    });
-
     // Read environment variables at runtime to ensure they're available
     const notionKey = process.env.NOTION_KEY;
     const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 
-    // Detailed runtime debugging
-    requestLogger.info("Runtime environment check", {
-      email,
-      hasNotionKey: !!notionKey,
-      notionKeyLength: notionKey?.length || 0,
-      notionKeyPrefix: notionKey?.substring(0, 8) || 'undefined',
-      hasNotionDatabaseId: !!notionDatabaseId,
-      databaseIdLength: notionDatabaseId?.length || 0,
-      totalEnvVars: Object.keys(process.env).length,
-      nodeEnv: process.env.NODE_ENV
-    });
-
     if (!notionKey) {
-      requestLogger.error("Missing NOTION_KEY configuration", { 
-        email,
-        allNotionKeys: Object.keys(process.env).filter(key => key.includes('NOTION')),
-        envKeysCount: Object.keys(process.env).length
-      });
+      requestLogger.error("Missing NOTION_KEY configuration", { email });
       return NextResponse.json({ error: "Missing NOTION_KEY" }, { status: 500 });
     }
 
@@ -225,8 +194,6 @@ export async function POST(request: NextRequest) {
     // Send email notification
     let emailResult: { success: boolean; error?: string } = { success: false };
     try {
-      requestLogger.debug("Preparing email notification", { email });
-      
       const emailData = {
         firstName,
         lastName,
@@ -249,12 +216,6 @@ export async function POST(request: NextRequest) {
 
       const { html, subject } = generateEmailTemplate(emailData);
       
-      requestLogger.debug("Generated email template", {
-        email,
-        subject,
-        htmlLength: html.length
-      });
-      
       await requestLogger.time(
         "Email sending",
         () => emailService.sendEmail({
@@ -268,7 +229,6 @@ export async function POST(request: NextRequest) {
       requestLogger.info("Email notification sent successfully", {
         email,
         recipient: 'info@fallingstarparties.com',
-        subject
       });
       
       emailResult.success = true;
@@ -322,11 +282,6 @@ export async function POST(request: NextRequest) {
     if (error instanceof Error) {
       if (error.message.includes('NOTION')) {
         publicErrorMessage = "Failed to save booking to database";
-        requestLogger.error("Notion integration error", {
-          hasNotionKey: !!process.env.NOTION_KEY,
-          hasNotionDatabaseId: !!process.env.NOTION_DATABASE_ID,
-          notionDatabaseId: process.env.NOTION_DATABASE_ID
-        }, error);
       } else if (error.message.includes('fetch')) {
         publicErrorMessage = "External service connection failed";
       }
