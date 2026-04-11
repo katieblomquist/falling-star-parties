@@ -52,3 +52,27 @@
   .swoop{
     max-height: 100px;
   }
+
+@media screen and (max-width: 768px) {
+  .splash {
+    position: relative;
+    background-image: none !important;
+  }
+
+  .splash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/IMG_2699.jpg');
+    background-size: cover;
+    background-position: center;
+    transform: rotate(180deg);
+    z-index: 0;
+  }
+
+  .splash > * {
+    position: relative;
+    z-index: 1;
+    transform: none;
+  }
+}
