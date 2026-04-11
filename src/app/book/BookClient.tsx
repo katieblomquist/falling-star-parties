@@ -43,7 +43,8 @@ export type FormValues = {
     Attendance: string,
     LocationPref: string,
     PhotoPref: string,
-    AdditionalInfo?: string
+    AdditionalInfo?: string,
+    AgreeToTOS: boolean,
 }
 
 export default function Book() {
@@ -58,8 +59,33 @@ export default function Book() {
         handleSubmit,
         control,
         resetField,
-        formState: { errors, isValid }
-    } = useForm<FormValues>({ mode: "onChange" })
+        formState: { errors }
+    } = useForm<FormValues>({
+        mode: "onChange",
+        defaultValues: {
+            FirstName: '',
+            LastName: '',
+            Email: '',
+            Phone: '',
+            EventType: '',
+            Time: '',
+            StreetAddress: '',
+            City: '',
+            State: '',
+            Zip: '',
+            NumCharacters: '',
+            Character: [],
+            Extras: [],
+            ChildName: '',
+            ChildAge: '',
+            OrganizationName: '',
+            Attendance: '',
+            LocationPref: '',
+            PhotoPref: '',
+            AdditionalInfo: '',
+            AgreeToTOS: false,
+        }
+    })
 
     const formValues = useWatch({ control }) as FormValues;
 
@@ -104,7 +130,9 @@ export default function Book() {
 
     }, [CharacterSelectionValues, characterNumber, errors.Character, errors.NumCharacters])
 
-    const formIsValid = isValid;
+    const agreeToTOS = useWatch({ control, name: "AgreeToTOS" });
+    const ReviewIsComplete = agreeToTOS === true;
+
 
     function mapFormValuesToRequestBody(formValues: FormValues) {
         const dateInZone = formValues.Date.setZone("America/New_York", { keepLocalTime: true });
@@ -138,6 +166,7 @@ export default function Book() {
             photoPref: formValues.PhotoPref.toLowerCase() === "yes",
 
             additionalInfo: formValues.AdditionalInfo ?? null,
+            agreeToTos: formValues.AgreeToTOS,
         };
     }
 
@@ -204,7 +233,7 @@ export default function Book() {
         { id: 2, title: "Event Options", completed: EventOptionsIsComplete, content: <EventOptions controller={control} resetField={resetField} errors={errors} /> },
         { id: 3, title: "Characters", completed: CharacterSelectionIsComplete, content: <Characters controller={control} resetField={resetField} errors={errors} /> },
         { id: 4, title: "Event Details", completed: EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete, content: <EventDetails controller={control} eventType={formValues.EventType} errors={errors} /> },
-        { id: 5, title: "Review Request", completed: InformationIsComplete && TimeLocationIsComplete && EventOptionsIsComplete && (EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete), content: formIsValid ? <ReviewRequest values={formValues} /> : null }
+        { id: 5, title: "Review Request", completed: InformationIsComplete && TimeLocationIsComplete && EventOptionsIsComplete && (EventDetailsBirthdayIsComplete || EventDetailsPublicIsComplete) && ReviewIsComplete, content: <ReviewRequest values={formValues} control={control} errors={errors} /> }
     ];
     return (
         <>

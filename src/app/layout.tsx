@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   keywords: [
     "princess party Maryland",
     "character party Maryland",
+    "Princess Party",
+    "Princess Party Maryland",
     "Elsa party",
     "Ariel party",
     "Belle party",
@@ -61,7 +63,7 @@ const jsonLd = {
   name: "Falling Star Parties",
   url: SITE_URL,
   description:
-    "Princess character entertainment for birthdays, corporate events, and special celebrations throughout Maryland. Featuring Elsa, Ariel, Belle, Cinderella, Rapunzel, Aurora, Snow White, and more.",
+    "Princess character entertainment for birthdays, corporate events, and special celebrations throughout Maryland. Featuring Elsa, Ariel, Belle, Cinderella, Rapunzel, Aurora, and more.",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Middle River",

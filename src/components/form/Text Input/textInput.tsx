@@ -36,7 +36,7 @@ export default function TextInput(props: TextInputProps) {
                     id={id}
                     name={id}
                     placeholder={placeholder}
-                    value={props.input}
+                    value={props.input ?? ''}
                     onChange={props.onChange}
                     required={required}
                 />

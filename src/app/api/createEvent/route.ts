@@ -78,6 +78,7 @@ export async function POST(request: NextRequest) {
       locationPref,
       photoPref,
       additionalInfo,
+      agreeToTos,
       // ...existing code...
     } = body;
 
@@ -145,6 +146,7 @@ export async function POST(request: NextRequest) {
       "Characters": { multi_select: characterNames },
       "Location Pref": { select: { name: locationPref } },
       "Photos Allowed": { checkbox: Boolean(photoPref) },
+      "Agree to TOS": { checkbox: Boolean(agreeToTos) },
     };
 
     if (additionalComments) {
