@@ -161,6 +161,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={dhyana.className}>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

@@ -9,7 +9,7 @@
 }
 
 .timeInput{
-    min-width: 200px;
+    width: 200px;
 }
 
 .addressGroup {
@@ -27,4 +27,10 @@
 .addressField {
     flex: 1 1 180px;
     min-width: 180px;
+}
+
+@media screen and (max-width: 500px) {
+    .timeInput {
+        width: 100%;
+    }
 }
