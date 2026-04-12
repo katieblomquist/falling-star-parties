@@ -1,4 +1,4 @@
-import { FormValues } from "@/app/book/page";
+import { FormValues } from "@/app/book/BookClient";
 import { packages, extras, characters, dresses, event, time } from "@/app/mockdata";
 import { useEffect, useState } from "react";
 import styles from "./reviewRequest.module.css";

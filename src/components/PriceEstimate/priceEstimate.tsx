@@ -1,7 +1,7 @@
 'use client';
 
 import { Control, useWatch } from "react-hook-form"
-import { FormValues } from "@/app/book/page"
+import { FormValues } from "@/app/book/BookClient"
 import styles from "./priceEstimate.module.css"
 import { useState, useEffect, useMemo } from "react"
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
