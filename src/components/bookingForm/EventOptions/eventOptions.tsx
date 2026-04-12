@@ -1,7 +1,7 @@
 import SelectionCard from "@/components/form/Selection Cards/selectionCard";
 import styles from "./eventOptions.module.css"
 import { Control, Controller, FieldErrors, UseFormResetField, useWatch } from "react-hook-form";
-import { FormValues } from "@/app/book/page";
+import { FormValues } from "@/app/book/BookClient";
 import HorizontalCard from "@/components/form/Selection Cards/horizontalCard";
 import VerticleCard from "@/components/form/Selection Cards/verticleCard";
 import { packages, extras } from "@/app/mockdata";

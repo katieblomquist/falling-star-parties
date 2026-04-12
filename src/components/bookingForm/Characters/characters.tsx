@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
-import { FormValues } from "@/app/book/page";
+import { FormValues } from "@/app/book/BookClient";
 import { Control, Controller, FieldErrors, UseFormResetField, useController, useWatch } from "react-hook-form";
 import { Character, CharacterSelection, characters, numberCharacters, dresses } from "@/app/mockdata";
 import CharacterCard from "@/components/form/Selection Cards/characterCard";

@@ -3,7 +3,7 @@ import TextInput from "@/components/form/Text Input/textInput";
 import styles from "./information.module.css";
 import { Control, Controller, FieldErrors, UseFormResetField } from "react-hook-form";
 import { event } from "@/app/mockdata";
-import { FormValues } from "@/app/book/page";
+import { FormValues } from "@/app/book/BookClient";
 
 
 const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.25rem" };

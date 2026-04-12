@@ -3,7 +3,7 @@ import Dropdown from "@/components/form/Dropdown/dropdown";
 import styles from "./timeLocation.module.css";
 import { Control, Controller, FieldErrors } from "react-hook-form";
 // import PlacesAutocomplete, { Location } from "@/components/form/Places Autocomplete/placesAutocoomplet";
-import { FormValues } from "@/app/book/page";
+import { FormValues } from "@/app/book/BookClient";
 import { time } from "@/app/mockdata";
 import TextInput from "@/components/form/Text Input/textInput";
 
