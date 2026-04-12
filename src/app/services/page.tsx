@@ -13,6 +13,18 @@ export const metadata: Metadata = {
     description:
       "Explore our princess party packages for private parties and public events throughout Maryland. See pricing, activities, and add-ons.",
     url: "https://fallingstarparties.com/services",
+    images: [
+      {
+        url: "/og-services.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Falling Star Parties services and pricing — princess party packages in Maryland",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-services.jpg"],
   },
 };
 

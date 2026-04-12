@@ -18,6 +18,24 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://fallingstarparties.com",
   },
+  openGraph: {
+    title: "Falling Star Parties",
+    description:
+      "Falling Star Parties brings fairy tale magic to life in Maryland. Book a princess character experience for birthdays, corporate events, and special celebrations.",
+    url: "https://fallingstarparties.com",
+    images: [
+      {
+        url: "/og-home.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Falling Star Parties — princess character entertainment in Maryland",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-home.jpg"],
+  },
 };
 
 const open_Sans = Open_Sans({ weight: "400", subsets: ["latin"], variable: '--open-sans', preload: false })

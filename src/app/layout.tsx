@@ -39,8 +39,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/og-image.jpg",
-        width: 2048,
-        height: 1365,
+        width: 1200,
+        height: 630,
         alt: "Falling Star Parties — princess character entertainment in Maryland",
       },
     ],

@@ -21,6 +21,18 @@ export const metadata: Metadata = {
     description:
       "Learn about Falling Star Parties — Maryland's premier princess character entertainment company. Meet our team and find answers to common questions about booking.",
     url: "https://fallingstarparties.com/about",
+    images: [
+      {
+        url: "/og-about.jpg",
+        width: 1200,
+        height: 630,
+        alt: "About Falling Star Parties — Maryland princess character entertainment",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/og-about.jpg"],
   },
 };
 
