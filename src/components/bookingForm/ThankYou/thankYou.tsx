@@ -32,8 +32,8 @@ export default function ThankYou({ requestId, firstName }: ThankYouProps) {
                     <h2 className={styles.subtitle}>What happens next?</h2>
                     <ul className={styles.stepsList}>
                         <li>We&apos;ll review your event details within 72 hours</li>
-                        <li>You&apos;ll receive a confirmation email with pricing and availability</li>
-                        <li>Once confirmed, you&apos;ll receive all the event details</li>
+                        <li>If we&apos;re available, you&apos;ll receive a confirmation email with pricing and your retainer invoice</li>
+                        <li>Once your payment is received, you&apos;re all set! </li>
                     </ul>
                 </div>
                 <p className={styles.footer}>

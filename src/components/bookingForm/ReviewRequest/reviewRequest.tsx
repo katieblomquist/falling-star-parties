@@ -2,10 +2,12 @@ import { FormValues } from "@/app/book/page";
 import { packages, extras, characters, dresses, event, time } from "@/app/mockdata";
 import { useEffect, useState } from "react";
 import styles from "./reviewRequest.module.css";
-import { useWatch } from "react-hook-form";
+import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
+import Link from "next/link";
 
+const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.25rem" };
 
-export default function ReviewRequest(props: { values: FormValues }) {
+export default function ReviewRequest(props: { values: FormValues, control: Control<FormValues, any>, errors: FieldErrors<FormValues> }) {
 
   const [characterList, setList] = useState("");
   const eventType = props.values.EventType;
@@ -73,6 +75,31 @@ export default function ReviewRequest(props: { values: FormValues }) {
         <p className={styles.subline}><b>Number of Children: </b>{props.values.Attendance}</p>
         <p className={styles.subline}><b>Additional Comments: </b>{props.values?.AdditionalInfo}</p>
       </div>
+      <div className={styles.tosRow}>
+        <Controller
+          control={props.control}
+          name="AgreeToTOS"
+          rules={{ required: "You must agree to the Terms of Service to continue." }}
+          render={({ field: { onChange, value } }) => (
+            <input
+              type="checkbox"
+              id="agreeToTOS"
+              checked={!!value}
+              onChange={onChange}
+              className={styles.tosCheckbox}
+            />
+          )}
+        />
+        <label htmlFor="agreeToTOS" className={styles.tosLabel}>
+          I have read and agree to the{" "}
+          <Link href="/tos" target="_blank" className={styles.tosLink}>
+            Terms of Service
+          </Link>
+        </label>
+      </div>
+      {props.errors.AgreeToTOS?.message ? (
+        <p style={errorTextStyle}>{props.errors.AgreeToTOS.message}</p>
+      ) : null}
     </>
   )
 }

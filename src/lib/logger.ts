@@ -17,18 +17,17 @@ interface LogEntry {
 
 class Logger {
   private isDevelopment = process.env.NODE_ENV === 'development';
-  // Enable debug logging in production via environment variable
   private enableDebugInProduction = process.env.ENABLE_DEBUG_LOGS === 'true';
 
   private formatLog(entry: LogEntry): string {
     const contextStr = entry.context ? JSON.stringify(entry.context) : '';
     const errorStr = entry.error ? JSON.stringify(entry.error, Object.getOwnPropertyNames(entry.error)) : '';
     const durationStr = entry.duration !== undefined ? ` [${entry.duration}ms]` : '';
-    
+
     return `[${entry.timestamp}] ${entry.level}: ${entry.message}${durationStr} ${contextStr} ${errorStr}`.trim();
   }
 
-  private log(level: LogEntry['level'], message: string, context?: LogContext, error?: any, duration?: number): void {
+  protected log(level: LogEntry['level'], message: string, context?: LogContext, error?: any, duration?: number): void {
     const entry: LogEntry = {
       timestamp: new Date().toISOString(),
       level,
@@ -38,28 +37,35 @@ class Logger {
       duration
     };
 
-    const formattedLog = this.formatLog(entry);
+    // In production, emit ERROR and WARN as structured JSON so CloudWatch
+    // metric filters can match on the `level` field for alerting.
+    const isStructured = !this.isDevelopment && (level === 'ERROR' || level === 'WARN');
+    const output = isStructured
+      ? JSON.stringify({
+          timestamp: entry.timestamp,
+          level: entry.level,
+          message: entry.message,
+          ...(entry.context && { context: entry.context }),
+          ...(entry.duration !== undefined && { duration: entry.duration }),
+          ...(entry.error && { error: JSON.parse(JSON.stringify(entry.error, Object.getOwnPropertyNames(entry.error))) }),
+        })
+      : this.formatLog(entry);
 
-    // Console output
     switch (level) {
       case 'ERROR':
-        console.error(formattedLog);
+        console.error(output);
         break;
       case 'WARN':
-        console.warn(formattedLog);
+        console.warn(output);
         break;
       case 'DEBUG':
-        // Show debug logs in development OR if explicitly enabled in production
         if (this.isDevelopment || this.enableDebugInProduction) {
-          console.log(formattedLog); // Use console.log instead of console.debug for better visibility
+          console.log(output);
         }
         break;
       default:
-        console.log(formattedLog);
+        console.log(output);
     }
-
-    // In production, you might want to send logs to external service
-    // Example: await this.sendToExternalLoggingService(entry);
   }
 
   info(message: string, context?: LogContext): void {
@@ -78,11 +84,10 @@ class Logger {
     this.log('DEBUG', message, context);
   }
 
-  // Utility for timing operations
   async time<T>(operation: string, fn: () => Promise<T>, context?: LogContext): Promise<T> {
     const startTime = Date.now();
     this.debug(`Starting operation: ${operation}`, context);
-    
+
     try {
       const result = await fn();
       const duration = Date.now() - startTime;
@@ -95,20 +100,18 @@ class Logger {
     }
   }
 
-  // Create a child logger with preset context
   withContext(context: LogContext): Logger {
     const childLogger = new Logger();
     const originalLog = childLogger.log.bind(childLogger);
-    
+
     childLogger.log = (level, message, additionalContext, error, duration) => {
       const mergedContext = { ...context, ...additionalContext };
       originalLog(level, message, mergedContext, error, duration);
     };
-    
+
     return childLogger;
   }
 
-  // Generate request ID for tracking
   generateRequestId(): string {
     return `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }

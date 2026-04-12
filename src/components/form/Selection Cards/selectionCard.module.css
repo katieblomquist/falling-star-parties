@@ -4,8 +4,8 @@
     border: 1px solid #A4A8B0;
     border-radius: 15px;
     padding: 20px;
-    width: fit-content;
-    min-width: 185px;
+    width: 100%;
+    min-width: 0;
 }
 .characterCard:hover{
     cursor: pointer;
@@ -18,8 +18,8 @@
     border: 2px solid #343B95;
     border-radius: 15px;
     padding: 20px;
-    width: fit-content;
-    min-width: 185px;
+    width: 100%;
+    min-width: 0;
 }
 .characterCardActive:hover{
     cursor: pointer;

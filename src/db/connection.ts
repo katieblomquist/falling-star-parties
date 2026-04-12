@@ -8,6 +8,7 @@ import { AddOns } from "./entities/addOns";
 import { EventsAddOns } from "./entities/eventsAddOns";
 import { Events } from "./entities/events";
 import { EventsCharacters } from "./entities/eventsCharacters";
+import { logger } from "@/lib/logger";
 
 const AppDataSource = new DataSource({
   type: "postgres",
@@ -26,7 +27,10 @@ const AppDataSource = new DataSource({
 export const getDBConnection = async (): Promise<DataSource> => {
   if (!AppDataSource.isInitialized) {
     await AppDataSource.initialize().catch(err => {
-        console.error("Error during DataSource Initialization: ", err)
+        logger.error("Database connection failed", {
+          host: process.env.DB_HOST,
+          database: process.env.DB_NAME,
+        }, err);
         throw err;
     });
   }

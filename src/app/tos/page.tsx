@@ -1,6 +1,22 @@
+import type { Metadata } from "next";
 import NavBar from "@/components/navbar/navbar";
 import styles from "./tos.module.css"
 import Footer from "@/components/footer/footer";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description:
+    "Falling Star Parties booking terms, cancellation policy, travel fee guidelines, and event policies.",
+  alternates: {
+    canonical: "https://fallingstarparties.com/tos",
+  },
+  openGraph: {
+    title: "Terms of Service",
+    description:
+      "Falling Star Parties booking terms, cancellation policy, travel fee guidelines, and event policies.",
+    url: "https://fallingstarparties.com/tos",
+  },
+};
 
 export default function Tos() {
     return (
@@ -21,7 +37,7 @@ export default function Tos() {
                     Bookings made less than 1 week in advance are subject to a 33% late fee.
                 </p>
                 <p>
-                    Falling Star Parties, LLC provides performers who are completely focused on staying in character, and keeping the magic alive. Please be sure any adults in attendance are of the understanding that they should not push the performer to “break character”.
+                    Falling Star Parties, LLC provides performers who are completely focused on staying in character, and keeping the magic alive. Please be sure any adults in attendance are of the understanding that they should not push the performer to &ldquo;break character&rdquo;.
                     If you have any questions regarding the company, pricing, costumes, etc, please talk to the attendant in a location where it will not ruin the magic.
                 </p>
                 <p>

@@ -11,6 +11,7 @@
     padding: 10px 20px;
     align-items: center;
     font-family: var(--font-dhyana);
+    font-size: 16px; /* Prevents iOS auto-zoom on focus */
 }
 
 .inputInvalid {
