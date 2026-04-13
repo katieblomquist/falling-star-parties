@@ -14,17 +14,19 @@ export default function CharacterInfo(props: { name: string, description: string
         <div className={styles.wrapper}>
             <div className={styles.photosBox}>
                 <div className={styles.mainPhoto} style={{ backgroundImage: `url("/bubble-2.png"), url(${props.dresses[selectedPhoto].img})` }}></div>
-                <div className={styles.dressPhotos}>
-                    {props.dresses.map((dress, index) => {
-                        let classNames = styles['dress'];
+                {props.dresses.length > 1 && (
+                    <div className={styles.dressPhotos}>
+                        {props.dresses.map((dress, index) => {
+                            let classNames = styles['dress'];
 
-                        if (selectedPhoto === index) {
-                            classNames += ` ${styles['dressActive']}`
-                        }
+                            if (selectedPhoto === index) {
+                                classNames += ` ${styles['dressActive']}`
+                            }
 
-                        return <div key={index} className={classNames} style={{ backgroundImage: `url(${dress.img})` }} onClick={() => setSelected(index)}></div>
-                    })}
-                </div>
+                            return <div key={index} className={classNames} style={{ backgroundImage: `url(${dress.img})` }} onClick={() => setSelected(index)}></div>
+                        })}
+                    </div>
+                )}
             </div>
 
             <div className={styles.content}>

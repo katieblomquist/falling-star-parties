@@ -45,7 +45,7 @@ export const dresses = [
     // Ice Queen (characterId: 0)
     { id: 0, name: "Ice Dress", img: "/DSC_0729.jpg", characterId: 0 },
     { id: 1, name: "Elements Dress", img: "/IMG_4976.jpg", characterId: 0 },
-    { id: 2, name: "Adventure Dress", img: "/IMG_4976.jpg", characterId: 0 },
+    { id: 2, name: "Adventure Dress", img: "/IMG_0455.jpg", characterId: 0 },
     { id: 3, name: "Yuletide Dress", img: "/IMG_2153.jpg", characterId: 0 },
     { id: -1, name: "Any", img: "", characterId: 0 },
     // Snow Princess (characterId: 1)
@@ -60,7 +60,7 @@ export const dresses = [
     { id: -1, name: "Any", img: "", characterId: 2 },
     // Rose Princess (characterId: 3)
     { id: 10, name: "Ballgown", img: "/IMG_3422.jpg", characterId: 3 },
-    { id: 11, name: "Holiday Dress", img: "/IMG_1230.jpg", characterId: 3 },
+    { id: 11, name: "Holiday Dress", img: "/IMG_1230.JPG", characterId: 3 },
     { id: -1, name: "Any", img: "", characterId: 3 },
     // Glass Slipper Princess (characterId: 4)
     { id: 12, name: "Ballgown", img: "/bubbles/characters/IMG_2752.jpg", characterId: 4 },
@@ -90,7 +90,7 @@ export const time = ["10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM", "11:00 AM",
 export const iceQueen = [
     { id: 0, name: "Ice Dress", img: "/DSC_0729.jpg", characterId: 0 },
     { id: 1, name: "Elements Dress", img: "/IMG_4976.jpg", characterId: 0 },
-    { id: 2, name: "Adventure Dress", img: "/IMG_4976.jpg", characterId: 0 },
+    { id: 2, name: "Adventure Dress", img: "/IMG_0455.jpg", characterId: 0 },
     { id: 3, name: "Yuletide Dress", img: "/IMG_2153.jpg", characterId: 0 },
     { id: -1, name: "Any", img: "", characterId: 0 }
 ];
@@ -111,6 +111,6 @@ export const mermaidPrincess = [
 
 export const rosePrincess = [
     { id: 10, name: "Ballgown", img: "/IMG_3422.jpg", characterId: 3 },
-    { id: 11, name: "Holiday Dress", img: "/IMG_1230.jpg", characterId: 3 },
+    { id: 11, name: "Holiday Dress", img: "/IMG_1230.JPG", characterId: 3 },
     { id: -1, name: "Any", img: "", characterId: 3 }
 ]

@@ -162,7 +162,7 @@ export const characters = [
         background: "/backgrounds/IceQueenBackground.png",
         dresses: [
             { id: 0, name: "Ice Dress", img: "/bubbles/characters/DSC_0729.jpg", characterId: 0 }, { id: 1, name: "Elements Dress", img: "/bubbles/characters/IMG_4976.jpg", characterId: 0 },
-            { id: 2, name: "Adventure Dress", img: "/bubbles/characters/IMG_4976.jpg", characterId: 0 }, { id: 3, name: "Yuletide Dress", img: "/bubbles/characters/IMG_2153.jpg", characterId: 0 }
+            { id: 2, name: "Adventure Dress", img: "/bubbles/characters/IMG_0455.jpg", characterId: 0 }, { id: 3, name: "Yuletide Dress", img: "/bubbles/characters/IMG_2153.jpg", characterId: 0 }
         ]
     },
     {
