@@ -131,6 +131,7 @@ export default function LightBox(props: { children: ReactNode, backgroundImage?:
                     <div className={styles.handle} />
                     <IconX onClick={handleClose} className={styles.icon} />
                 </div>
+                <IconX onClick={handleClose} className={styles.cardCloseIcon} />
                 {props.children}
             </div>
         </div>

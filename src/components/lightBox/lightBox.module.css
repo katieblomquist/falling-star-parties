@@ -83,6 +83,14 @@
     cursor: pointer;
 }
 
+/* Desktop-only close icon (hidden in sheet/mobile mode) */
+.cardCloseIcon {
+    align-self: flex-end;
+    margin-bottom: 25px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
 /* ── Mobile: bottom sheet ───────────────────────────────────────── */
 
 @media screen and (max-width: 768px) {
@@ -141,5 +149,9 @@
     .icon {
         align-self: flex-end;
         margin-bottom: 16px;
+    }
+
+    .cardCloseIcon {
+        display: none;
     }
 }
