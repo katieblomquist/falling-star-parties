@@ -9,12 +9,14 @@ export default function LightBox(props: { children: ReactNode, backgroundImage?:
     const [isClosing, setIsClosing] = useState(false);
 
     const sheetRef = useRef<HTMLDivElement>(null);
+    const handleRef = useRef<HTMLDivElement>(null);
     const touchStartY = useRef<number>(0);
     const touchCurrentY = useRef<number>(0);
     const touchLastY = useRef<number>(0);
     const touchLastTime = useRef<number>(0);
     const isDragging = useRef<boolean>(false);
     const scrollTopAtTouchStart = useRef<number>(0);
+    const touchStartedOnHandle = useRef<boolean>(false);
 
     function handleClose() {
         if (sheetRef.current) {
@@ -35,6 +37,7 @@ export default function LightBox(props: { children: ReactNode, backgroundImage?:
         touchLastY.current = e.touches[0].clientY;
         touchLastTime.current = e.timeStamp;
         scrollTopAtTouchStart.current = sheetRef.current?.scrollTop ?? 0;
+        touchStartedOnHandle.current = handleRef.current?.contains(e.target as Node) ?? false;
         isDragging.current = true;
         // Kill the active/held animation so inline transform has uncontested control
         if (sheetRef.current) {
@@ -46,8 +49,9 @@ export default function LightBox(props: { children: ReactNode, backgroundImage?:
     function handleTouchMove(e: React.TouchEvent) {
         if (!isDragging.current) return;
         // If the sheet was scrolled down when the touch started, cancel the
-        // dismiss gesture — the user is scrolling content, not dragging to close.
-        if (scrollTopAtTouchStart.current > 0) {
+        // dismiss gesture — unless the touch started on the handle, which is
+        // always an intentional dismiss regardless of scroll position.
+        if (scrollTopAtTouchStart.current > 0 && !touchStartedOnHandle.current) {
             isDragging.current = false;
             if (sheetRef.current) {
                 sheetRef.current.style.transition = '';
@@ -123,8 +127,10 @@ export default function LightBox(props: { children: ReactNode, backgroundImage?:
                 onTouchEnd={handleTouchEnd}
                 onAnimationEnd={handleAnimationEnd}
             >
-                <div className={styles.handle} />
-                <IconX onClick={handleClose} className={styles.icon} />
+                <div ref={handleRef} className={styles.sheetHeader}>
+                    <div className={styles.handle} />
+                    <IconX onClick={handleClose} className={styles.icon} />
+                </div>
                 {props.children}
             </div>
         </div>
