@@ -14,6 +14,7 @@ export default function LightBox(props: { children: ReactNode, backgroundImage?:
     const touchLastY = useRef<number>(0);
     const touchLastTime = useRef<number>(0);
     const isDragging = useRef<boolean>(false);
+    const scrollTopAtTouchStart = useRef<number>(0);
 
     function handleClose() {
         if (sheetRef.current) {
@@ -33,6 +34,7 @@ export default function LightBox(props: { children: ReactNode, backgroundImage?:
         touchCurrentY.current = e.touches[0].clientY;
         touchLastY.current = e.touches[0].clientY;
         touchLastTime.current = e.timeStamp;
+        scrollTopAtTouchStart.current = sheetRef.current?.scrollTop ?? 0;
         isDragging.current = true;
         // Kill the active/held animation so inline transform has uncontested control
         if (sheetRef.current) {
@@ -43,6 +45,16 @@ export default function LightBox(props: { children: ReactNode, backgroundImage?:
 
     function handleTouchMove(e: React.TouchEvent) {
         if (!isDragging.current) return;
+        // If the sheet was scrolled down when the touch started, cancel the
+        // dismiss gesture — the user is scrolling content, not dragging to close.
+        if (scrollTopAtTouchStart.current > 0) {
+            isDragging.current = false;
+            if (sheetRef.current) {
+                sheetRef.current.style.transition = '';
+                sheetRef.current.style.transform = '';
+            }
+            return;
+        }
         touchLastY.current = touchCurrentY.current;
         touchLastTime.current = e.timeStamp;
         touchCurrentY.current = e.touches[0].clientY;

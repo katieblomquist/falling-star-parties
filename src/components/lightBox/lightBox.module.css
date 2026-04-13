@@ -108,6 +108,7 @@
         border-radius: 20px 20px 0 0;
         padding: 12px 20px 40px;
         overflow-y: auto;
+        overscroll-behavior: contain;
         /* snap-back transition after aborted swipe */
         transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
     }

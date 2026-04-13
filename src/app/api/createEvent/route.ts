@@ -165,12 +165,12 @@ export async function POST(request: NextRequest) {
 
     if (!notionKey) {
       requestLogger.error("Missing NOTION_KEY configuration", { email });
-      return NextResponse.json({ error: "Missing NOTION_KEY" }, { status: 500 });
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 
     if (!notionDatabaseId) {
       requestLogger.error("Missing NOTION_DATABASE_ID configuration", { email });
-      return NextResponse.json({ error: "Missing NOTION_DATABASE_ID" }, { status: 500 });
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 
     // Create Notion client at runtime to ensure env vars are available
@@ -259,7 +259,6 @@ export async function POST(request: NextRequest) {
         message: "Event request successfully created", 
         pageId: page.id,
         emailSent: emailResult.success,
-        emailError: emailResult.error
       },
       { status: 201 }
     );
@@ -276,16 +275,8 @@ export async function POST(request: NextRequest) {
     }, error);
 
     // Provide more specific error information for troubleshooting
-    let publicErrorMessage = "Internal server error";
-    let statusCode = 500;
-
-    if (error instanceof Error) {
-      if (error.message.includes('NOTION')) {
-        publicErrorMessage = "Failed to save booking to database";
-      } else if (error.message.includes('fetch')) {
-        publicErrorMessage = "External service connection failed";
-      }
-    }
+    const publicErrorMessage = "Something went wrong. Please try again.";
+    const statusCode = 500;
 
     return NextResponse.json({ 
       error: publicErrorMessage,

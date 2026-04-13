@@ -89,6 +89,8 @@ export default function Book() {
     const [requestId, setRequestId] = useState<string>('');
     const [isLoading, setIsLoading] = useState(false);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
+    const [stepperCurrent, setStepperCurrent] = useState(0);
+    const [stepperInReview, setStepperInReview] = useState(false);
     // ...existing code...
 
     const {
@@ -180,12 +182,13 @@ export default function Book() {
             captchaToken = await getRecaptchaToken();
         } catch (e) {
             setIsLoading(false);
-            setSubmissionError("Captcha failed to load. Please try again.");
+            console.error("Captcha error:", e);
+            setSubmissionError("Something went wrong. Please try again.");
             return;
         }
         if (!captchaToken) {
             setIsLoading(false);
-            setSubmissionError("Captcha verification failed. Please try again.");
+            setSubmissionError("Something went wrong. Please try again.");
             return;
         }
         submitForm(data, captchaToken);
@@ -216,7 +219,8 @@ export default function Book() {
             })
             .catch(error => {
                 setIsLoading(false);
-                setSubmissionError(error.error || "There was an error submitting your request. Please try again.");
+                console.error("Submission error:", error);
+                setSubmissionError("Something went wrong. Please try again.");
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
     };
@@ -225,6 +229,8 @@ export default function Book() {
         setSubmissionError(null);
         setIsSubmitted(false);
         setIsLoading(false);
+        setStepperCurrent(5);
+        setStepperInReview(false);
     };
 
     const stepperTest = [
@@ -262,7 +268,7 @@ export default function Book() {
                             <ThankYou requestId={requestId} firstName={formValues.FirstName} />
                         ) : (
                             <div className={styles.stepper}>
-                                <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} />
+                                <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} current={stepperCurrent} setCurrent={setStepperCurrent} inReview={stepperInReview} setReview={setStepperInReview} />
                             </div>
                         )}
 

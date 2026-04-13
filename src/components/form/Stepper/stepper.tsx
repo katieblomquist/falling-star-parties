@@ -1,15 +1,14 @@
 'use client'
 
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import styles from "./stepper.module.css";
 import { IconCircleCheckFilled } from '@tabler/icons-react'
 import Button from "@/components/Button/button";
 import { StepperContent } from "@/app/mockdata";
 
-export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string, submit: () => void }) {
+export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string, submit: () => void, current: number, setCurrent: (n: number) => void, inReview: boolean, setReview: (b: boolean) => void }) {
 
-    const [current, setCurrent] = useState(0);
-    const [inReview, setReview] = useState(false);
+    const { current, setCurrent, inReview, setReview } = props;
     const stepperContent = props.content;
     const last = stepperContent.length - 1;
 
