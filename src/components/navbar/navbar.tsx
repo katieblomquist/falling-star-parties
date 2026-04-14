@@ -37,11 +37,13 @@ export default function NavBar(props: { location: string }) {
             <nav className={styles.mobileNavbar} onClick={e => e.stopPropagation()}>
                 <div className={styles.mobileNavbarHeader}>
                     <Link href="/" className={styles.logoBoxMobile}><div className={styles.logoMobile} style={{ backgroundImage: "url(/logo.png)" }}></div></Link>
-                    {dropdownOpen ? (
-                        <IconX className={styles.mobileIcon} onClick={setDropdown} />
-                    ) : (
-                        <IconMenu2 className={styles.mobileIcon} onClick={setDropdown} />
-                    )}
+                    <button className={styles.hamburgerButton} onClick={setDropdown} aria-label={dropdownOpen ? "Close menu" : "Open menu"}>
+                        {dropdownOpen ? (
+                            <IconX size={28} />
+                        ) : (
+                            <IconMenu2 size={28} />
+                        )}
+                    </button>
                 </div>
                 {dropdownOpen ? (
                     <div className={styles.mobileDropdown} >
