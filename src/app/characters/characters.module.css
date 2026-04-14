@@ -57,7 +57,7 @@
   .splash {
     position: relative;
     background-image: none !important;
-    height: 300px;
+    height: 50vh;
   }
 
   .splash::before {
