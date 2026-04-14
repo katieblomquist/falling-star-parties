@@ -86,14 +86,14 @@ export const aboutUs = [
 export const bookingFaqs = [
     {
         question: 'How far in advance should I book?',
-        answer: "We suggest booking 6 weeks in advance. However, always try to accommodate any request we receive, so don't hesitate to ask!"
+        answer: "We suggest booking 6 weeks in advance. However, we always try to accommodate any request we receive, so don't hesitate to ask!"
     },
     {
         question: 'Do you offer price matching?',
-        answer: "Yes! We will match the price of any legally registered and insured business in Maryland. When you submit your booking request, make a note that you'd like us to match a quote given by another company, and one of our Fairy Godmothers should be in touch within 24 hours. Unsure if the business you're wanting us to match qualifies? You can look them up on the Maryland Goverment Website. If the business is currently leagally registered, it will be listed as being in Good Standing."
+        answer: "Yes! We will match the price of any legally registered and insured business in Maryland. When you submit your booking request, make a note that you'd like us to match a quote given by another company, and one of our Fairy Godmothers should be in touch within 24 hours. Unsure if the business you're wanting us to match qualifies? You can look them up on the Maryland Government Website. If the business is currently legally registered, it will be listed as being in Good Standing."
     },
     {
-        question: 'Can I have a character at corporte, public, or school events?',
+        question: 'Can I have a character at corporate, public, or school events?',
         answer: "Absolutely! We are happy to entertain at a variety of events and venues."
     },
     {
@@ -102,7 +102,7 @@ export const bookingFaqs = [
     },
     {
         question: 'Is there a late booking fee?',
-        answer: "Yes. There is a 33% fee for any booking make less than 1 week in advance. "
+        answer: "Yes. There is a 33% fee for any booking made less than 1 week in advance. "
     },
     {
         question: 'What is your pricing?',
@@ -187,7 +187,7 @@ export const characters = [
         desc: "With a love for books, a thirst for adventure, and a heart full of compassion, our Rose Princess shows that true beauty shines from within. Her intelligence, courage, and kindness inspire everyone she meets to look beyond appearances and embrace the magic of empathy and open-mindedness. Her presence brings a touch of wonder to every gathering, inviting guests to imagine new worlds and discover the extraordinary in the everyday.",
         background: "/backgrounds/RosePrincessBackground.png",
         dresses: [
-            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_3510.jpg", characterId: 3 }, { id: 11, name: "Holiday Dress", img: "/bubbles/characters/IMG_1230.jpg", characterId: 3 }
+            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_3510.jpg", characterId: 3 }, { id: 11, name: "Holiday Dress", img: "/bubbles/characters/IMG_1230.JPG", characterId: 3 }
         ]
     },
     {
@@ -279,7 +279,7 @@ export const privateParties = [
 
 export const privateExtras = [
     {
-        title: 'Stoyrbook Keepsake',
+        title: 'Storybook Keepsake',
         price: 'Starting at $20',
         description: 'Take home the very storybook your character reads at the party! This beautifully illustrated keepsake is personalized, so your child can relive the magical tale again and again.',
         icon: '/icons/book.svg'

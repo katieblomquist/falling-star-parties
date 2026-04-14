@@ -10,7 +10,6 @@ export default function Footer(){
                 <div className={styles.links}>
                     <p ><a href="https://forms.gle/fV959EENcrtcVEJw7" target="_blank" className={styles.link}>Join Our Team</a></p>
                     <p ><a href='/tos' className={styles.link}>Terms of Service</a></p>
-                    <p className={styles.link}>Media Kit</p>
                 </div>
                 {/* ...existing code... */}
         </div>
