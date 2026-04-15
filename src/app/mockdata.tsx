@@ -15,8 +15,8 @@ export const packages = [{ id: 0, type: "Birthday Party", title: "Dream", descri
 { id: 2, type: "Birthday Party", title: "Shine", description: "Our Characters will do everything included in the Sparkle Package plus face paint with your guests!", duration: "90 Minutes", cost: 350, additionalCharacterCost: 200 },
 { id: 3, type: "Public Event", title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 250, additionalCharacterCost: 150 },
 { id: 4, type: "Public Event", title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for two hours", duration: "120 Minutes", cost: 400, additionalCharacterCost: 300 },
-{ id: 4, type: "Charity Event", title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 175, additionalCharacterCost: 75 },
-{ id: 5, type: "Charity Event", title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for two hours", duration: "120 Minutes", cost: 250, additionalCharacterCost: 150 }
+{ id: 6, type: "Charity Event", title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 175, additionalCharacterCost: 75 },
+{ id: 7, type: "Charity Event", title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for two hours", duration: "120 Minutes", cost: 250, additionalCharacterCost: 150 }
 ];
 
 //abstract to DB

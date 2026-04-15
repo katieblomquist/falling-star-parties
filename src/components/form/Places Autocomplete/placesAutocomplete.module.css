@@ -10,4 +10,10 @@
     padding: 10px 20px;
     align-items: center;
     font-family: var(--font-dhyana);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.invalid {
+    border-color: #b3261e;
 }

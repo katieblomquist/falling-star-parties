@@ -79,8 +79,28 @@ export async function POST(request: NextRequest) {
       photoPref,
       additionalInfo,
       agreeToTos,
-      // ...existing code...
+      captchaToken,
     } = body;
+
+    // Verify reCAPTCHA token server-side
+    const recaptchaSecret = process.env.RECAPTCHA_V3_SECRET_KEY;
+    if (!recaptchaSecret) {
+      requestLogger.error("Missing RECAPTCHA_V3_SECRET_KEY configuration", { email });
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+    if (!captchaToken) {
+      requestLogger.warn("Missing captcha token", { email });
+      return NextResponse.json({ error: "CAPTCHA verification failed." }, { status: 400 });
+    }
+    const recaptchaRes = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${captchaToken}`,
+      { method: "POST" }
+    );
+    const recaptchaData = await recaptchaRes.json();
+    if (!recaptchaData.success || recaptchaData.score < 0.5) {
+      requestLogger.warn("reCAPTCHA verification failed", { email, score: recaptchaData.score });
+      return NextResponse.json({ error: "CAPTCHA verification failed." }, { status: 400 });
+    }
 
     requestLogger.info("Form submission received", {
       email,
@@ -88,7 +108,6 @@ export async function POST(request: NextRequest) {
       packageId,
       characterCount: characterSelections.length,
       extrasCount: extrasIds.length,
-      // ...existing code...
     });
 
     // Process form data
@@ -259,6 +278,7 @@ export async function POST(request: NextRequest) {
         message: "Event request successfully created", 
         pageId: page.id,
         emailSent: emailResult.success,
+        ...(emailResult.error ? { emailError: emailResult.error } : {}),
       },
       { status: 201 }
     );
