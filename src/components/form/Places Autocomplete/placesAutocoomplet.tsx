@@ -32,24 +32,69 @@ declare global {
     }
 }
 
-/**
- * Loads the Maps JS API with loading=async (Google's recommended pattern).
- * Calls `cb` once window.google.maps is fully initialised.
- */
+/** Inject pac-container overrides once into <head> */
+function injectDropdownStyles() {
+    if (document.getElementById("pac-custom-styles")) return;
+    const style = document.createElement("style");
+    style.id = "pac-custom-styles";
+    style.textContent = `
+        .pac-container {
+            border: 1px solid #A4A8B0;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-top: 4px;
+            overflow: hidden;
+            font-family: var(--font-dhyana), sans-serif;
+            font-size: 16px;
+        }
+        .pac-item {
+            padding: 8px 20px;
+            cursor: pointer;
+            border-top: none;
+            color: #333;
+            font-family: var(--font-dhyana), sans-serif;
+        }
+        .pac-item:first-child {
+            border-top: none;
+        }
+        .pac-item:hover,
+        .pac-item-selected {
+            background-color: #343B9510;
+        }
+        .pac-item-query {
+            font-family: var(--font-dhyana), sans-serif;
+            font-size: 16px;
+            color: #333;
+        }
+        .pac-matched {
+            font-weight: 600;
+        }
+        /* Hide the Google pin icon on the left of each item */
+        .pac-icon {
+            display: none;
+        }
+        /* Hide the "powered by Google" logo at the bottom */
+        .pac-logo:after {
+            display: none;
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+/** Queue cb to run once Maps JS is fully ready */
 function loadMapsApi(apiKey: string, cb: () => void) {
-    // Already loaded — call immediately
-    if (typeof window !== "undefined" && window.google && window.google.maps) {
+    if (typeof window === "undefined") return;
+
+    if (window.google && window.google.maps) {
         cb();
         return;
     }
 
-    // Queue the callback regardless of whether the script tag exists yet
     if (!window.__mapsReadyCallbacks) {
         window.__mapsReadyCallbacks = [];
     }
     window.__mapsReadyCallbacks.push(cb);
 
-    // Install the global callback that Maps JS will invoke when ready
     if (!window.__mapsReady) {
         window.__mapsReady = () => {
             window.__mapsReadyCallbacks?.forEach((fn) => fn());
@@ -57,7 +102,6 @@ function loadMapsApi(apiKey: string, cb: () => void) {
         };
     }
 
-    // Inject the script tag only once
     const existing = document.querySelector('script[src*="maps.googleapis.com/maps/api/js"]');
     if (!existing) {
         const script = document.createElement("script");
@@ -68,10 +112,8 @@ function loadMapsApi(apiKey: string, cb: () => void) {
 }
 
 export default function PlacesAutocomplete({ value, onPlaceSelected, invalid }: Props) {
-    const containerRef = useRef<HTMLDivElement>(null);
-    // Keep a ref to the PlaceAutocompleteElement so we can clean up its listener
-    const elementRef = useRef<HTMLElement | null>(null);
-    const listenerRef = useRef<((e: Event) => void) | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
+    const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
     useEffect(() => {
         const apiKey = process.env.NEXT_PUBLIC_GOOGLE_KEY;
@@ -80,55 +122,25 @@ export default function PlacesAutocomplete({ value, onPlaceSelected, invalid }: 
             return;
         }
 
-        loadMapsApi(apiKey, async () => {
-            if (!containerRef.current) return;
+        injectDropdownStyles();
 
-            // Use the new Places library
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const { PlaceAutocompleteElement } =
-                await window.google.maps.importLibrary("places") as any;
+        loadMapsApi(apiKey, () => {
+            if (!inputRef.current || autocompleteRef.current) return;
 
-            // Don't add a second widget if already mounted (StrictMode double-invoke)
-            if (elementRef.current) return;
+            autocompleteRef.current = new window.google.maps.places.Autocomplete(
+                inputRef.current,
+                { types: ["address"], componentRestrictions: { country: "us" }, fields: ["address_components", "geometry", "formatted_address"] }
+            );
 
-            const autocompleteEl = new PlaceAutocompleteElement({
-                componentRestrictions: { country: "us" },
-                types: ["address"],
-            }) as HTMLElement;
+            autocompleteRef.current.addListener("place_changed", () => {
+                const place = autocompleteRef.current?.getPlace();
+                if (!place?.geometry?.location || !place.address_components) return;
 
-            // Apply matching styles inline so they work regardless of CSS Modules scoping
-            Object.assign(autocompleteEl.style, {
-                width: "100%",
-                display: "block",
-            });
-
-            // Pre-fill with any existing value
-            if (value) {
-                (autocompleteEl as HTMLInputElement).value = value;
-            }
-
-            elementRef.current = autocompleteEl;
-            containerRef.current.appendChild(autocompleteEl);
-
-            const handleSelect = async (event: Event) => {
-                const place = (event as google.maps.places.PlaceAutocompletePlaceSelectEvent).place;
-                if (!place) return;
-
-                await place.fetchFields({
-                    fields: ["displayName", "formattedAddress", "addressComponents", "location"],
-                });
-
-                if (!place.location || !place.addressComponents) return;
-
-                const components = place.addressComponents;
+                const components = place.address_components;
                 const get = (type: string) =>
-                    components.find((c: google.maps.places.AddressComponent) =>
-                        c.types.includes(type)
-                    )?.shortText ?? "";
+                    components.find((c) => c.types.includes(type))?.short_name ?? "";
                 const getLong = (type: string) =>
-                    components.find((c: google.maps.places.AddressComponent) =>
-                        c.types.includes(type)
-                    )?.longText ?? "";
+                    components.find((c) => c.types.includes(type))?.long_name ?? "";
 
                 const streetNumber = get("street_number");
                 const route = get("route");
@@ -140,9 +152,9 @@ export default function PlacesAutocomplete({ value, onPlaceSelected, invalid }: 
                 const zip = get("postal_code");
 
                 const location: Location = {
-                    address: place.formattedAddress ?? "",
-                    lat: place.location.lat(),
-                    lng: place.location.lng(),
+                    address: place.formatted_address ?? "",
+                    lat: place.geometry.location.lat(),
+                    lng: place.geometry.location.lng(),
                 };
 
                 const addressComponents: AddressComponents = {
@@ -151,34 +163,38 @@ export default function PlacesAutocomplete({ value, onPlaceSelected, invalid }: 
                     city,
                     state,
                     zip,
-                    formattedAddress: place.formattedAddress ?? "",
+                    formattedAddress: place.formatted_address ?? "",
                 };
 
                 onPlaceSelected(location, addressComponents);
-            };
-
-            listenerRef.current = handleSelect;
-            autocompleteEl.addEventListener("gmp-placeselect", handleSelect);
+            });
         });
 
         return () => {
-            if (elementRef.current && listenerRef.current) {
-                elementRef.current.removeEventListener("gmp-placeselect", listenerRef.current);
+            if (autocompleteRef.current) {
+                window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
+                autocompleteRef.current = null;
             }
-            // Remove the element from the DOM on unmount
-            if (elementRef.current && containerRef.current?.contains(elementRef.current)) {
-                containerRef.current.removeChild(elementRef.current);
-            }
-            elementRef.current = null;
-            listenerRef.current = null;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
-        <div
-            ref={containerRef}
-            className={`${styles.container}${invalid ? ` ${styles.invalid}` : ""}`}
-        />
+        <div className={styles.wrapper}>
+            <span className={styles.searchIcon} aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A4A8B0" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+            </span>
+            <input
+                ref={inputRef}
+                className={`${styles.input}${invalid ? ` ${styles.invalid}` : ""}`}
+                type="text"
+                placeholder="Enter event address"
+                defaultValue={value}
+                aria-label="Event address"
+            />
+        </div>
     );
 }
