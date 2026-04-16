@@ -25,6 +25,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     const [isMobile, setIsMobile] = useState(false);
     const [travelCost, setTravelCost] = useState(0);
     const [total, setTotal] = useState(0);
+    const [lastMinuteFee, setLastMinuteFee] = useState(0);
 
     // SSR-safe responsive check
     useEffect(() => {
@@ -113,25 +114,32 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                 t += calculateExtraCost();
                 t += travelCost;
             }
+            let surcharge = 0;
             if (date && isInNextWeek(date)) {
-                t += t * 0.3;
+                surcharge = Math.floor(t * 0.3);
+                t += surcharge;
             }
-            setTotal(parseFloat(t.toFixed(2)));
+            setLastMinuteFee(surcharge);
+            setTotal(Math.floor(t));
         }
 
         calculateTotal();
     }, [selectedPackage, eventExtras, numCharacters, numGuests, travelCost, extrasOptions, date]);
 
-    // Escape key closes mobile popup
+    // Escape key closes mobile popup + lock background scroll while open
     useEffect(() => {
         if (!popupActive) return;
+        document.body.style.overflow = 'hidden';
         function handleKeyDown(e: KeyboardEvent) {
             if (e.key === "Escape") {
                 activate(false);
             }
         }
         window.addEventListener("keydown", handleKeyDown);
-        return () => window.removeEventListener("keydown", handleKeyDown);
+        return () => {
+            document.body.style.overflow = '';
+            window.removeEventListener("keydown", handleKeyDown);
+        };
     }, [popupActive]);
 
     function activatePopup() {
@@ -140,6 +148,10 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
 
     const lineItems = (
         <>
+            {selectedPackage === undefined && (
+                <p className={styles.emptyState}>Select a package to see your estimate.</p>
+            )}
+
             {selectedPackage !== undefined ? (
                 <div className={styles.lineItem}>
                     <p>Base Visit: </p>
@@ -182,6 +194,13 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                 </div>
             ) : null}
 
+            {lastMinuteFee > 0 ? (
+                <div className={styles.lineItem}>
+                    <p>Last-Minute Booking (30%): </p>
+                    <p>${lastMinuteFee}</p>
+                </div>
+            ) : null}
+
             <hr className={styles.equals} />
 
             <div className={styles.lineItem}>
@@ -191,7 +210,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
 
             <p className={styles.disclaimer}>
                 Please note that estimates may not be exact and are subject to change.
-                Our Fairy Godmother will contact you in the next 48 hours to finalize
+                Our Fairy Godmother will contact you in the next 72 hours to finalize
                 your booking and provide an exact quote.
             </p>
         </>
@@ -215,7 +234,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
 
                     <div className={popupActive ? styles.active : styles.inactive}>
                         <div className={styles.mobileHeader} onClick={activatePopup}>
-                            <h4>Your Estimate</h4>
+                            <h4>{popupActive ? "Your Estimate" : `Your Estimate: $${total}`}</h4>
                             {popupActive ? <IconChevronDown /> : <IconChevronUp />}
                         </div>
                         {popupActive ? (

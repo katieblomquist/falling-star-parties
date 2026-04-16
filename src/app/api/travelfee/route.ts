@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
             }, fee);
         }
 
-        const finalFee = Math.ceil(fee);
+        const finalFee = Math.floor(fee);
 
         return NextResponse.json({
             fee: finalFee,

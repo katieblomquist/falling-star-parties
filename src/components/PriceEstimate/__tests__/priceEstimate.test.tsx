@@ -212,6 +212,40 @@ describe("PriceEstimate", () => {
       );
       expect(screen.getByText("$50")).toBeInTheDocument();
     });
+
+    it("shows last-minute booking fee line when date is within 7 days", async () => {
+      // Dream package costs $200, 30% surcharge = $60
+      const tomorrow = DateTime.now().plus({ days: 1 });
+      render(
+        <Wrapper
+          defaultValues={{
+            EventType: "Birthday Party",
+            Package: 0,
+            Date: tomorrow,
+          }}
+        />
+      );
+      await waitFor(() => {
+        expect(screen.getByText(/last-minute booking/i)).toBeInTheDocument();
+        expect(screen.getByText("$60")).toBeInTheDocument();
+      });
+    });
+
+    it("does not show last-minute booking fee line when date is more than 7 days away", async () => {
+      const farFuture = DateTime.now().plus({ days: 30 });
+      render(
+        <Wrapper
+          defaultValues={{
+            EventType: "Birthday Party",
+            Package: 0,
+            Date: farFuture,
+          }}
+        />
+      );
+      await waitFor(() => {
+        expect(screen.queryByText(/last-minute booking/i)).not.toBeInTheDocument();
+      });
+    });
   });
 
   describe("travel fee fetching", () => {

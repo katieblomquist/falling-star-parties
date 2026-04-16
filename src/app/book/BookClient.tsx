@@ -276,7 +276,9 @@ export default function Book() {
                                 </div>
                             )}
 
-                            <PriceEstimate controller={control} />
+                            {!isLoading && !isSubmitted && !submissionError && (
+                                <PriceEstimate controller={control} />
+                            )}
                         </div>
                     </form>
                 </FormProvider>

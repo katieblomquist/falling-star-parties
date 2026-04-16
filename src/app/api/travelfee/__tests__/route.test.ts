@@ -215,13 +215,13 @@ describe("GET /api/travelfee", () => {
       expect(json.tolls).toBe(true);
     });
 
-    it("ceils the final fee", async () => {
-      // 31.5 miles → fee = 1.5 → ceil = 2
+    it("floors the final fee", async () => {
+      // 31.5 miles → fee = 1.5 → floor = 1
       const meters = 31.5 * METERS_IN_MILE;
       global.fetch = jest.fn().mockResolvedValue(makeRoutesApiResponse(meters));
       const res = await GET(makeRequest({ lat: "38.9", lng: "-77.0" }));
       const json = await res.json();
-      expect(json.fee).toBe(2);
+      expect(json.fee).toBe(1);
     });
   });
 
