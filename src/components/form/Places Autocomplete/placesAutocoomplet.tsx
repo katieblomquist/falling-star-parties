@@ -22,6 +22,7 @@ type Props = {
     value: string;
     onPlaceSelected: (location: Location, components: AddressComponents) => void;
     invalid?: boolean;
+    onLoadError?: () => void;
 }
 
 declare global {
@@ -29,6 +30,7 @@ declare global {
         google: typeof google;
         __mapsReady?: () => void;
         __mapsReadyCallbacks?: Array<() => void>;
+        __mapsErrorCallbacks?: Array<() => void>;
     }
 }
 
@@ -82,7 +84,7 @@ function injectDropdownStyles() {
 }
 
 /** Queue cb to run once Maps JS is fully ready */
-function loadMapsApi(apiKey: string, cb: () => void) {
+function loadMapsApi(apiKey: string, cb: () => void, onError?: () => void) {
     if (typeof window === "undefined") return;
 
     if (window.google && window.google.maps) {
@@ -94,6 +96,13 @@ function loadMapsApi(apiKey: string, cb: () => void) {
         window.__mapsReadyCallbacks = [];
     }
     window.__mapsReadyCallbacks.push(cb);
+
+    if (!window.__mapsErrorCallbacks) {
+        window.__mapsErrorCallbacks = [];
+    }
+    if (onError) {
+        window.__mapsErrorCallbacks.push(onError);
+    }
 
     if (!window.__mapsReady) {
         window.__mapsReady = () => {
@@ -107,11 +116,15 @@ function loadMapsApi(apiKey: string, cb: () => void) {
         const script = document.createElement("script");
         script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=places&loading=async&callback=__mapsReady`;
         script.async = true;
+        script.onerror = () => {
+            window.__mapsErrorCallbacks?.forEach((fn) => fn());
+            window.__mapsErrorCallbacks = [];
+        };
         document.head.appendChild(script);
     }
 }
 
-export default function PlacesAutocomplete({ value, onPlaceSelected, invalid }: Props) {
+export default function PlacesAutocomplete({ value, onPlaceSelected, invalid, onLoadError }: Props) {
     const inputRef = useRef<HTMLInputElement>(null);
     const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
 
@@ -119,12 +132,21 @@ export default function PlacesAutocomplete({ value, onPlaceSelected, invalid }: 
         const apiKey = process.env.NEXT_PUBLIC_GOOGLE_KEY;
         if (!apiKey) {
             console.error("NEXT_PUBLIC_GOOGLE_KEY is not set");
+            onLoadError?.();
             return;
         }
 
         injectDropdownStyles();
 
+        // Fire onLoadError if Maps hasn't initialised within 10 seconds
+        const timeout = setTimeout(() => {
+            if (!autocompleteRef.current) {
+                onLoadError?.();
+            }
+        }, 10000);
+
         loadMapsApi(apiKey, () => {
+            clearTimeout(timeout);
             if (!inputRef.current || autocompleteRef.current) return;
 
             autocompleteRef.current = new window.google.maps.places.Autocomplete(
@@ -168,9 +190,10 @@ export default function PlacesAutocomplete({ value, onPlaceSelected, invalid }: 
 
                 onPlaceSelected(location, addressComponents);
             });
-        });
+        }, onLoadError);
 
         return () => {
+            clearTimeout(timeout);
             if (autocompleteRef.current) {
                 window.google?.maps?.event?.clearInstanceListeners(autocompleteRef.current);
                 autocompleteRef.current = null;

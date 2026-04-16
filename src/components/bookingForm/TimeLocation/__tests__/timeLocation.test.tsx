@@ -38,16 +38,19 @@ jest.mock("@/components/form/Dropdown/dropdown", () =>
 // Mock PlacesAutocomplete — capture the onPlaceSelected callback so tests can
 // trigger it
 let capturedOnPlaceSelected: ((location: unknown, components: unknown) => void) | null = null;
+let capturedOnLoadError: (() => void) | null = null;
 
 jest.mock(
   "@/components/form/Places Autocomplete/placesAutocoomplet",
   () => ({
     __esModule: true,
-    default: ({ onPlaceSelected, invalid }: {
+    default: ({ onPlaceSelected, onLoadError, invalid }: {
       onPlaceSelected: (l: unknown, c: unknown) => void;
+      onLoadError?: () => void;
       invalid?: boolean;
     }) => {
       capturedOnPlaceSelected = onPlaceSelected;
+      capturedOnLoadError = onLoadError ?? null;
       return (
         <input
           data-testid="places-autocomplete"
@@ -86,12 +89,14 @@ function Wrapper() {
       <div data-testid="zip-value">{methods.watch("Zip")}</div>
       <div data-testid="lat-value">{String(methods.watch("LocationLat") ?? "")}</div>
       <div data-testid="lng-value">{String(methods.watch("LocationLng") ?? "")}</div>
+      <div data-testid="manual-value">{String(methods.watch("IsManualAddress") ?? "")}</div>
     </FormProvider>
   );
 }
 
 beforeEach(() => {
   capturedOnPlaceSelected = null;
+  capturedOnLoadError = null;
 });
 
 // ---------------------------------------------------------------------------
@@ -203,6 +208,56 @@ describe("TimeLocation", () => {
         );
       });
       expect(screen.getByTestId("street-value").textContent).toBe("Springfield Community Center, VA");
+    });
+  });
+
+  describe("manual address fallback", () => {
+    it("shows manual inputs and hides autocomplete when onLoadError fires", async () => {
+      render(<Wrapper />);
+      expect(screen.getByTestId("places-autocomplete")).toBeInTheDocument();
+
+      await act(async () => {
+        capturedOnLoadError!();
+      });
+
+      expect(screen.queryByTestId("places-autocomplete")).not.toBeInTheDocument();
+      expect(screen.getByLabelText(/street address/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/city/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/state/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/zip code/i)).toBeInTheDocument();
+    });
+
+    it("sets IsManualAddress to true when onLoadError fires", async () => {
+      render(<Wrapper />);
+      await act(async () => {
+        capturedOnLoadError!();
+      });
+      expect(screen.getByTestId("manual-value").textContent).toBe("true");
+    });
+
+    it("populates form fields from manual inputs", async () => {
+      render(<Wrapper />);
+      await act(async () => { capturedOnLoadError!(); });
+
+      await act(async () => {
+        fireEvent.change(screen.getByLabelText(/street address/i), { target: { value: "456 Oak Ave" } });
+        fireEvent.change(screen.getByLabelText(/city/i), { target: { value: "Fairfax" } });
+        fireEvent.change(screen.getByLabelText(/state/i), { target: { value: "VA" } });
+        fireEvent.change(screen.getByLabelText(/zip code/i), { target: { value: "22030" } });
+      });
+
+      expect(screen.getByTestId("street-value").textContent).toBe("456 Oak Ave");
+      expect(screen.getByTestId("city-value").textContent).toBe("Fairfax");
+      expect(screen.getByTestId("state-value").textContent).toBe("VA");
+      expect(screen.getByTestId("zip-value").textContent).toBe("22030");
+    });
+
+    it("does not set LocationLat or LocationLng in manual fallback mode", async () => {
+      render(<Wrapper />);
+      await act(async () => { capturedOnLoadError!(); });
+
+      expect(screen.getByTestId("lat-value").textContent).toBe("");
+      expect(screen.getByTestId("lng-value").textContent).toBe("");
     });
   });
 });

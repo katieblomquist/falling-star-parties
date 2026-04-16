@@ -283,4 +283,50 @@ describe("PriceEstimate", () => {
       expect(global.fetch).not.toHaveBeenCalled();
     });
   });
+
+  describe("manual address fallback notice", () => {
+    it("shows the unverified address notice when IsManualAddress is true", async () => {
+      render(
+        <Wrapper
+          defaultValues={{
+            EventType: "Birthday Party",
+            Package: 0,
+            IsManualAddress: true,
+          }}
+        />
+      );
+      await waitFor(() => {
+        expect(screen.getByText(/couldn't verify this address/i)).toBeInTheDocument();
+      });
+    });
+
+    it("does not show the unverified address notice when IsManualAddress is false", async () => {
+      render(
+        <Wrapper
+          defaultValues={{
+            EventType: "Birthday Party",
+            Package: 0,
+            IsManualAddress: false,
+          }}
+        />
+      );
+      await waitFor(() => {
+        expect(screen.queryByText(/couldn't verify this address/i)).not.toBeInTheDocument();
+      });
+    });
+
+    it("does not show the unverified address notice when IsManualAddress is not set", async () => {
+      render(
+        <Wrapper
+          defaultValues={{
+            EventType: "Birthday Party",
+            Package: 0,
+          }}
+        />
+      );
+      await waitFor(() => {
+        expect(screen.queryByText(/couldn't verify this address/i)).not.toBeInTheDocument();
+      });
+    });
+  });
 });

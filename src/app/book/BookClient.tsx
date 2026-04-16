@@ -34,6 +34,7 @@ export type FormValues = {
     Zip: string,
     LocationLat?: number,
     LocationLng?: number,
+    IsManualAddress?: boolean,
     Package: number,
     Extras?: number[],
     NumCharacters: string,

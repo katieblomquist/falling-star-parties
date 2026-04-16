@@ -21,6 +21,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     const numGuests = useWatch({ control, name: "Attendance" });
     const locationLat = useWatch({ control, name: "LocationLat" });
     const locationLng = useWatch({ control, name: "LocationLng" });
+    const isManualAddress = useWatch({ control, name: "IsManualAddress" });
 
     const [isMobile, setIsMobile] = useState(false);
     const [travelCost, setTravelCost] = useState(0);
@@ -192,6 +193,12 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                     <p>Travel Fee: </p>
                     <p>${travelCost}</p>
                 </div>
+            ) : null}
+
+            {isManualAddress ? (
+                <p className={styles.disclaimer}>
+                    We couldn&apos;t verify this address, so travel fees may apply.
+                </p>
             ) : null}
 
             {lastMinuteFee > 0 ? (

@@ -7,11 +7,13 @@ import { Control, Controller, FieldErrors, useFormContext } from "react-hook-for
 import PlacesAutocomplete, { Location, AddressComponents } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 import { FormValues } from "@/app/book/BookClient";
 import { time } from "@/app/mockdata";
+import { useState } from "react";
 
 const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.25rem" };
 
 export default function TimeLocation(props: { controller: Control<FormValues, any>, errors: FieldErrors<FormValues> }) {
-    const { setValue, watch } = useFormContext<FormValues>();
+    const { setValue, watch, register } = useFormContext<FormValues>();
+    const [showManualFallback, setShowManualFallback] = useState(false);
 
     const addressDisplay = watch("StreetAddress")
         ? [watch("StreetAddress"), watch("City"), watch("State"), watch("Zip")]
@@ -27,6 +29,11 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
         setValue("Zip", components.zip, { shouldValidate: true });
         setValue("LocationLat", location.lat, { shouldValidate: true });
         setValue("LocationLng", location.lng, { shouldValidate: true });
+    }
+
+    function handleLoadError() {
+        setShowManualFallback(true);
+        setValue("IsManualAddress", true);
     }
 
     const addressInvalid = Boolean(
@@ -71,39 +78,74 @@ export default function TimeLocation(props: { controller: Control<FormValues, an
             </div>
             <div>
                 <h4 className={styles.header}>Location</h4>
-                {/* Hidden fields to register address parts with react-hook-form */}
-                <Controller
-                    control={props.controller}
-                    name="StreetAddress"
-                    rules={{ required: "Please select an address." }}
-                    render={() => <></>}
-                />
-                <Controller
-                    control={props.controller}
-                    name="City"
-                    rules={{ required: true }}
-                    render={() => <></>}
-                />
-                <Controller
-                    control={props.controller}
-                    name="State"
-                    rules={{ required: true }}
-                    render={() => <></>}
-                />
-                <Controller
-                    control={props.controller}
-                    name="Zip"
-                    rules={{ required: true }}
-                    render={() => <></>}
-                />
-                <PlacesAutocomplete
-                    value={addressDisplay}
-                    onPlaceSelected={handlePlaceSelected}
-                    invalid={addressInvalid}
-                />
-                {addressInvalid && !addressDisplay ? (
-                    <p style={errorTextStyle}>Please select an address.</p>
-                ) : null}
+                {showManualFallback ? (
+                    <>
+                        <input
+                            {...register("StreetAddress", { required: "Please enter a street address." })}
+                            placeholder="Street address"
+                            aria-label="Street address"
+                            className={`${styles.manualInput}${props.errors.StreetAddress ? ` ${styles.invalidInput}` : ""}`}
+                        />
+                        <input
+                            {...register("City", { required: true })}
+                            placeholder="City"
+                            aria-label="City"
+                            className={`${styles.manualInput}${props.errors.City ? ` ${styles.invalidInput}` : ""}`}
+                        />
+                        <input
+                            {...register("State", { required: true })}
+                            placeholder="State"
+                            aria-label="State"
+                            className={`${styles.manualInput}${props.errors.State ? ` ${styles.invalidInput}` : ""}`}
+                        />
+                        <input
+                            {...register("Zip", { required: true })}
+                            placeholder="ZIP code"
+                            aria-label="ZIP code"
+                            className={`${styles.manualInput}${props.errors.Zip ? ` ${styles.invalidInput}` : ""}`}
+                        />
+                        {addressInvalid ? (
+                            <p style={errorTextStyle}>Please enter your full address.</p>
+                        ) : null}
+                    </>
+                ) : (
+                    <>
+                        {/* Hidden fields to register address parts with react-hook-form */}
+                        <Controller
+                            control={props.controller}
+                            name="StreetAddress"
+                            rules={{ required: "Please select an address." }}
+                            render={() => <></>}
+                        />
+                        <Controller
+                            control={props.controller}
+                            name="City"
+                            rules={{ required: true }}
+                            render={() => <></>}
+                        />
+                        <Controller
+                            control={props.controller}
+                            name="State"
+                            rules={{ required: true }}
+                            render={() => <></>}
+                        />
+                        <Controller
+                            control={props.controller}
+                            name="Zip"
+                            rules={{ required: true }}
+                            render={() => <></>}
+                        />
+                        <PlacesAutocomplete
+                            value={addressDisplay}
+                            onPlaceSelected={handlePlaceSelected}
+                            onLoadError={handleLoadError}
+                            invalid={addressInvalid}
+                        />
+                        {addressInvalid && !addressDisplay ? (
+                            <p style={errorTextStyle}>Please select an address.</p>
+                        ) : null}
+                    </>
+                )}
             </div>
         </>
     );
