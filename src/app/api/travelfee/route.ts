@@ -21,6 +21,31 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const latParam = searchParams.get("lat");
     const lngParam = searchParams.get("lng");
+    const captchaToken = searchParams.get("captchaToken");
+
+    if (!captchaToken) {
+        return NextResponse.json(
+            { error: "Missing captcha token" },
+            { status: 400 }
+        );
+    }
+
+    const recaptchaSecret = process.env.RECAPTCHA_V3_SECRET_KEY;
+    if (!recaptchaSecret) {
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+
+    const recaptchaRes = await fetch(
+        `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${captchaToken}`,
+        { method: "POST" }
+    );
+    if (!recaptchaRes.ok) {
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+    const recaptchaData = await recaptchaRes.json();
+    if (!recaptchaData.success || recaptchaData.score < 0.5) {
+        return NextResponse.json({ error: "CAPTCHA verification failed." }, { status: 403 });
+    }
 
     if (!latParam || !lngParam) {
         return NextResponse.json(

@@ -4,6 +4,7 @@ import { Control, useWatch } from "react-hook-form";
 import { FormValues } from "@/app/book/BookClient";
 import styles from "./priceEstimate.module.css";
 import { useState, useEffect, useMemo } from "react";
+import { useRecaptchaV3 } from "@/lib/useRecaptchaV3";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { packages, extras } from "@/app/mockdata";
 import { DateTime, Interval } from "luxon";
@@ -27,6 +28,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     const [travelCost, setTravelCost] = useState(0);
     const [total, setTotal] = useState(0);
     const [lastMinuteFee, setLastMinuteFee] = useState(0);
+    const getRecaptchaToken = useRecaptchaV3("travel_fee");
 
     // SSR-safe responsive check
     useEffect(() => {
@@ -63,8 +65,9 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
         async function fetchTravelCost() {
             if (locationLat != null && locationLng != null) {
                 try {
+                    const captchaToken = await getRecaptchaToken();
                     const res = await fetch(
-                        `/api/travelfee?lat=${locationLat}&lng=${locationLng}`
+                        `/api/travelfee?lat=${locationLat}&lng=${locationLng}&captchaToken=${captchaToken}`
                     );
                     if (res.ok) {
                         const data = await res.json();
@@ -181,7 +184,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                   })
                 : null}
 
-            {parseInt(numCharacters) > 1 ? (
+            {parseInt(numCharacters) > 1 && selectedPackage !== undefined ? (
                 <div className={styles.lineItem}>
                     <p>Additional Characters: </p>
                     <p>${selectedPackage ? selectedPackage.additionalCharacterCost * (parseInt(numCharacters) - 1) : 0}</p>

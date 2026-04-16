@@ -96,6 +96,10 @@ export async function POST(request: NextRequest) {
       `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${captchaToken}`,
       { method: "POST" }
     );
+    if (!recaptchaRes.ok) {
+      requestLogger.error("reCAPTCHA siteverify request failed", { status: recaptchaRes.status });
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
     const recaptchaData = await recaptchaRes.json();
     if (!recaptchaData.success || recaptchaData.score < 0.5) {
       requestLogger.warn("reCAPTCHA verification failed", { email, score: recaptchaData.score });

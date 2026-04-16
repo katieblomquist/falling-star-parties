@@ -75,10 +75,6 @@ function injectDropdownStyles() {
         .pac-icon {
             display: none;
         }
-        /* Hide the "powered by Google" logo at the bottom */
-        .pac-logo:after {
-            display: none;
-        }
     `;
     document.head.appendChild(style);
 }
