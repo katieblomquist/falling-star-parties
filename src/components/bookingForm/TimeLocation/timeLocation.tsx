@@ -6,7 +6,7 @@ import styles from "./timeLocation.module.css";
 import { Control, Controller, FieldErrors, useFormContext } from "react-hook-form";
 import PlacesAutocomplete, { Location, AddressComponents } from "@/components/form/Places Autocomplete/placesAutocoomplet";
 import { FormValues } from "@/app/book/BookClient";
-import { time } from "@/app/mockdata";
+import { time } from "@/app/content";
 import { useState } from "react";
 
 const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.25rem" };

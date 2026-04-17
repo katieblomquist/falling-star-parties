@@ -1,5 +1,8 @@
 // app/fonts.ts
 import localFont from 'next/font/local';
+import { Petit_Formal_Script } from 'next/font/google';
+
+export const formal_script = Petit_Formal_Script({ weight: "400", subsets: ["latin"], variable: '--formal-script', preload: false });
 
 export const dhyana = localFont({
   src: [

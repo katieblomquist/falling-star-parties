@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import styles from "./characters.module.css";
-import { formal_script } from "../mockdata";
+import { formal_script } from "../fonts";
 import NavBar from "@/components/navbar/navbar";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";

@@ -1,4 +1,4 @@
-import { Character, CharacterDress } from "@/app/mockdata";
+import { Character, CharacterDress } from "@/app/content";
 import styles from "./characterCard.module.css";
 
 export default function CharacterCard(props: { content: Character | CharacterDress, selected?: boolean }) {

@@ -4,7 +4,7 @@ import TextInput from "@/components/form/Text Input/textInput";
 import styles from "./eventDetails.module.css"
 import { Control, Controller, FieldErrors } from "react-hook-form";
 import { FormValues } from "@/app/book/BookClient";
-import { photos, location } from "@/app/mockdata";
+import { photos, location } from "@/app/content";
 
 const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.25rem" };
 

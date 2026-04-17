@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { Client } from "@notionhq/client";
-import { characters, dresses, extras, packages } from "@/app/mockdata";
+import { characterList as characters, dresses, extras, packages, characterNameMap, packageNameMap } from "@/app/content";
 import { emailService } from "@/lib/emailService";  
 import { generateEmailTemplate } from "@/lib/emailTemplate";
 import { logger } from "@/lib/logger";
@@ -11,24 +11,6 @@ import { logger } from "@/lib/logger";
 
 type CharacterSelection = { characterId: number; dressId: number };
 
-const characterNameMap: Record<string, string> = {
-  "Ice Queen": "Elsa",
-  "Snow Princess": "Anna",
-  "Mermaid Princess": "Ariel",
-  "Rose Princess": "Belle",
-  "Glass Slipper Princess": "Cinderella",
-  "Tower Princess": "Rapunzel",
-  "Sleeping Princess": "Aurora",
-  "Bubble Queen": "Glinda",
-};
-
-const packageNameMap: Record<string, string> = {
-  "Dream": "Dream - 30 Min",
-  "Sparkle": "Sparkle - 60 Min",
-  "Shine": "Shine - 90 Min",
-  "One Hour Meet and Greet": "Meet and Greet - 60 Min",
-  "Two Hour Meet and Greet": "Meet and Greet - 120 Min",
-};
 
 function buildAdditionalComments(orgName: string | null, additionalInfo: string | null) {
   const pieces: string[] = [];

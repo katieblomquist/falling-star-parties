@@ -4,7 +4,7 @@ import NavBar from "@/components/navbar/navbar";
 import styles from "./services.module.css"
 import Footer from "@/components/footer/footer";
 import { privateExtras, privateParties, publicEvents, publicExtras, servicesPage } from "../content";
-import { formal_script } from "../mockdata";
+import { formal_script } from "../fonts";
 import MasonryPhotos from "@/components/masonryPhotos/masonryPhotos";
 import Splash from "@/components/splash/splash";
 import ServicesCard from "./components/servicesCard/servicesCard";

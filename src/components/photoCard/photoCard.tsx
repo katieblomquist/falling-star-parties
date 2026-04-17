@@ -1,10 +1,10 @@
 'use client';
 
-import { formal_script, dresses } from "@/app/mockdata";
+import { formal_script } from "@/app/fonts";
+import { CharacterDress } from "@/app/content";
 import { useState, useEffect } from "react";
 import LightBox from "../lightBox/lightBox";
 import styles from "./photoCard.module.css"
-import { CharacterDress } from "@/app/content";
 import CharacterInfo from "../characterInfo/characterInfo";
 
 export default function PhotoCard(props: { name: string, description: string, dresses: Array<CharacterDress>, background: string }) {

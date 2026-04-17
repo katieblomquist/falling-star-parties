@@ -1,7 +1,7 @@
 
 import { IconClock } from "@tabler/icons-react";
 import styles from "./horizontalCard.module.css";
-import { Services } from "@/app/mockdata";
+import { Services } from "@/app/content";
 
 export default function HorizontalCard(props: { content: Services }) {
 

@@ -6,7 +6,7 @@ import styles from "./priceEstimate.module.css";
 import { useState, useEffect, useMemo } from "react";
 import { useRecaptchaV3 } from "@/lib/useRecaptchaV3";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
-import { packages, extras } from "@/app/mockdata";
+import { packages, extras } from "@/app/content";
 import { DateTime, Interval } from "luxon";
 
 export default function PriceEstimate(props: { controller: Control<FormValues, any> }) {
