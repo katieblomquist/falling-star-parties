@@ -8,6 +8,7 @@ type LatLng = {
 type Toll = {
     currencyCode: string;
     units: string;
+    nanos?: number;
 };
 
 type Route = {
@@ -98,14 +99,14 @@ export async function GET(request: NextRequest) {
 
         // Add tolls from the outbound leg
         fee = routeThere.estimatedTolls.reduce((acc, toll) => {
-            return acc + parseFloat(toll.units);
+            return acc + Math.ceil(parseFloat(toll.units) + (toll.nanos ?? 0) / 1_000_000_000);
         }, fee);
 
         // If there are tolls going there, also fetch the return trip and add its tolls
         if (routeThere.estimatedTolls.length > 0) {
             const routeBack = await getRoute(client, owner, key);
             fee = routeBack.estimatedTolls.reduce((acc, toll) => {
-                return acc + parseFloat(toll.units);
+                return acc + Math.ceil(parseFloat(toll.units) + (toll.nanos ?? 0) / 1_000_000_000);
             }, fee);
         }
 
