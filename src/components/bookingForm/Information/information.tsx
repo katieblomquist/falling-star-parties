@@ -2,7 +2,7 @@ import Dropdown from "@/components/form/Dropdown/dropdown";
 import TextInput from "@/components/form/Text Input/textInput";
 import styles from "./information.module.css";
 import { Control, Controller, FieldErrors, UseFormResetField } from "react-hook-form";
-import { event } from "@/app/mockdata";
+import { event } from "@/app/content";
 import { FormValues } from "@/app/book/BookClient";
 
 

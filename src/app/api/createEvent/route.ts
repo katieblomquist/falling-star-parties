@@ -2,7 +2,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { Client } from "@notionhq/client";
-import { characters, dresses, extras, packages } from "@/app/mockdata";
+import { characterList as characters, dresses, extras, packages, characterNameMap, packageNameMap } from "@/app/content";
 import { emailService } from "@/lib/emailService";  
 import { generateEmailTemplate } from "@/lib/emailTemplate";
 import { logger } from "@/lib/logger";
@@ -11,24 +11,6 @@ import { logger } from "@/lib/logger";
 
 type CharacterSelection = { characterId: number; dressId: number };
 
-const characterNameMap: Record<string, string> = {
-  "Ice Queen": "Elsa",
-  "Snow Princess": "Anna",
-  "Mermaid Princess": "Ariel",
-  "Rose Princess": "Belle",
-  "Glass Slipper Princess": "Cinderella",
-  "Tower Princess": "Rapunzel",
-  "Sleeping Princess": "Aurora",
-  "Bubble Queen": "Glinda",
-};
-
-const packageNameMap: Record<string, string> = {
-  "Dream": "Dream - 30 Min",
-  "Sparkle": "Sparkle - 60 Min",
-  "Shine": "Shine - 90 Min",
-  "One Hour Meet and Greet": "Meet and Greet - 60 Min",
-  "Two Hour Meet and Greet": "Meet and Greet - 120 Min",
-};
 
 function buildAdditionalComments(orgName: string | null, additionalInfo: string | null) {
   const pieces: string[] = [];
@@ -79,8 +61,32 @@ export async function POST(request: NextRequest) {
       photoPref,
       additionalInfo,
       agreeToTos,
-      // ...existing code...
+      captchaToken,
     } = body;
+
+    // Verify reCAPTCHA token server-side
+    const recaptchaSecret = process.env.RECAPTCHA_V3_SECRET_KEY;
+    if (!recaptchaSecret) {
+      requestLogger.error("Missing RECAPTCHA_V3_SECRET_KEY configuration", { email });
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+    if (!captchaToken) {
+      requestLogger.warn("Missing captcha token", { email });
+      return NextResponse.json({ error: "CAPTCHA verification failed." }, { status: 400 });
+    }
+    const recaptchaRes = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${captchaToken}`,
+      { method: "POST" }
+    );
+    if (!recaptchaRes.ok) {
+      requestLogger.error("reCAPTCHA siteverify request failed", { status: recaptchaRes.status });
+      return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    }
+    const recaptchaData = await recaptchaRes.json();
+    if (!recaptchaData.success || recaptchaData.score < 0.5) {
+      requestLogger.warn("reCAPTCHA verification failed", { email, score: recaptchaData.score });
+      return NextResponse.json({ error: "CAPTCHA verification failed." }, { status: 400 });
+    }
 
     requestLogger.info("Form submission received", {
       email,
@@ -88,7 +94,6 @@ export async function POST(request: NextRequest) {
       packageId,
       characterCount: characterSelections.length,
       extrasCount: extrasIds.length,
-      // ...existing code...
     });
 
     // Process form data
@@ -259,6 +264,7 @@ export async function POST(request: NextRequest) {
         message: "Event request successfully created", 
         pageId: page.id,
         emailSent: emailResult.success,
+        ...(emailResult.error ? { emailError: emailResult.error } : {}),
       },
       { status: 201 }
     );

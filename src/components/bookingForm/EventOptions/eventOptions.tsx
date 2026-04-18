@@ -4,7 +4,7 @@ import { Control, Controller, FieldErrors, UseFormResetField, useWatch } from "r
 import { FormValues } from "@/app/book/BookClient";
 import HorizontalCard from "@/components/form/Selection Cards/horizontalCard";
 import VerticleCard from "@/components/form/Selection Cards/verticleCard";
-import { packages, extras } from "@/app/mockdata";
+import { packages, extras } from "@/app/content";
 import { useMemo } from "react";
 
 
@@ -107,7 +107,9 @@ export default function EventOptions(props: { controller: Control<FormValues, an
                                         title:
                                             item.cost === 0
                                                 ? item.title + " - No additional charge!"
-                                                : item.title + " - $" + item.cost + " per child",
+                                                : item.cost <= 10
+                                                    ? item.title + " - $" + item.cost + " per child"
+                                                    : item.title + " - $" + item.cost,
                                         description: item.description,
                                         duration: "",
                                         cost: item.cost,

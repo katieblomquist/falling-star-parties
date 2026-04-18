@@ -1,6 +1,6 @@
 import Button from "@/components/Button/button"
 import styles from "./servicesCard.module.css"
-import { formal_script } from "@/app/mockdata"
+import { formal_script } from "@/app/fonts"
 import { useEffect, useState } from "react";
 import { IconChevronUp, IconChevronDown } from "@tabler/icons-react";
 

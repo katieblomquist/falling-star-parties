@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { FormValues } from "@/app/book/BookClient";
 import { Control, Controller, FieldErrors, UseFormResetField, useController, useWatch } from "react-hook-form";
-import { Character, CharacterSelection, characters, numberCharacters, dresses } from "@/app/mockdata";
+import { Character, CharacterSelection, characterList as characters, numberCharacters, dresses } from "@/app/content";
 import CharacterCard from "@/components/form/Selection Cards/characterCard";
 import SelectionCard from "@/components/form/Selection Cards/selectionCard";
 import styles from "./characters.module.css";
@@ -140,7 +140,7 @@ export default function Characters(props: { controller: Control<FormValues, any>
                                 <div className={styles.dressSelection}>
                                     {characterField.value.map((character) => {
                                         const characterData = characterOptions.find(c => c.id === character.characterId);
-                                        const characterCostumes = dresses.filter((item) => item.characterId === character.characterId - 1);
+                                        const characterCostumes = dresses.filter((item) => item.characterId === character.characterId);
                                         if (!characterData || characterCostumes.length === 0) return null;
                                         const isOpen = openDress[character.characterId] ?? false;
                                         return (

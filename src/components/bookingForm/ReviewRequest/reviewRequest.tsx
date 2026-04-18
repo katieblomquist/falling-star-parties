@@ -1,5 +1,5 @@
 import { FormValues } from "@/app/book/BookClient";
-import { packages, extras, characters, dresses, event, time } from "@/app/mockdata";
+import { packages, extras, characterList, dresses, event, time } from "@/app/content";
 import { useEffect, useState } from "react";
 import styles from "./reviewRequest.module.css";
 import { Control, Controller, FieldErrors, useWatch } from "react-hook-form";
@@ -9,7 +9,7 @@ const errorTextStyle = { color: "#b3261e", fontSize: "0.875rem", marginTop: "0.2
 
 export default function ReviewRequest(props: { values: FormValues, control: Control<FormValues, any>, errors: FieldErrors<FormValues> }) {
 
-  const [characterList, setList] = useState("");
+  const [selectedCharacterNames, setList] = useState("");
   const eventType = props.values.EventType;
 
   function getOrdinal(n: number) {
@@ -29,9 +29,9 @@ export default function ReviewRequest(props: { values: FormValues, control: Cont
   }
 
   useEffect(() => {
-    const buildCharacterList = () => {
-      const characterList = props.values.Character.map(char => {
-        const character = characters.find(character => character.id === char.characterId)?.name;
+      const buildCharacterList = () => {
+      const names = props.values.Character.map(char => {
+        const character = characterList.find(character => character.id === char.characterId)?.name;
         // const dress = dresses.find(dress => dress.id === char.dressId)?.name;
         // if(dress !== undefined){
         //   return `${character} (${dress})`
@@ -39,7 +39,7 @@ export default function ReviewRequest(props: { values: FormValues, control: Cont
         return `${character}`
       }).filter(Boolean).join(', ');
 
-      return characterList;
+      return names;
     };
 
     setList(buildCharacterList());
@@ -71,7 +71,7 @@ export default function ReviewRequest(props: { values: FormValues, control: Cont
           <p className={styles.subline}><b>Event Package: </b>{packages[props.values.Package].title}</p>
         )}
         
-        <p className={styles.subline}><b>Characters:</b> {characterList}</p>
+        <p className={styles.subline}><b>Characters:</b> {selectedCharacterNames}</p>
         <p className={styles.subline}><b>Number of Children: </b>{props.values.Attendance}</p>
         <p className={styles.subline}><b>Additional Comments: </b>{props.values?.AdditionalInfo}</p>
       </div>

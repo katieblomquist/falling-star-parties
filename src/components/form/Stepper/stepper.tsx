@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react"
 import styles from "./stepper.module.css";
 import { IconCircleCheckFilled } from '@tabler/icons-react'
 import Button from "@/components/Button/button";
-import { StepperContent } from "@/app/mockdata";
+import { StepperContent } from "@/app/content";
 
 export default function Stepper(props: { content: StepperContent[], nextButtonText: string, primaryFinalStepButton: string, secondaryFinalStepButton: string, backButtonText: string, submit: () => void, current: number, setCurrent: (n: number) => void, inReview: boolean, setReview: (b: boolean) => void }) {
 

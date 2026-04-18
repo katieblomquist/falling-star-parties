@@ -44,6 +44,11 @@ jest.mock("@/components/bookingForm/ReviewRequest/reviewRequest", () => () => (
   <div data-testid="step-reviewrequest" />
 ));
 
+// Mock PriceEstimate so it never calls fetch(/api/travelfee) during these tests
+jest.mock("@/components/PriceEstimate/priceEstimate", () => () => (
+  <div data-testid="price-estimate" />
+));
+
 // Mock the Stepper: render a simple "Submit" button that calls the submit prop
 jest.mock("@/components/form/Stepper/stepper", () => {
   return function MockStepper({

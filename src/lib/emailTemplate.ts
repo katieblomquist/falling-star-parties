@@ -1,4 +1,4 @@
-import { characters, dresses, extras, packages } from "@/app/mockdata";
+import { characterList as characters, dresses, extras, packages, characterNameMap, packageNameMap } from "@/app/content";
 
 type CharacterSelection = { characterId: number; dressId: number };
 
@@ -22,24 +22,6 @@ interface FormSubmissionData {
   additionalInfo?: string | null;
 }
 
-const characterNameMap: Record<string, string> = {
-  "Ice Queen": "Elsa",
-  "Snow Princess": "Anna",
-  "Mermaid Princess": "Ariel",
-  "Rose Princess": "Belle",
-  "Glass Slipper Princess": "Cinderella",
-  "Tower Princess": "Rapunzel",
-  "Sleeping Princess": "Aurora",
-  "Bubble Queen": "Glinda",
-};
-
-const packageNameMap: Record<string, string> = {
-  "Dream": "Dream - 30 Min",
-  "Sparkle": "Sparkle - 60 Min",
-  "Shine": "Shine - 90 Min",
-  "One Hour Meet and Greet": "Meet and Greet - 60 Min",
-  "Two Hour Meet and Greet": "Meet and Greet - 120 Min",
-};
 
 export function generateEmailTemplate(data: FormSubmissionData): { html: string; subject: string } {
   const fullName = `${data.firstName} ${data.lastName}`.trim();

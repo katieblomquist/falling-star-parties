@@ -4,7 +4,7 @@ import { IconCircle } from "@tabler/icons-react";
 import IconCircleCheck from "./IconCircleCheck";
 import styles from "./selectionCard.module.css";
 import { ComponentType } from "react";
-import { Services, Character, CharacterDress } from "@/app/mockdata";
+import { Services, Character, CharacterDress } from "@/app/content";
 
 type CardContentComponent<T> = ComponentType<{ content: T; selected?: boolean }>
 

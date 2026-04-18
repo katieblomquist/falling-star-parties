@@ -4,22 +4,22 @@ import styles from "./book.module.css"
 import { useMemo, useState } from "react";
 import Stepper from "@/components/form/Stepper/stepper";
 import Information from "@/components/bookingForm/Information/information";
-// ...existing code...
 import ThankYou from "@/components/bookingForm/ThankYou/thankYou";
 import SubmissionError from "@/components/bookingForm/SubmissionError/submissionError";
 import EventOptions from "@/components/bookingForm/EventOptions/eventOptions";
 import EventDetails from "@/components/bookingForm/EventDetails/eventDetails";
 import TimeLocation from "@/components/bookingForm/TimeLocation/timeLocation";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm, useWatch, FormProvider } from "react-hook-form";
 import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest";
 import { DateTime } from "luxon";
 import NavBar from "@/components/navbar/navbar";
-import { CharacterSelection, formal_script } from "../mockdata";
+import { CharacterSelection } from "../content";
+import { formal_script } from "../fonts";
 import Swoop from "@/components/swoop/swoop";
 import Footer from "@/components/footer/footer";
 import Characters from "@/components/bookingForm/Characters/characters";
 import { useRecaptchaV3 } from "@/lib/useRecaptchaV3";
-// ...existing code...
+import PriceEstimate from "@/components/PriceEstimate/priceEstimate";
 
 export type FormValues = {
     FirstName: string,
@@ -33,6 +33,9 @@ export type FormValues = {
     City: string,
     State: string,
     Zip: string,
+    LocationLat?: number,
+    LocationLng?: number,
+    IsManualAddress?: boolean,
     Package: number,
     Extras?: number[],
     NumCharacters: string,
@@ -91,14 +94,8 @@ export default function Book() {
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [stepperCurrent, setStepperCurrent] = useState(0);
     const [stepperInReview, setStepperInReview] = useState(false);
-    // ...existing code...
 
-    const {
-        handleSubmit,
-        control,
-        resetField,
-        formState: { errors }
-    } = useForm<FormValues>({
+    const methods = useForm<FormValues>({
         mode: "onChange",
         defaultValues: {
             FirstName: '',
@@ -123,7 +120,14 @@ export default function Book() {
             AdditionalInfo: '',
             AgreeToTOS: false,
         }
-    })
+    });
+
+    const {
+        handleSubmit,
+        control,
+        resetField,
+        formState: { errors }
+    } = methods;
 
     const formValues = useWatch({ control }) as FormValues;
 
@@ -183,12 +187,12 @@ export default function Book() {
         } catch (e) {
             setIsLoading(false);
             console.error("Captcha error:", e);
-            setSubmissionError("Something went wrong. Please try again.");
+            setSubmissionError("CAPTCHA failed to load. Please refresh and try again.");
             return;
         }
         if (!captchaToken) {
             setIsLoading(false);
-            setSubmissionError("Something went wrong. Please try again.");
+            setSubmissionError("CAPTCHA verification failed. Please try again.");
             return;
         }
         submitForm(data, captchaToken);
@@ -220,7 +224,8 @@ export default function Book() {
             .catch(error => {
                 setIsLoading(false);
                 console.error("Submission error:", error);
-                setSubmissionError("Something went wrong. Please try again.");
+                const message = error?.error || "There was an error submitting your request. Please try again.";
+                setSubmissionError(message);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
     };
@@ -251,30 +256,34 @@ export default function Book() {
                     </div>
                     <Swoop top={true} color={'white'} direction={'center'} />
                 </div>
-                <form>
-                    <div className={styles.booking}>
-                        {isLoading ? (
-                            <div style={{textAlign: 'center', padding: '40px 0'}}>
-                                <div className={styles.spinner}></div>
-                                <p style={{marginTop: 16}}>Sending your request...</p>
-                            </div>
-                        ) : submissionError ? (
-                            <SubmissionError 
-                                firstName={formValues.FirstName} 
-                                onRetry={handleRetry} 
-                                errorMessage={submissionError}
-                            />
-                        ) : isSubmitted ? (
-                            <ThankYou requestId={requestId} firstName={formValues.FirstName} />
-                        ) : (
-                            <div className={styles.stepper}>
-                                <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} current={stepperCurrent} setCurrent={setStepperCurrent} inReview={stepperInReview} setReview={setStepperInReview} />
-                            </div>
-                        )}
+                <FormProvider {...methods}>
+                    <form>
+                        <div className={styles.booking}>
+                            {isLoading ? (
+                                <div style={{textAlign: 'center', padding: '40px 0'}}>
+                                    <div className={styles.spinner}></div>
+                                    <p style={{marginTop: 16}}>Sending your request...</p>
+                                </div>
+                            ) : submissionError ? (
+                                <SubmissionError 
+                                    firstName={formValues.FirstName} 
+                                    onRetry={handleRetry} 
+                                    errorMessage={submissionError}
+                                />
+                            ) : isSubmitted ? (
+                                <ThankYou requestId={requestId} firstName={formValues.FirstName} />
+                            ) : (
+                                <div className={styles.stepper}>
+                                    <Stepper content={stepperTest} nextButtonText={"Next"} primaryFinalStepButton={"Send Request"} secondaryFinalStepButton={"Edit Your Event"} backButtonText={"Back"} submit={submit} current={stepperCurrent} setCurrent={setStepperCurrent} inReview={stepperInReview} setReview={setStepperInReview} />
+                                </div>
+                            )}
 
-                        {/* <PriceEstimate controller={control} /> */}
-                    </div>
-                </form>
+                            {!isLoading && !isSubmitted && !submissionError && (
+                                <PriceEstimate controller={control} />
+                            )}
+                        </div>
+                    </form>
+                </FormProvider>
             </div>
             <Footer />
         </>

@@ -1,9 +1,233 @@
 import { ReactNode } from "react";
+
+// ---------------------------------------------------------------------------
+// Shared Types
+// ---------------------------------------------------------------------------
 type Faq = { question: string, answer: string }
 type Tab = { label: string, content: ReactNode }
 export type TabArray = Array<Tab>
 export type FaqArray = Array<Faq>
-export type CharacterDress = { id: number, name: String, img: String, characterId: number };
+export type CharacterDress = { id: number, name: string, img: string, characterId: number };
+export type StepperContent = { id: number, title: string, completed: boolean, content: ReactNode };
+export type Services = { id: number, type: string, title: string, description: string, duration: string, cost: number, additionalCharacterCost: number };
+export type Character = { id: number, name: string, img: string };
+export type CharacterSelection = { characterId: number, dressId: number };
+
+/**
+ * Single source of truth for a character and all of their data.
+ * `dresses` contains only real dress options (no "Any" fallback).
+ * `allowsAny` drives whether an "Any" option is appended when building
+ * the flat `dresses` export used by the booking form.
+ */
+export type CharacterData = {
+    id: number;
+    name: string;
+    realName: string;
+    img: string;
+    background: string;
+    desc: string;
+    dresses: CharacterDress[];
+    allowsAny: boolean;
+};
+
+// ---------------------------------------------------------------------------
+// Booking / Form Data
+// (abstract to DB — TypeORM entities exist in src/db/entities/)
+// ---------------------------------------------------------------------------
+
+export const packages = [
+    { id: 0, type: "Birthday Party", title: "Dream", description: "Our Characters will sing, tell stories, teach princess lessons, hold a royal coronation, and pose for portraits!", duration: "30 Minutes", cost: 200, additionalCharacterCost: 100 },
+    { id: 1, type: "Birthday Party", title: "Sparkle", description: "Our Characters will do everything included in the Dream Package plus play party games such as Simon Says, Hide and Go Seek, and Duck Duck Goose!", duration: "60 Minutes", cost: 275, additionalCharacterCost: 150 },
+    { id: 2, type: "Birthday Party", title: "Shine", description: "Our Characters will do everything included in the Sparkle Package plus face paint with your guests!", duration: "90 Minutes", cost: 350, additionalCharacterCost: 200 },
+    { id: 3, type: "Public Event", title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 250, additionalCharacterCost: 150 },
+    { id: 4, type: "Public Event", title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for two hours", duration: "120 Minutes", cost: 400, additionalCharacterCost: 300 },
+    { id: 6, type: "Charity Event", title: "One Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for one hour", duration: "60 Minutes", cost: 175, additionalCharacterCost: 75 },
+    { id: 7, type: "Charity Event", title: "Two Hour Meet and Greet", description: "Our characters will enchant your guests, take photos, and provide magical interactions for two hours", duration: "120 Minutes", cost: 250, additionalCharacterCost: 150 },
+];
+
+export const extras = [
+    { id: 0, type: "Birthday Party", title: "Storybook Keepsake", description: "Includes a storybook signed by your character that she will present at the end of story time!", duration: "", cost: 20, additionalCharacterCost: 0 },
+    { id: 1, type: "Birthday Party", title: "Deluxe Storybook Keepsake", description: "Includes a storybook, with over 10 princess stories, signed by your character that she will present at the end of story time!", duration: "", cost: 35, additionalCharacterCost: 0 },
+    { id: 2, type: "Birthday Party", title: "Deluxe Princess Set", description: "Includes an upgraded rhinestone crown and a themed princess sash fit for any birthday royal!", duration: "", cost: 30, additionalCharacterCost: 0 },
+    { id: 3, type: "Birthday Party", title: "Gift Bags", description: "Includes a gift bag for each child and the Deluxe Princess Set for the Birthday Princess. We offer both princess themed and superhero themed bags so that every child is included! \n\nNote: Price is based on the anticipated number of guests", duration: "", cost: 10, additionalCharacterCost: 0 },
+    { id: 4, type: "Public Event", title: "Storytime", description: "Includes a musical story time for your guests", duration: "", cost: 0, additionalCharacterCost: 0 },
+    { id: 5, type: "Public Event", title: "Interactive Storytime", description: "Your guests get to become a part of the story through props and lines of their own!", duration: "", cost: 75, additionalCharacterCost: 0 },
+    { id: 6, type: "Public Event", title: "Character Cards", description: "Your guests will get to take a little piece of the magic with them through our signed photo cards!", duration: "", cost: 1, additionalCharacterCost: 0 },
+    { id: 7, type: "Charity Event", title: "Storytime", description: "Includes a musical story time for your guests", duration: "", cost: 0, additionalCharacterCost: 0 },
+    { id: 8, type: "Charity Event", title: "Interactive Storytime", description: "Your guests get to become a part of the story through props and lines of their own!", duration: "", cost: 50, additionalCharacterCost: 0 },
+];
+
+/**
+ * Simple character list used by the booking form.
+ * For full character bios and dress descriptions see `characters` below.
+/**
+ * Single source of truth for all character data.
+ * Character IDs are 0-indexed (0–7) and align with dress.characterId.
+ */
+export const characters: CharacterData[] = [
+    {
+        id: 0,
+        name: "Ice Queen",
+        realName: "Elsa",
+        img: "/bubbles/characters/DSC_0729.jpg",
+        background: "/backgrounds/IceQueenBackground.png",
+        desc: "Through love, bravery, and the power of letting go, our Ice Queen learns to embrace her uniqueness and find strength in her icy powers. With her mesmerizing presence, she is sure to captivate your guests and inspire them to embrace their true selves and the magic within.",
+        allowsAny: true,
+        dresses: [
+            { id: 0, name: "Ice Dress",      img: "/bubbles/characters/DSC_0729.jpg",  characterId: 0 },
+            { id: 1, name: "Elements Dress", img: "/bubbles/characters/IMG_4976.jpg",  characterId: 0 },
+            { id: 2, name: "Adventure Dress",img: "/bubbles/characters/IMG_0455.jpg",  characterId: 0 },
+            { id: 3, name: "Yuletide Dress", img: "/bubbles/characters/IMG_2153.jpg",  characterId: 0 },
+        ],
+    },
+    {
+        id: 1,
+        name: "Snow Princess",
+        realName: "Anna",
+        img: "/bubbles/characters/IMG_1962.jpg",
+        background: "/backgrounds/SnowPrincessBackground.png",
+        desc: "With boundless optimism, courage, and a heart full of love, our Snow Princess proves that true strength lies in never giving up on those you care about. Her warmth and adventurous spirit light up every room, inspiring your guests to face challenges with hope and to believe in the power of family and friendship. Her infectious energy is sure to enchant everyone and remind them that love can thaw even the coldest of hearts.",
+        allowsAny: true,
+        dresses: [
+            { id: 4, name: "Coronation Dress", img: "/bubbles/characters/IMG_1962.jpg", characterId: 1 },
+            { id: 5, name: "Queen Dress",       img: "/bubbles/characters/IMG_9963.jpg", characterId: 1 },
+            { id: 6, name: "Adventure Dress",   img: "/bubbles/characters/IMG_7410.jpg", characterId: 1 },
+            { id: 7, name: "Yuletide Dress",    img: "/bubbles/characters/IMG_3821.jpg", characterId: 1 },
+        ],
+    },
+    {
+        id: 2,
+        name: "Mermaid Princess",
+        realName: "Ariel",
+        img: "/bubbles/characters/IMG_6126.jpg",
+        background: "/backgrounds/MermaidPrincessBackground.png",
+        desc: "With an adventurous spirit, boundless curiosity, and a heart full of dreams, our Mermaid Princess dives fearlessly into the unknown to discover a world beyond the sea. Her determination and zest for life inspire everyone she meets to embrace new adventures and follow their passions, no matter the obstacles. Her enchanting presence will captivate your guests, encouraging them to celebrate their individuality and believe in the magic of pursuing their own dreams.",
+        allowsAny: true,
+        dresses: [
+            { id: 8, name: "Walking Tail", img: "/bubbles/characters/IMG_6126.jpg", characterId: 2 },
+            { id: 9, name: "Ballgown",     img: "/bubbles/characters/IMG_3063.jpg", characterId: 2 },
+        ],
+    },
+    {
+        id: 3,
+        name: "Rose Princess",
+        realName: "Belle",
+        img: "/bubbles/characters/IMG_3510.jpg",
+        background: "/backgrounds/RosePrincessBackground.png",
+        desc: "With a love for books, a thirst for adventure, and a heart full of compassion, our Rose Princess shows that true beauty shines from within. Her intelligence, courage, and kindness inspire everyone she meets to look beyond appearances and embrace the magic of empathy and open-mindedness. Her presence brings a touch of wonder to every gathering, inviting guests to imagine new worlds and discover the extraordinary in the everyday.",
+        allowsAny: true,
+        dresses: [
+            { id: 10, name: "Ballgown",      img: "/bubbles/characters/IMG_3510.jpg",  characterId: 3 },
+            { id: 11, name: "Holiday Dress", img: "/bubbles/characters/IMG_1230.JPG",  characterId: 3 },
+        ],
+    },
+    {
+        id: 4,
+        name: "Glass Slipper Princess",
+        realName: "Cinderella",
+        img: "/bubbles/characters/IMG_2752.jpg",
+        background: "/backgrounds/GlassSlipperPrincessBackground.png",
+        desc: "With grace, kindness, and unwavering hope, our Glass Slipper Princess shows that dreams can come true no matter where you start. Her gentle spirit and resilience inspire everyone she meets to believe in themselves and treat others with compassion. Her presence adds a touch of magic to any celebration, encouraging guests to find joy in every moment and to never stop wishing for their own happily ever after.",
+        allowsAny: false,
+        dresses: [
+            { id: 12, name: "Ballgown", img: "/bubbles/characters/IMG_2752.jpg", characterId: 4 },
+        ],
+    },
+    {
+        id: 5,
+        name: "Sleeping Princess",
+        realName: "Aurora",
+        img: "/bubbles/characters/IMG_3291.jpg",
+        background: "/backgrounds/SleepingPrincessBackground.png",
+        desc: "With a gentle heart, graceful charm, and a dreamy spirit, our Sleeping Princess blossoms from a sheltered life into a young woman longing for adventure and true love. Her kindness and quiet strength inspire those around her to believe in the magic of hope and the beauty of new beginnings. Her enchanting presence brings a timeless sense of romance and wonder, inviting guests to embrace their dreams and the promise of happily ever after.",
+        allowsAny: false,
+        dresses: [
+            { id: 13, name: "Ballgown", img: "/bubbles/characters/IMG_3291.jpg", characterId: 5 },
+        ],
+    },
+    {
+        id: 6,
+        name: "Tower Princess",
+        realName: "Rapunzel",
+        img: "/bubbles/characters/IMG_0078.jpg",
+        background: "/backgrounds/TowerPrincessBackground.png",
+        desc: "With boundless curiosity, creativity, and a heart full of hope, our Tower Princess turns every challenge into an adventure. Her optimism, resilience, and kindness inspire those around her to embrace the unknown and see the beauty in every new experience. Her infectious spirit brings light and laughter wherever she goes, inviting guests to dream big, explore fearlessly, and find magic in the world beyond their comfort zone.",
+        allowsAny: true,
+        dresses: [
+            { id: 14, name: "Adventure Dress", img: "/bubbles/characters/IMG_0078.jpg", characterId: 6 },
+            { id: 15, name: "Holiday Dress",   img: "/bubbles/characters/IMG_3827.jpg", characterId: 6 },
+        ],
+    },
+    {
+        id: 7,
+        name: "Bubble Queen",
+        realName: "Glinda",
+        img: "/bubbles/characters/IMG_5468.jpg",
+        background: "/backgrounds/BubbleQueenBackground.png",
+        desc: "With sparkling wit, boundless charm, and a heart as bright as her famous bubbles, the Bubble Queen floats into every gathering with a spirit that lifts and inspires. Radiantly optimistic and endlessly encouraging, she believes in the power of kindness, friendship, and helping others find their inner sparkle. Whether offering a whimsical laugh or gentle wisdom, her magical presence delights guests of all ages and reminds everyone that sometimes the greatest magic is choosing to do good.",
+        allowsAny: false,
+        dresses: [
+            { id: 16, name: "Bubble Dress", img: "/bubbles/characters/IMG_5468.jpg", characterId: 7 },
+        ],
+    },
+];
+
+// ---------------------------------------------------------------------------
+// Derived exports — computed from `characters`, not maintained separately.
+// Other files can continue to import these without changes.
+// ---------------------------------------------------------------------------
+
+/** Flat list of characters for the booking form character picker. */
+export const characterList: Character[] = characters.map(({ id, name, img }) => ({ id, name, img }));
+
+/**
+ * Flat list of all dresses for the booking form dress picker.
+ * Includes "Any" fallback entries for characters where `allowsAny` is true.
+ */
+export const dresses: CharacterDress[] = characters.flatMap(c => [
+    ...c.dresses,
+    ...(c.allowsAny ? [{ id: -1, name: "Any", img: "", characterId: c.id }] : []),
+]);
+
+export const numberCharacters = ["1", "2", "3", "4", "5", "6"];
+
+export const location = ["Indoor", "Outdoor", "No Preference"];
+
+export const photos = ["Yes", "No"];
+
+export const event = ["Birthday Party", "Public Event", "Charity Event"];
+
+export const time = [
+    "10:00 AM", "10:15 AM", "10:30 AM", "10:45 AM",
+    "11:00 AM", "11:15 AM", "11:30 AM", "11:45 AM",
+    "12:00 PM", "12:15 PM", "12:30 PM", "12:45 PM",
+    "1:00 PM", "1:15 PM", "1:30 PM", "1:45 PM",
+    "2:00 PM", "2:15 PM", "2:30 PM", "2:45 PM",
+    "3:00 PM", "3:15 PM", "3:30 PM", "3:45 PM",
+    "4:00 PM", "4:15 PM", "4:30 PM", "4:45 PM",
+    "5:00 PM", "5:15 PM", "5:30 PM", "5:45 PM",
+    "6:00 PM",
+];
+
+/**
+ * Maps display character names to their real-world counterparts.
+ * Used internally (e.g. booking confirmation emails) — not shown in the UI.
+ * Derived from `characters` — do not edit directly.
+ */
+export const characterNameMap: Record<string, string> = Object.fromEntries(
+    characters.map(c => [c.name, c.realName])
+);
+
+/**
+ * Maps package titles to formatted label strings used in emails.
+ */
+export const packageNameMap: Record<string, string> = {
+    "Dream": "Dream - 30 Min",
+    "Sparkle": "Sparkle - 60 Min",
+    "Shine": "Shine - 90 Min",
+    "One Hour Meet and Greet": "Meet and Greet - 60 Min",
+    "Two Hour Meet and Greet": "Meet and Greet - 120 Min",
+};
 
 export const homePage = [
     {
@@ -155,76 +379,6 @@ export const generalFaqs = [
     }
 ];
 
-export const characters = [
-    {
-        name: "Ice Queen",
-        desc: "Through love, bravery, and the power of letting go, our Ice Queen learns to embrace her uniqueness and find strength in her icy powers. With her mesmerizing presence, she is sure to captivate your guests and inspire them to embrace their true selves and the magic within.",
-        background: "/backgrounds/IceQueenBackground.png",
-        dresses: [
-            { id: 0, name: "Ice Dress", img: "/bubbles/characters/DSC_0729.jpg", characterId: 0 }, { id: 1, name: "Elements Dress", img: "/bubbles/characters/IMG_4976.jpg", characterId: 0 },
-            { id: 2, name: "Adventure Dress", img: "/bubbles/characters/IMG_0455.jpg", characterId: 0 }, { id: 3, name: "Yuletide Dress", img: "/bubbles/characters/IMG_2153.jpg", characterId: 0 }
-        ]
-    },
-    {
-        name: "Snow Princess",
-        desc: "With boundless optimism, courage, and a heart full of love, our Snow Princess proves that true strength lies in never giving up on those you care about. Her warmth and adventurous spirit light up every room, inspiring your guests to face challenges with hope and to believe in the power of family and friendship. Her infectious energy is sure to enchant everyone and remind them that love can thaw even the coldest of hearts.",
-        background: "/backgrounds/SnowPrincessBackground.png",
-        dresses: [
-            { id: 4, name: "Coronation Dress", img: "/bubbles/characters/IMG_1962.jpg", characterId: 1 }, { id: 5, name: "Queen Dress", img: "/bubbles/characters/IMG_9963.jpg", characterId: 1 },
-            { id: 6, name: "Adventure Dress", img: "/bubbles/characters/IMG_7410.jpg", characterId: 1 }, { id: 7, name: "Yuletide Dress", img: "/bubbles/characters/IMG_3821.jpg", characterId: 1 }
-        ]
-    },
-    {
-        name: "Mermaid Princess",
-        desc: "With an adventurous spirit, boundless curiosity, and a heart full of dreams, our Mermaid Princess dives fearlessly into the unknown to discover a world beyond the sea. Her determination and zest for life inspire everyone she meets to embrace new adventures and follow their passions, no matter the obstacles. Her enchanting presence will captivate your guests, encouraging them to celebrate their individuality and believe in the magic of pursuing their own dreams.",
-        background: "/backgrounds/MermaidPrincessBackground.png",
-        dresses: [
-            { id: 8, name: "Walking Tail", img: "/bubbles/characters/IMG_6126.jpg", characterId: 2 }, { id: 9, name: "Ballgown", img: "/bubbles/characters/IMG_3063.jpg", characterId: 2 }
-        ]
-    },
-    {
-        name: "Rose Princess",
-        desc: "With a love for books, a thirst for adventure, and a heart full of compassion, our Rose Princess shows that true beauty shines from within. Her intelligence, courage, and kindness inspire everyone she meets to look beyond appearances and embrace the magic of empathy and open-mindedness. Her presence brings a touch of wonder to every gathering, inviting guests to imagine new worlds and discover the extraordinary in the everyday.",
-        background: "/backgrounds/RosePrincessBackground.png",
-        dresses: [
-            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_3510.jpg", characterId: 3 }, { id: 11, name: "Holiday Dress", img: "/bubbles/characters/IMG_1230.JPG", characterId: 3 }
-        ]
-    },
-    {
-        name: "Glass Slipper Princess",
-        desc: "With grace, kindness, and unwavering hope, our Glass Slipper Princess shows that dreams can come true no matter where you start. Her gentle spirit and resilience inspire everyone she meets to believe in themselves and treat others with compassion. Her presence adds a touch of magic to any celebration, encouraging guests to find joy in every moment and to never stop wishing for their own happily ever after.",
-        background: "/backgrounds/GlassSlipperPrincessBackground.png",
-        dresses: [
-            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_2752.jpg", characterId: 3 },
-        ]
-    },
-    {
-        name: "Tower Princess",
-        desc: "With boundless curiosity, creativity, and a heart full of hope, our Tower Princess turns every challenge into an adventure. Her optimism, resilience, and kindness inspire those around her to embrace the unknown and see the beauty in every new experience. Her infectious spirit brings light and laughter wherever she goes, inviting guests to dream big, explore fearlessly, and find magic in the world beyond their comfort zone.",
-        background: "/backgrounds/TowerPrincessBackground.png",
-        dresses: [
-            { id: 10, name: "Adventure Dress", img: "/bubbles/characters/IMG_0078.jpg", characterId: 3 }, { id: 11, name: "Holiday Dress", img: "/bubbles/characters/IMG_3827.jpg", characterId: 3 }
-        ]
-    },
-    {
-        name: "Sleeping Princess",
-        desc: "With a gentle heart, graceful charm, and a dreamy spirit, our Sleeping Princess blossoms from a sheltered life into a young woman longing for adventure and true love. Her kindness and quiet strength inspire those around her to believe in the magic of hope and the beauty of new beginnings. Her enchanting presence brings a timeless sense of romance and wonder, inviting guests to embrace their dreams and the promise of happily ever after.",
-        background: "/backgrounds/SleepingPrincessBackground.png",
-        dresses: [
-            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_3291.jpg", characterId: 3 }
-        ]
-    },
-    {
-        name: "Bubble Queen",
-        desc: "With sparkling wit, boundless charm, and a heart as bright as her famous bubbles, the Bubble Queen floats into every gathering with a spirit that lifts and inspires. Radiantly optimistic and endlessly encouraging, she believes in the power of kindness, friendship, and helping others find their inner sparkle. Whether offering a whimsical laugh or gentle wisdom, her magical presence delights guests of all ages and reminds everyone that sometimes the greatest magic is choosing to do good.",
-        background: "/backgrounds/BubbleQueenBackground.png",
-        dresses: [
-            { id: 10, name: "Ballgown", img: "/bubbles/characters/IMG_5468.jpg", characterId: 3 }
-        ]
-    },
-
-]
-
 export const servicesPage = [
     {
         titleStart: "Something ",
@@ -328,7 +482,7 @@ export const publicExtras = [
     },
     {
         title: 'Character Cards',
-        price: '$10 per child',
+        price: '$1 per child',
         description: 'Take home a special memory from your magical day! Each child receives a dazzling character signature card, signed by their favorite storybook friend—a cherished keepsake to remember their enchanting encounter.',
         icon: '/icons/crown.svg'
     },

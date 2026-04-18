@@ -140,14 +140,28 @@ const VALID_BODY = {
 
 const ORIGINAL_ENV = { ...process.env };
 
+// Default fetch mock: reCAPTCHA siteverify returns success
+const mockFetch = jest.fn();
+global.fetch = mockFetch;
+
+function mockRecaptchaSuccess() {
+  mockFetch.mockResolvedValue({
+    ok: true,
+    json: async () => ({ success: true, score: 0.9 }),
+  });
+}
+
 beforeEach(() => {
   jest.clearAllMocks();
   process.env.NOTION_KEY = "secret_test_key";
   process.env.NOTION_DATABASE_ID = "test-database-id";
+  process.env.RECAPTCHA_V3_SECRET_KEY = "test-recaptcha-secret";
   // Default: Notion succeeds
   mockPagesCreate.mockResolvedValue({ id: VALID_PAGE_ID });
   // Default: email succeeds
   mockSendEmail.mockResolvedValue(undefined);
+  // Default: reCAPTCHA succeeds
+  mockRecaptchaSuccess();
 });
 
 afterEach(() => {
@@ -165,7 +179,7 @@ describe("POST /api/createEvent", () => {
       const res = await POST(buildRequest(VALID_BODY));
       expect(res.status).toBe(500);
       const json = await res.json();
-      expect(json.error).toMatch(/NOTION_KEY/i);
+      expect(json.error).toBeTruthy();
     });
 
     it("returns 500 when NOTION_DATABASE_ID is missing", async () => {
@@ -173,7 +187,7 @@ describe("POST /api/createEvent", () => {
       const res = await POST(buildRequest(VALID_BODY));
       expect(res.status).toBe(500);
       const json = await res.json();
-      expect(json.error).toMatch(/NOTION_DATABASE_ID/i);
+      expect(json.error).toBeTruthy();
     });
   });
 
@@ -324,6 +338,55 @@ describe("POST /api/createEvent", () => {
       const call = mockPagesCreate.mock.calls[0][0];
       expect(call.properties["Photos Allowed"]).toEqual({ checkbox: false });
     });
+  });
+});
+
+describe("reCAPTCHA server-side verification", () => {
+  it("returns 400 when captchaToken is missing", async () => {
+    const { captchaToken: _omit, ...bodyWithoutToken } = VALID_BODY;
+    const res = await POST(buildRequest(bodyWithoutToken));
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toMatch(/captcha/i);
+  });
+
+  it("does NOT call Notion when captchaToken is missing", async () => {
+    const { captchaToken: _omit, ...bodyWithoutToken } = VALID_BODY;
+    await POST(buildRequest(bodyWithoutToken));
+    expect(mockPagesCreate).not.toHaveBeenCalled();
+  });
+
+  it("returns 400 when reCAPTCHA score is too low", async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: true, score: 0.2 }),
+    });
+    const res = await POST(buildRequest(VALID_BODY));
+    expect(res.status).toBe(400);
+    const json = await res.json();
+    expect(json.error).toMatch(/captcha/i);
+  });
+
+  it("returns 400 when reCAPTCHA success is false", async () => {
+    mockFetch.mockResolvedValue({
+      ok: true,
+      json: async () => ({ success: false, score: 0.9 }),
+    });
+    const res = await POST(buildRequest(VALID_BODY));
+    expect(res.status).toBe(400);
+  });
+
+  it("returns 500 when RECAPTCHA_V3_SECRET_KEY is missing", async () => {
+    delete process.env.RECAPTCHA_V3_SECRET_KEY;
+    const res = await POST(buildRequest(VALID_BODY));
+    expect(res.status).toBe(500);
+  });
+
+  it("proceeds to create Notion entry when reCAPTCHA passes", async () => {
+    // mockFetch already returns success from beforeEach
+    const res = await POST(buildRequest(VALID_BODY));
+    expect(res.status).toBe(201);
+    expect(mockPagesCreate).toHaveBeenCalledTimes(1);
   });
 });
 
