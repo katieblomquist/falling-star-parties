@@ -25,6 +25,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
     const isManualAddress = useWatch({ control, name: "IsManualAddress" });
 
     const [isMobile, setIsMobile] = useState(false);
+    const [inactiveBottom, setInactiveBottom] = useState<number | undefined>(undefined);
     const [travelCost, setTravelCost] = useState(0);
     const [total, setTotal] = useState(0);
     const [lastMinuteFee, setLastMinuteFee] = useState(0);
@@ -39,6 +40,31 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
         window.addEventListener("resize", checkWidth);
         return () => window.removeEventListener("resize", checkWidth);
     }, []);
+
+    // On iOS, fixed-bottom elements jump above the keyboard when it opens.
+    // visualViewport tracks the actual visible area; we offset the inactive bar
+    // downward by the gap between the layout viewport and the visual viewport
+    // so it stays pinned to the real bottom of the screen (under the keyboard).
+    useEffect(() => {
+        if (!isMobile || popupActive) return;
+        const vv = window.visualViewport;
+        if (!vv) return;
+
+        function updateBottom() {
+            const offsetFromBottom =
+                window.innerHeight - (vv!.height + vv!.offsetTop);
+            setInactiveBottom(offsetFromBottom > 0 ? offsetFromBottom : 0);
+        }
+
+        updateBottom();
+        vv.addEventListener("resize", updateBottom);
+        vv.addEventListener("scroll", updateBottom);
+        return () => {
+            vv.removeEventListener("resize", updateBottom);
+            vv.removeEventListener("scroll", updateBottom);
+            setInactiveBottom(undefined);
+        };
+    }, [isMobile, popupActive]);
 
     function isInNextWeek(day: DateTime) {
         const now = DateTime.now();
@@ -242,7 +268,10 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                         />
                     ) : null}
 
-                    <div className={popupActive ? styles.active : styles.inactive}>
+                    <div
+                        className={popupActive ? styles.active : styles.inactive}
+                        style={!popupActive && inactiveBottom !== undefined ? { bottom: inactiveBottom } : undefined}
+                    >
                         <div className={styles.mobileHeader} onClick={activatePopup}>
                             <h4>{popupActive ? "Your Estimate" : `Your Estimate: $${total}`}</h4>
                             {popupActive ? <IconChevronDown /> : <IconChevronUp />}
