@@ -26,6 +26,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
 
     const [isMobile, setIsMobile] = useState(false);
     const [inactiveBottom, setInactiveBottom] = useState<number | undefined>(undefined);
+    const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
     const [travelCost, setTravelCost] = useState(0);
     const [total, setTotal] = useState(0);
     const [lastMinuteFee, setLastMinuteFee] = useState(0);
@@ -54,6 +55,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
             const offsetFromBottom =
                 window.innerHeight - (vv!.height + vv!.offsetTop);
             setInactiveBottom(offsetFromBottom > 0 ? offsetFromBottom : 0);
+            setIsKeyboardOpen(window.innerHeight - vv!.height > 150);
         }
 
         updateBottom();
@@ -63,6 +65,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
             vv.removeEventListener("resize", updateBottom);
             vv.removeEventListener("scroll", updateBottom);
             setInactiveBottom(undefined);
+            setIsKeyboardOpen(false);
         };
     }, [isMobile, popupActive]);
 
@@ -268,6 +271,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                         />
                     ) : null}
 
+                    {!popupActive && isKeyboardOpen ? null : (
                     <div
                         className={popupActive ? styles.active : styles.inactive}
                         style={!popupActive && inactiveBottom !== undefined ? { bottom: inactiveBottom } : undefined}
@@ -282,6 +286,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                             </div>
                         ) : null}
                     </div>
+                    )}
                 </>
             )}
         </>
