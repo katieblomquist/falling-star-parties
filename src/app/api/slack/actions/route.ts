@@ -58,7 +58,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const actions = payload.actions as Array<Record<string, unknown>> | undefined;
   const action = actions?.[0];
-  if (action?.action_id !== "finalize_booking") {
+  if (action?.action_id !== "finalize_booking" && action?.action_id !== "update_booking") {
     return NextResponse.json({ ok: true });
   }
 
@@ -73,12 +73,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   // Acknowledge immediately (Slack requires < 3s response)
   // We'll do the work asynchronously and update the message when done.
-  void runFinalization({
-    notionPageId,
-    adminMessageTs,
-    originalText,
-    request,
-  });
+  if (action.action_id === "update_booking") {
+    void runUpdate({ notionPageId, adminMessageTs, originalText });
+  } else {
+    void runFinalization({ notionPageId, adminMessageTs, originalText });
+  }
 
   return NextResponse.json({ ok: true });
 }
@@ -91,7 +90,6 @@ async function runFinalization(opts: {
   notionPageId: string;
   adminMessageTs: string | undefined;
   originalText: string;
-  request: NextRequest;
 }) {
   const { notionPageId, adminMessageTs, originalText } = opts;
 
@@ -108,25 +106,22 @@ async function runFinalization(opts: {
     const page = await notion.pages.retrieve({ page_id: notionPageId });
     const data = notionPageToPdfData(page);
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ??
-      `https://${opts.request.headers.get("host")}`;
-
     logger.info("Starting finalization", { notionPageId, clientEmail: data.clientEmail });
 
     // 2. Generate PDF + create Square invoice in parallel
     const [pdfBuffer, squareResult] = await Promise.all([
-      renderPdfBuffer(data, baseUrl),
-      createRetainerInvoice(data.clientFirstName, data.clientFirstName, data.clientEmail),
+      renderPdfBuffer(data),
+      createRetainerInvoice(data.clientFirstName, data.clientLastName, data.clientEmail),
     ]);
 
     // 3. Create Gmail draft
     const gmailResult = await createFinalizationDraft({
       clientEmail: data.clientEmail,
       clientFirstName: data.clientFirstName,
+      clientLastName: data.clientLastName,
+      eventDate: data.dateTime,
       pdfBuffer,
       squareInvoiceUrl: squareResult.invoiceUrl,
-      baseUrl,
     });
 
     // 4. Append finalization note to Notion page
@@ -154,7 +149,7 @@ async function runFinalization(opts: {
 
     // 5. Update admin Slack message
     if (adminMessageTs) {
-      await markFinalizedInSlack(adminMessageTs, originalText);
+      await markFinalizedInSlack(adminMessageTs, originalText, notionPageId);
     }
 
     logger.info("Finalization complete", {
@@ -179,6 +174,122 @@ async function runFinalization(opts: {
             channel: adminChannelId,
             thread_ts: adminMessageTs,
             text: `⚠️ Finalization failed: ${err instanceof Error ? err.message : String(err)}`,
+          });
+        }
+      } catch {
+        // best effort
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Update logic — regenerates PDF + Gmail draft only (no new Square invoice)
+// ---------------------------------------------------------------------------
+
+/** Reads Notion block children to find the Square invoice URL from the most
+ *  recent finalization note, so we can reuse it in the updated Gmail draft. */
+async function getSquareInvoiceUrlFromNotion(
+  notion: Client,
+  notionPageId: string
+): Promise<string | undefined> {
+  try {
+    const blocks = await notion.blocks.children.list({ block_id: notionPageId });
+    // Walk in reverse to find the most recent finalization note
+    for (const block of [...blocks.results].reverse()) {
+      if (!("type" in block) || block.type !== "paragraph") continue;
+      const texts = (block as { type: "paragraph"; paragraph: { rich_text: Array<{ plain_text: string }> } }).paragraph.rich_text;
+      const content = texts.map((t) => t.plain_text).join("");
+      const match = content.match(/Square Invoice: (https?:\/\/\S+)/);
+      if (match) return match[1];
+    }
+  } catch {
+    // best effort
+  }
+  return undefined;
+}
+
+async function runUpdate(opts: {
+  notionPageId: string;
+  adminMessageTs: string | undefined;
+  originalText: string;
+}) {
+  const { notionPageId, adminMessageTs, originalText } = opts;
+
+  const notionKey = process.env.NOTION_KEY;
+  if (!notionKey) {
+    logger.error("Missing NOTION_KEY in update", { notionPageId });
+    return;
+  }
+
+  try {
+    const notion = new Client({ auth: notionKey });
+
+    const page = await notion.pages.retrieve({ page_id: notionPageId });
+    const data = notionPageToPdfData(page);
+
+    logger.info("Starting update (PDF + Gmail draft only)", { notionPageId, clientEmail: data.clientEmail });
+
+    // Re-use the existing Square invoice URL from the original finalization note.
+    const squareInvoiceUrl =
+      (await getSquareInvoiceUrlFromNotion(notion, notionPageId)) ??
+      process.env.SQUARE_DASHBOARD_URL ??
+      "https://squareup.com/dashboard/invoices";
+
+    const pdfBuffer = await renderPdfBuffer(data);
+
+    const gmailResult = await createFinalizationDraft({
+      clientEmail: data.clientEmail,
+      clientFirstName: data.clientFirstName,
+      clientLastName: data.clientLastName,
+      eventDate: data.dateTime,
+      pdfBuffer,
+      squareInvoiceUrl,
+    });
+
+    await notion.blocks.children.append({
+      block_id: notionPageId,
+      children: [
+        {
+          object: "block",
+          type: "paragraph",
+          paragraph: {
+            rich_text: [
+              {
+                type: "text",
+                text: {
+                  content: `Update triggered — ${new Date().toLocaleString("en-US", {
+                    timeZone: "America/New_York",
+                  })} | Gmail Draft: ${gmailResult.draftId}`,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    if (adminMessageTs) {
+      await markFinalizedInSlack(adminMessageTs, originalText, notionPageId);
+    }
+
+    logger.info("Update complete", { notionPageId, gmailDraftId: gmailResult.draftId });
+  } catch (err) {
+    logger.error("Update failed", {
+      notionPageId,
+      errorMessage: err instanceof Error ? err.message : String(err),
+    }, err);
+
+    if (adminMessageTs) {
+      try {
+        const { WebClient } = await import("@slack/web-api");
+        const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
+        const adminChannelId = process.env.SLACK_ADMIN_CHANNEL_ID;
+        if (adminChannelId) {
+          await slack.chat.postMessage({
+            channel: adminChannelId,
+            thread_ts: adminMessageTs,
+            text: `⚠️ Update failed: ${err instanceof Error ? err.message : String(err)}`,
           });
         }
       } catch {

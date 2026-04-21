@@ -13,22 +13,36 @@ import {
   resolveCharacters,
   resolvePackage,
   buildPricingLines,
-  buildDressNote,
+  buildCharacterBulletValue,
   formatPdfDate,
   formatPdfTime,
 } from "./pdfData";
 
 // ---------------------------------------------------------------------------
+// Font registration
+// ---------------------------------------------------------------------------
+
+Font.register({
+  family: "PetitFormalScript",
+  src: "https://fonts.gstatic.com/s/petitformalscript/v19/B50TF6xQr2TXJBnGOFME6u5OR83oRP5qoHk.ttf",
+});
+
+// ---------------------------------------------------------------------------
 // Brand colours
 // ---------------------------------------------------------------------------
 
-const PURPLE = "#343B95";
-const LAVENDER = "#EEF0FB";
-const SOFT_PINK = "#FDF0F5";
-const LIGHT_GRAY = "#F7F7F7";
-const DIVIDER = "#D8DAF0";
 const TEXT_DARK = "#2A2A2A";
 const TEXT_MID = "#555555";
+const LIGHT_GRAY = "#F2F2F2";
+const DIVIDER = "#DEDEDE";
+const PURPLE = "#343B95";
+const PURPLE_LIGHT = "#B0B4DC";
+const PURPLE_BG = "#F0F1FA";
+
+// Page horizontal padding — applied manually so the right column can bleed
+const H_PAD = 36;
+// Right column width
+const RIGHT_COL = 195;
 
 // ---------------------------------------------------------------------------
 // Styles
@@ -38,225 +52,270 @@ const styles = StyleSheet.create({
   page: {
     fontFamily: "Helvetica",
     backgroundColor: "#FFFFFF",
-    paddingTop: 0,
+    paddingTop: 15,
     paddingBottom: 32,
-    paddingHorizontal: 0,
+    // No horizontal padding — managed per-section so right col can reach the edge
     fontSize: 10,
     color: TEXT_DARK,
   },
 
-  // ── Header ────────────────────────────────────────────────────────────────
-  header: {
-    backgroundColor: PURPLE,
-    paddingVertical: 22,
-    paddingHorizontal: 36,
+  // ── Two-column section (logo + intro + event info + activities) ────────────
+  twoColRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    paddingLeft: H_PAD,
+    // No paddingRight — right column extends to page edge
   },
+  leftCol: {
+    flex: 1,
+    paddingRight: 25,
+  },
+  rightCol: {
+    width: RIGHT_COL,
+  },
+
+  // ── Logo ──────────────────────────────────────────────────────────────────
   logo: {
-    width: 110,
-    height: 55,
+    width: 200,
+    height: 100,
     objectFit: "contain",
-  },
-  headerRight: {
-    alignItems: "flex-end",
-    gap: 3,
-  },
-  headerContactText: {
-    color: "#FFFFFF",
-    fontSize: 9,
-    opacity: 0.9,
-  },
-  characterImage: {
-    width: 90,
-    height: 110,
-    objectFit: "cover",
-    borderRadius: 6,
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
-    marginLeft: 16,
+    alignSelf: "center",
   },
 
-  // ── Greeting band ────────────────────────────────────────────────────────
-  greetingBand: {
-    backgroundColor: SOFT_PINK,
-    paddingVertical: 14,
-    paddingHorizontal: 36,
-    borderBottomWidth: 1,
-    borderBottomColor: DIVIDER,
-  },
-  greetingText: {
-    fontSize: 11,
-    color: PURPLE,
-    fontFamily: "Helvetica-Bold",
-    marginBottom: 4,
-  },
-  greetingBody: {
-    fontSize: 9.5,
-    color: TEXT_MID,
-    lineHeight: 1.5,
-  },
-
-  // ── Body wrapper ─────────────────────────────────────────────────────────
-  body: {
-    paddingHorizontal: 36,
-    paddingTop: 18,
-  },
-
-  // ── Section card ─────────────────────────────────────────────────────────
-  card: {
-    backgroundColor: LAVENDER,
-    borderRadius: 6,
-    padding: 14,
-    marginBottom: 12,
-  },
-  cardTitle: {
-    fontSize: 10.5,
-    fontFamily: "Helvetica-Bold",
-    color: PURPLE,
-    marginBottom: 8,
-    textTransform: "uppercase",
-    letterSpacing: 0.8,
-  },
-
-  // ── Info grid (2-col) ────────────────────────────────────────────────────
-  infoGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 6,
-  },
-  infoItem: {
-    width: "47%",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 4,
-    padding: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: PURPLE,
-  },
-  infoItemFull: {
-    width: "100%",
-    backgroundColor: "#FFFFFF",
-    borderRadius: 4,
-    padding: 8,
-    borderLeftWidth: 3,
-    borderLeftColor: PURPLE,
-  },
-  infoLabel: {
-    fontSize: 8,
-    color: PURPLE,
-    fontFamily: "Helvetica-Bold",
-    marginBottom: 2,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  infoValue: {
+  // ── Intro paragraph ───────────────────────────────────────────────────────
+  introText: {
     fontSize: 9.5,
     color: TEXT_DARK,
+    lineHeight: 1.55,
+    marginBottom: 14,
   },
 
-  // ── Activity list ────────────────────────────────────────────────────────
-  activityRow: {
+  // ── Section headings ──────────────────────────────────────────────────────
+  scriptHeading: {
+    fontFamily: "PetitFormalScript",
+    fontSize: 20,
+    color: TEXT_DARK,
+    marginBottom: 4,
+  },
+  divider: {
+    height: 0.5,
+    backgroundColor: DIVIDER,
+    marginBottom: 10,
+  },
+  subHeading: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 10.5,
+    color: TEXT_DARK,
+    marginBottom: 6,
+    marginTop: 10,
+  },
+
+  // ── Bullet list ───────────────────────────────────────────────────────────
+  bulletRow: {
     flexDirection: "row",
     alignItems: "flex-start",
     marginBottom: 4,
   },
-  bullet: {
-    color: PURPLE,
-    fontSize: 10,
+  bulletDot: {
+    fontSize: 9.5,
+    color: TEXT_DARK,
     marginRight: 6,
-    marginTop: 0,
   },
-  activityText: {
+  bulletText: {
     fontSize: 9.5,
     color: TEXT_DARK,
     flex: 1,
+    lineHeight: 1.45,
+  },
+  bulletTextBold: {
+    fontSize: 9.5,
+    fontFamily: "Helvetica-Bold",
+    color: TEXT_DARK,
+    flex: 1,
+    lineHeight: 1.45,
+  },
+
+  // ── Right column: contact box ─────────────────────────────────────────────
+  charImage: {
+    width: RIGHT_COL,
+    height: RIGHT_COL,
+    objectFit: "contain",
+  },
+
+  // ── Right column: Contact Us box ──────────────────────────────────────────
+  contactBox: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: PURPLE_LIGHT,
+    borderRadius: 4,
+    overflow: "hidden",
+    marginTop: 14,
+  },
+  contactAccentBar: {
+    width: 4,
+    backgroundColor: PURPLE,
+  },
+  contactBoxInner: {
+    flex: 1,
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 12,
+    paddingRight: H_PAD,
+    backgroundColor: PURPLE_BG,
+  },
+  contactHeading: {
+    fontFamily: "PetitFormalScript",
+    fontSize: 15,
+    color: PURPLE,
+    marginBottom: 10,
+  },
+  contactLabel: {
+    fontFamily: "Helvetica-Bold",
+    fontSize: 8.5,
+    color: TEXT_DARK,
+    marginBottom: 2,
+    textTransform: "uppercase",
+    letterSpacing: 0.4,
+  },
+  contactValue: {
+    fontSize: 8.5,
+    color: TEXT_MID,
+    marginBottom: 9,
     lineHeight: 1.4,
   },
 
-  // ── Day-of card (light gray) ──────────────────────────────────────────────
-  grayCard: {
-    backgroundColor: LIGHT_GRAY,
-    borderRadius: 6,
-    padding: 14,
-    marginBottom: 12,
+  // ── Pricing card ──────────────────────────────────────────────────────────
+  pricingCard: {
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: PURPLE_LIGHT,
+    borderRadius: 4,
+    overflow: "hidden",
+    marginTop: 34,
   },
-  grayCardText: {
-    fontSize: 9.5,
-    color: TEXT_MID,
-    lineHeight: 1.5,
+  pricingAccentBar: {
+    width: 4,
+    backgroundColor: PURPLE,
   },
-
-  // ── Pricing table ─────────────────────────────────────────────────────────
+  pricingCardInner: {
+    flex: 1,
+    paddingTop: 12,
+    paddingBottom: 14,
+    paddingLeft: 12,
+    paddingRight: 12,
+    backgroundColor: PURPLE_BG,
+  },
+  pricingCardHeading: {
+    fontFamily: "PetitFormalScript",
+    fontSize: 15,
+    color: PURPLE,
+    marginBottom: 15,
+  },
+  pricingDivider: {
+    height: 0.5,
+    backgroundColor: PURPLE_LIGHT,
+    marginBottom: 7,
+    marginTop: 7,
+  },
   pricingRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 4,
-    borderBottomWidth: 0.5,
-    borderBottomColor: DIVIDER,
+    alignItems: "center",
+    marginBottom: 5,
   },
-  pricingLabel: {
-    fontSize: 9.5,
-    color: TEXT_DARK,
+  pricingLineLabel: {
+    fontSize: 9,
+    color: TEXT_MID,
+    flex: 1,
   },
-  pricingAmount: {
-    fontSize: 9.5,
-    color: TEXT_DARK,
-    fontFamily: "Helvetica-Bold",
+  pricingLineAmount: {
+    fontSize: 9,
+    color: TEXT_MID,
+    textAlign: "right",
   },
   pricingTotalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingTop: 7,
+    alignItems: "center",
     marginTop: 2,
-    borderTopWidth: 1.5,
-    borderTopColor: PURPLE,
   },
   pricingTotalLabel: {
-    fontSize: 11,
-    color: PURPLE,
+    fontSize: 10.5,
     fontFamily: "Helvetica-Bold",
+    color: PURPLE,
+    flex: 1,
   },
   pricingTotalAmount: {
-    fontSize: 11,
-    color: PURPLE,
+    fontSize: 10.5,
     fontFamily: "Helvetica-Bold",
-  },
-  retainerNote: {
-    marginTop: 8,
-    fontSize: 8.5,
-    color: TEXT_MID,
-    lineHeight: 1.5,
-  },
-
-  // ── Divider ───────────────────────────────────────────────────────────────
-  divider: {
-    height: 1,
-    backgroundColor: DIVIDER,
-    marginVertical: 10,
+    color: PURPLE,
+    textAlign: "right",
   },
 });
 
 // ---------------------------------------------------------------------------
-// Sub-components
+// Reusable sub-components
 // ---------------------------------------------------------------------------
 
-function InfoItem({
-  label,
-  value,
-  full = false,
-}: {
-  label: string;
-  value: string;
-  full?: boolean;
-}) {
+function Bullet({ text, bold = false }: { text: string; bold?: boolean }) {
   return (
-    <View style={full ? styles.infoItemFull : styles.infoItem}>
-      <Text style={styles.infoLabel}>{label}</Text>
-      <Text style={styles.infoValue}>{value}</Text>
+    <View style={styles.bulletRow}>
+      <Text style={styles.bulletDot}>•</Text>
+      <Text style={bold ? styles.bulletTextBold : styles.bulletText}>{text}</Text>
     </View>
   );
 }
+
+function LabelBullet({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.bulletRow}>
+      <Text style={styles.bulletDot}>•</Text>
+      <Text style={styles.bulletText}>
+        <Text style={styles.bulletTextBold}>{label}: </Text>
+        {value}
+      </Text>
+    </View>
+  );
+}
+
+function PricingCard({
+  lines,
+  total,
+}: {
+  lines: { label: string; amount: number }[];
+  total: number;
+}) {
+  return (
+    <View style={styles.pricingCard}>
+      <View style={styles.pricingAccentBar} />
+      <View style={styles.pricingCardInner}>
+        <Text style={styles.pricingCardHeading}>Pricing Summary</Text>
+        {lines.map((line, i) => (
+          <View key={i} style={styles.pricingRow}>
+            <Text style={styles.pricingLineLabel}>{line.label}</Text>
+            <Text style={styles.pricingLineAmount}>${line.amount}</Text>
+          </View>
+        ))}
+        <View style={styles.pricingDivider} />
+        <View style={styles.pricingTotalRow}>
+          <Text style={styles.pricingTotalLabel}>Total</Text>
+          <Text style={styles.pricingTotalAmount}>${total}</Text>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Day-of bullet points (boilerplate)
+// ---------------------------------------------------------------------------
+
+const DAY_OF_BULLETS = [
+  "Our princess will arrive at the agreed upon time and follow the event outline listed above.",
+  "If available, we will send a character attendant to help our princess with anything she needs, keep track of time, and facilitate communication.",
+  "If there is inclimate weather on the day of your visit and conditions are unsafe for travel (i.e. heavy rains, flash floods, ice, etc.), your character will do a quick video call with your little ones and we'll work on getting your visit rescheduled ASAP or roll your deposit over to another event.",
+  "If the ground is muddy on the day of your event or it is lightly raining, the event will need to be moved somewhere with an overhead covering and solid ground.",
+  "No changes to your booking will be accepted less than 24 hours before your start time.",
+];
 
 // ---------------------------------------------------------------------------
 // Main template
@@ -264,118 +323,103 @@ function InfoItem({
 
 interface PdfTemplateProps {
   data: PdfEventData;
-  /** Absolute URL base for resolving public images (e.g. https://yourdomain.com) */
-  baseUrl: string;
+  logoSrc: string;
+  charImageSrc: string;
 }
 
-export function PdfTemplate({ data, baseUrl }: PdfTemplateProps) {
+export function PdfTemplate({ data, logoSrc, charImageSrc }: PdfTemplateProps) {
   const charInfo = resolveCharacters(data.characterRealNames);
   const pkgInfo = resolvePackage(data.packageId, data.eventType);
   const { lines: pricingLines, total } = buildPricingLines(data);
-  const dressNote = buildDressNote(data.dressNames);
+  const characterBulletValue = buildCharacterBulletValue(
+    data.characterRealNames,
+    data.dressNames
+  );
   const dateStr = formatPdfDate(data.dateTime);
   const timeStr = formatPdfTime(data.dateTime);
 
-  const logoUrl = `${baseUrl}/logo.png`;
-  const charImageUrl = `${baseUrl}/pdfImages/${charInfo.imageFile}`;
+  // Short date for the document title (e.g. "July 13, 2025")
+  const titleDateStr = new Date(data.dateTime).toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  const logoUrl = logoSrc;
+  const charImageUrl = charImageSrc;
 
   const isBirthday = data.eventType === "Birthday Party";
 
+  const introText = isBirthday && data.childName
+    ? `Thank you so much for choosing Falling Star Parties! We are so excited to be a part of your family's celebration and have our ${charInfo.displayName} attend your child's special day! Below you'll find an outline of your event including a pricing breakdown. If everything looks good, please submit payment for your event retainer via the link included in this email. The remaining balance will be due closer to your event—full details will be sent after your retainer is received.`
+    : `Thank you so much for choosing Falling Star Parties! We are so excited to have our ${charInfo.displayName} be a part of your event! Below you'll find an outline of your visit including a pricing breakdown. If everything looks good, please submit payment for your event retainer via the link included in this email. The remaining balance will be due closer to your event—full details will be sent after your retainer is received.`;
+
   return (
     <Document
-      title={`Falling Star Parties — ${data.childName || data.clientFirstName} Event Finalization`}
+      title={`${data.clientLastName} Finalization - ${titleDateStr}`}
       author="Falling Star Parties LLC"
     >
       <Page size="LETTER" style={styles.page}>
-        {/* ── Header ─────────────────────────────────────────────────────── */}
-        <View style={styles.header}>
-          <Image style={styles.logo} src={logoUrl} />
-          <View style={styles.headerRight}>
-            <Text style={styles.headerContactText}>(443) 327-9751</Text>
-            <Text style={styles.headerContactText}>fallingstarparties.com</Text>
-            <Text style={styles.headerContactText}>info@fallingstarparties.com</Text>
-          </View>
-          <Image style={styles.characterImage} src={charImageUrl} />
-        </View>
 
-        {/* ── Greeting ───────────────────────────────────────────────────── */}
-        <View style={styles.greetingBand}>
-          <Text style={styles.greetingText}>
-            Thank you for choosing Falling Star Parties!
-          </Text>
-          <Text style={styles.greetingBody}>
-            {`We are so excited to have ${charInfo.displayName} attend ${
-              isBirthday
-                ? `${data.childName || data.clientFirstName}'s special day`
-                : "your event"
-            }! Below you will find all the details for your upcoming visit.`}
-          </Text>
-        </View>
+        {/* ── Two-column section: logo / intro / event info / activities ─── */}
+        <View style={styles.twoColRow}>
 
-        <View style={styles.body}>
-          {/* ── Event Information ──────────────────────────────────────── */}
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Event Information</Text>
-            <View style={styles.infoGrid}>
-              <InfoItem label="Date" value={dateStr} />
-              <InfoItem label="Time" value={timeStr} />
-              <InfoItem label="Location" value={data.address} full />
-              {isBirthday && data.childName ? (
-                <InfoItem label="Guest of Honor" value={data.childName} />
-              ) : null}
-              {isBirthday && data.childAge ? (
-                <InfoItem label="Age" value={`${data.childAge} years old`} />
-              ) : null}
-              <InfoItem label="Character(s)" value={charInfo.displayName} />
-              {dressNote ? <InfoItem label="Costume" value={dressNote} full /> : null}
-            </View>
-          </View>
+          {/* Left column */}
+          <View style={styles.leftCol}>
+            <Image style={styles.logo} src={logoUrl} />
 
-          {/* ── Event Outline ──────────────────────────────────────────── */}
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>
-              Your {pkgInfo.duration} Visit Will Include
+            <Text style={styles.introText}>{introText}</Text>
+
+            <Text style={styles.scriptHeading}>Event Outline</Text>
+            <View style={styles.divider} />
+
+            {/* Event Information */}
+            <Text style={styles.subHeading}>Event Information</Text>
+            <LabelBullet label="Date" value={dateStr} />
+            <LabelBullet label="Time" value={timeStr} />
+            <LabelBullet label="Location" value={data.address} />
+            {isBirthday && data.childName ? (
+              <LabelBullet
+                label="Child's Name"
+                value={`${data.childName}${data.childAge ? ` (${data.childAge})` : ""}`}
+              />
+            ) : null}
+            <LabelBullet label="Characters" value={characterBulletValue} />
+
+            {/* Visit activities */}
+            <Text style={styles.subHeading}>
+              Your {pkgInfo.duration} Visit will Include:
             </Text>
             {pkgInfo.activities.map((activity, i) => (
-              <View key={i} style={styles.activityRow}>
-                <Text style={styles.bullet}>✦</Text>
-                <Text style={styles.activityText}>{activity}</Text>
-              </View>
+              <Bullet key={i} text={activity} />
+            ))}
+
+            {/* Day of Your Visit */}
+            <Text style={styles.subHeading}>The Day of Your Visit</Text>
+            {DAY_OF_BULLETS.map((item, i) => (
+              <Bullet key={i} text={item} />
             ))}
           </View>
 
-          {/* ── Day of Your Visit ──────────────────────────────────────── */}
-          <View style={styles.grayCard}>
-            <Text style={[styles.cardTitle, { color: TEXT_DARK }]}>
-              The Day of Your Visit
-            </Text>
-            <Text style={styles.grayCardText}>
-              {`An attendant will accompany your character to help the visit run smoothly and keep the magic alive from start to finish.\n\n`}
-              {`Please note that we do not offer the use of glitter products due to the potential for damage to our costumes. Face painting is limited to simple character-themed designs given the time available during your event.\n\n`}
-              {`We require an alternate indoor location for temperatures above 90°F or below 50°F, as well as during extreme weather, to ensure the safety of your guests and our performers.`}
-            </Text>
-          </View>
+          {/* Right column — extends to page edge */}
+          <View style={styles.rightCol}>
+            <Image style={styles.charImage} src={charImageUrl} />
+            <PricingCard lines={pricingLines} total={total} />
+            <View style={styles.contactBox}>
+              <View style={styles.contactAccentBar} />
+              <View style={styles.contactBoxInner}>
+                <Text style={styles.contactHeading}>Contact Us</Text>
 
-          {/* ── Pricing ────────────────────────────────────────────────── */}
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Pricing</Text>
-            {pricingLines.map((line, i) => (
-              <View key={i} style={styles.pricingRow}>
-                <Text style={styles.pricingLabel}>{line.label}</Text>
-                <Text style={styles.pricingAmount}>${line.amount}</Text>
+                <Text style={styles.contactLabel}>Phone</Text>
+                <Text style={styles.contactValue}>(443) 327-9751</Text>
+
+                <Text style={styles.contactLabel}>Email</Text>
+                <Text style={[styles.contactValue, { marginBottom: 0 }]}>info@fallingstarparties.com</Text>
               </View>
-            ))}
-            <View style={styles.pricingTotalRow}>
-              <Text style={styles.pricingTotalLabel}>Total</Text>
-              <Text style={styles.pricingTotalAmount}>${total}</Text>
             </View>
-            <Text style={styles.retainerNote}>
-              A non-refundable $50 retainer is required within 48 hours to secure your date.
-              The remaining balance is due on the day of your event.
-              If plans change and a date or time adjustment is needed, we will do our best to accommodate you.
-            </Text>
           </View>
         </View>
+
       </Page>
     </Document>
   );

@@ -1,4 +1,4 @@
-import { characters, packages, extras } from "@/app/content";
+import { characters, packages, extras, dresses } from "@/app/content";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -7,6 +7,7 @@ import { characters, packages, extras } from "@/app/content";
 export interface PdfEventData {
   // Client / event
   clientFirstName: string;
+  clientLastName: string;
   childName: string;
   childAge: number | null;
   dateTime: string;
@@ -99,33 +100,33 @@ function characterImageFile(realNames: string[]): string {
 
 const BIRTHDAY_ACTIVITIES: Record<string, string[]> = {
   Dream: [
-    "Story Time",
-    "Princess Lessons + Coronation",
-    "Photo Opportunity",
+    "Enchanted Story Time",
+    "Royal Princess Lessons & Coronation Ceremony",
+    "Magical Photo Opportunity",
     "Happy Birthday Song",
   ],
   Sparkle: [
-    "Story Time",
-    "Princess Lessons + Coronation",
-    "Party Games (Simon Says, Hide and Go Seek, Duck Duck Goose)",
-    "Photo Opportunity",
+    "Enchanted Story Time",
+    "Royal Princess Lessons & Coronation Ceremony",
+    "Whimsical Party Games (Such as Simon Says, Hide-and-Seek, Duck Duck Goose)",
+    "Magical Photo Opportunity",
     "Happy Birthday Song",
   ],
   Shine: [
-    "Story Time",
-    "Princess Lessons + Coronation",
-    "Party Games (Simon Says, Hide and Go Seek, Duck Duck Goose)",
-    "Face Painting",
+    "Enchanted Story Time",
+    "Royal Princess Lessons & Coronation Ceremony",
+    "Whimsical Party Games (Such as Simon Says, Hide-and-Seek, Duck Duck Goose)",
+    "Fairytale Face Painting",
     "Bubble Play",
-    "Photo Opportunity",
+    "Magical Photo Opportunity",
     "Happy Birthday Song",
   ],
 };
 
 const MEETGREET_ACTIVITIES = [
-  "Magical Encounters",
+  "Whimsical Encounters",
   "Smiles and Warm Hugs",
-  "Photo Opportunity",
+  "Magical Photo Opportunities",
 ];
 
 // ---------------------------------------------------------------------------
@@ -230,4 +231,43 @@ export function formatPdfTime(dateTime: string): string {
 export function buildDressNote(dressNames: string[]): string | null {
   if (!dressNames.length) return null;
   return `Dress: ${dressNames.join(", ")}`;
+}
+
+/**
+ * Build the Characters bullet value, combining display names with dress
+ * assignments per character.
+ *
+ * Output examples:
+ *   "Ice Queen & Snow Princess (Ice Queen - Elements Dress, Snow Princess - Queen Dress)"
+ *   "Ice Queen"                          ← single character, no dress
+ *   "Ice Queen (Ice Queen - Ice Dress)"  ← single character with dress
+ */
+export function buildCharacterBulletValue(
+  realNames: string[],
+  dressNames: string[]
+): string {
+  const displayNames = realNames.map((n) => REAL_TO_DISPLAY[n] ?? n);
+  const groupName = displayNames.join(" & ");
+
+  if (!dressNames.length) return groupName;
+
+  // Associate each dress name with a character via the dresses lookup table
+  const dressParts: string[] = [];
+
+  for (let i = 0; i < realNames.length; i++) {
+    const charData = characters.find((c) => c.realName === realNames[i]);
+    if (!charData) continue;
+
+    const matched = dressNames.find((dn) => {
+      const d = dresses.find((d) => d.name === dn);
+      return d && d.characterId === charData.id;
+    });
+
+    if (matched && matched !== "Any") {
+      dressParts.push(`${displayNames[i]} - ${matched}`);
+    }
+  }
+
+  if (!dressParts.length) return groupName;
+  return `${groupName} (${dressParts.join(", ")})`;
 }

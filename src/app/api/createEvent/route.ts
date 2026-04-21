@@ -212,6 +212,7 @@ export async function POST(request: NextRequest) {
         address,
         packageId,
         characterRealNames,
+        dressNames,
       });
 
       // Persist admin + per-channel message timestamps to Notion so the

@@ -1,5 +1,6 @@
 import { WebClient } from "@slack/web-api";
 import { characters, packages } from "@/app/content";
+import { buildCharacterBulletValue } from "@/app/api/generatePdf/pdfData";
 
 // ---------------------------------------------------------------------------
 // Slack client — initialised lazily so env vars are read at runtime
@@ -73,6 +74,8 @@ export interface SlackBookingPayload {
   packageId: number;
   /** Real names (e.g. "Elsa", "Ariel") */
   characterRealNames: string[];
+  /** Dress selections — optional, empty array if none */
+  dressNames: string[];
 }
 
 export interface SlackBookingResult {
@@ -99,6 +102,8 @@ export async function postBookingToSlack(
 
   const formattedDate = formatDateTime(payload.dateTime);
   const cityStateZip = parseCityStateZip(payload.address);
+
+  const characterLine = buildCharacterBulletValue(payload.characterRealNames, payload.dressNames);
 
   const multiCharNote =
     payload.characterRealNames.length > 1
@@ -141,7 +146,7 @@ export async function postBookingToSlack(
     `*Date & Time:* ${formattedDate}`,
     `*Location:* ${payload.address}`,
     `*Duration:* ${duration}`,
-    ...(multiCharNote ? [multiCharNote] : []),
+    `*Characters:* ${characterLine}`,
   ];
 
   const adminResult = await slack.chat.postMessage({
@@ -195,11 +200,21 @@ export async function postPerformerConfirmation(
  */
 export async function markFinalizedInSlack(
   adminMessageTs: string,
-  originalText: string
+  originalText: string,
+  notionPageId: string
 ): Promise<void> {
   const slack = getClient();
   const adminChannelId = process.env.SLACK_ADMIN_CHANNEL_ID;
   if (!adminChannelId) throw new Error("Missing SLACK_ADMIN_CHANNEL_ID");
+
+  const timestamp = new Date().toLocaleString("en-US", {
+    timeZone: "America/New_York",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
 
   await slack.chat.update({
     channel: adminChannelId,
@@ -214,8 +229,20 @@ export async function markFinalizedInSlack(
         type: "section",
         text: {
           type: "mrkdwn",
-          text: "✅ *Finalized* — Gmail draft ready in your inbox.",
+          text: `✅ *Last finalized ${timestamp}* — Gmail draft ready in your inbox.`,
         },
+      },
+      {
+        type: "actions",
+        elements: [
+          {
+            type: "button",
+            text: { type: "plain_text", text: "Update Booking", emoji: true },
+            style: "primary",
+            action_id: "update_booking",
+            value: notionPageId,
+          },
+        ],
       },
     ],
   });

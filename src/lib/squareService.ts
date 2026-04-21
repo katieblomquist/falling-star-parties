@@ -151,10 +151,10 @@ export async function createRetainerInvoice(
           ],
         },
       ],
-      deliveryMethod: "EMAIL",
+      deliveryMethod: "SHARE_MANUALLY",
       title: "Non-Refundable Event Retainer",
       description:
-        "A $50 non-refundable retainer to hold your Falling Star Parties event date. The remaining balance is due on the day of your event.",
+        "A $50 non-refundable retainer to hold your Falling Star Parties event date. The remaining balance is due 48 hours before your event.",
       acceptedPaymentMethods: {
         card: true,
         squareGiftCard: false,

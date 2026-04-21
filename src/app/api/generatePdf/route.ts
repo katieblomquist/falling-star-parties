@@ -2,10 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { Client } from "@notionhq/client";
 import React from "react";
+import fs from "fs";
+import path from "path";
 import { PdfTemplate } from "./pdfTemplate";
-import { PdfEventData } from "./pdfData";
+import { PdfEventData, resolveCharacters } from "./pdfData";
 import { packages, characterNameMap, dresses, extras } from "@/app/content";
 import { logger } from "@/lib/logger";
+
+function imageToDataUrl(filePath: string): string {
+  const buffer = fs.readFileSync(filePath);
+  const ext = path.extname(filePath).slice(1);
+  return `data:image/${ext};base64,${buffer.toString("base64")}`;
+}
 
 // ---------------------------------------------------------------------------
 // Notion → PdfEventData extraction
@@ -53,6 +61,7 @@ export function notionPageToPdfData(page: NotionPage): PdfEventData & { clientEm
 
   const clientFullName = getTitleProp(props, "Client name");
   const clientFirstName = clientFullName.split(" ")[0] ?? clientFullName;
+  const clientLastName = clientFullName.split(" ").slice(1).join(" ") || clientFirstName;
   const clientEmail = getEmailProp(props, "Email");
 
   const packageName = getSelectProp(props, "Event Package");
@@ -70,6 +79,7 @@ export function notionPageToPdfData(page: NotionPage): PdfEventData & { clientEm
 
   return {
     clientFirstName,
+    clientLastName,
     clientEmail,
     childName: getTextProp(props, "Child's Name"),
     childAge: getNumberProp(props, "Child's Age") || null,
@@ -91,12 +101,15 @@ export function notionPageToPdfData(page: NotionPage): PdfEventData & { clientEm
 // ---------------------------------------------------------------------------
 
 export async function renderPdfBuffer(
-  data: PdfEventData,
-  baseUrl: string
+  data: PdfEventData
 ): Promise<Buffer> {
-  // PdfTemplate renders a <Document> at its root — renderToBuffer expects a Document element.
-  // We pass the props through and let @react-pdf/renderer handle it.
-  const element = React.createElement(PdfTemplate, { data, baseUrl });
+  const publicDir = path.join(process.cwd(), "public");
+  const charInfo = resolveCharacters(data.characterRealNames);
+
+  const logoSrc = imageToDataUrl(path.join(publicDir, "logo.png"));
+  const charImageSrc = imageToDataUrl(path.join(publicDir, "pdfImages", charInfo.imageFile));
+
+  const element = React.createElement(PdfTemplate, { data, logoSrc, charImageSrc });
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buffer = await renderToBuffer(element as any);
   return Buffer.from(buffer);
@@ -109,9 +122,10 @@ export async function renderPdfBuffer(
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const { searchParams } = new URL(request.url);
   const pageId = searchParams.get("pageId");
-  const secret = searchParams.get("secret");
 
-  if (!secret || secret !== process.env.PDF_SECRET) {
+  const authHeader = request.headers.get("authorization");
+  const token = authHeader?.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  if (!token || token !== process.env.PDF_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -129,11 +143,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const page = await notion.pages.retrieve({ page_id: pageId });
     const data = notionPageToPdfData(page);
 
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL ??
-      `https://${request.headers.get("host")}`;
-
-    const pdfBuffer = await renderPdfBuffer(data, baseUrl);
+    const pdfBuffer = await renderPdfBuffer(data);
 
     // Append a note to the Notion page
     await notion.blocks.children.append({
