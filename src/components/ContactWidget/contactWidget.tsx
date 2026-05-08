@@ -2,9 +2,17 @@
 
 import { useState, useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { useRecaptchaV3 } from "@/lib/useRecaptchaV3";
 import styles from "./contactWidget.module.css";
 
+const NAME_MAX = 100;
+const MESSAGE_MAX = 2000;
+
 type FormState = "idle" | "loading" | "success" | "error";
+
+function isValidEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 export default function ContactWidget() {
   const pathname = usePathname();
@@ -14,10 +22,11 @@ export default function ContactWidget() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<{ name?: string; email?: string; message?: string }>({});
   const popupRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
-
   const fabRef = useRef<HTMLButtonElement>(null);
+  const executeRecaptcha = useRecaptchaV3("contact");
 
   // Close on Escape key or click outside
   useEffect(() => {
@@ -57,20 +66,49 @@ export default function ContactWidget() {
     setMessage("");
     setFormState("idle");
     setErrorMessage("");
+    setFieldErrors({});
   }
 
   if (pathname === "/book") return null;
 
+  function validate(): boolean {
+    const errors: { name?: string; email?: string; message?: string } = {};
+    if (!name.trim()) {
+      errors.name = "Full name is required.";
+    } else if (name.trim().length > NAME_MAX) {
+      errors.name = `Name must be ${NAME_MAX} characters or fewer.`;
+    }
+    if (!email.trim() || !isValidEmail(email.trim())) {
+      errors.email = "A valid email address is required.";
+    }
+    if (!message.trim()) {
+      errors.message = "Message is required.";
+    } else if (message.trim().length > MESSAGE_MAX) {
+      errors.message = `Message must be ${MESSAGE_MAX} characters or fewer.`;
+    }
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!validate()) return;
+
     setFormState("loading");
     setErrorMessage("");
 
     try {
+      const recaptchaToken = await executeRecaptcha();
+      if (!recaptchaToken) {
+        setErrorMessage("reCAPTCHA verification failed. Please try again.");
+        setFormState("error");
+        return;
+      }
+
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, message, recaptchaToken }),
       });
 
       if (!res.ok) {
@@ -134,13 +172,19 @@ export default function ContactWidget() {
                     id="cw-name"
                     ref={firstInputRef}
                     type="text"
-                    className={styles.input}
+                    className={`${styles.input}${fieldErrors.name ? ` ${styles.inputError}` : ""}`}
                     placeholder="Jane Smith"
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
+                    onChange={(e) => {
+                      setName(e.target.value);
+                      if (fieldErrors.name) setFieldErrors((prev) => ({ ...prev, name: undefined }));
+                    }}
+                    maxLength={NAME_MAX + 1}
                     disabled={formState === "loading"}
                   />
+                  {fieldErrors.name && (
+                    <p className={styles.fieldError}>{fieldErrors.name}</p>
+                  )}
                 </div>
 
                 <div className={styles.field}>
@@ -150,29 +194,44 @@ export default function ContactWidget() {
                   <input
                     id="cw-email"
                     type="email"
-                    className={styles.input}
+                    className={`${styles.input}${fieldErrors.email ? ` ${styles.inputError}` : ""}`}
                     placeholder="jane@example.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      if (fieldErrors.email) setFieldErrors((prev) => ({ ...prev, email: undefined }));
+                    }}
                     disabled={formState === "loading"}
                   />
+                  {fieldErrors.email && (
+                    <p className={styles.fieldError}>{fieldErrors.email}</p>
+                  )}
                 </div>
 
                 <div className={styles.field}>
-                  <label htmlFor="cw-message" className={styles.label}>
-                    How can we help? <span className={styles.required}>*</span>
-                  </label>
+                  <div className={styles.labelRow}>
+                    <label htmlFor="cw-message" className={styles.label}>
+                      How can we help? <span className={styles.required}>*</span>
+                    </label>
+                    <span className={`${styles.charCount}${message.length > MESSAGE_MAX ? ` ${styles.charCountOver}` : ""}`}>
+                      {message.length}/{MESSAGE_MAX}
+                    </span>
+                  </div>
                   <textarea
                     id="cw-message"
-                    className={styles.textarea}
+                    className={`${styles.textarea}${fieldErrors.message ? ` ${styles.inputError}` : ""}`}
                     placeholder="Tell us about your event or question..."
                     value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    required
+                    onChange={(e) => {
+                      setMessage(e.target.value);
+                      if (fieldErrors.message) setFieldErrors((prev) => ({ ...prev, message: undefined }));
+                    }}
                     disabled={formState === "loading"}
                     rows={4}
                   />
+                  {fieldErrors.message && (
+                    <p className={styles.fieldError}>{fieldErrors.message}</p>
+                  )}
                 </div>
 
                 {formState === "error" && (

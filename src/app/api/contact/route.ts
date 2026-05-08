@@ -1,11 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
 import { emailService } from "@/lib/emailService";
 
+const NAME_MAX = 100;
+const MESSAGE_MAX = 2000;
+
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+async function verifyRecaptcha(token: string): Promise<boolean> {
+  const secretKey = process.env.RECAPTCHA_V3_SECRET_KEY;
+  if (!secretKey) {
+    // If secret isn't configured, fail closed
+    return false;
+  }
+  const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({ secret: secretKey, response: token }).toString(),
+  });
+  const data = await res.json() as { success: boolean; score?: number; "error-codes"?: string[] };
+  return data.success && (data.score ?? 0) >= 0.5;
+}
+
 function generateContactEmailHtml(name: string, email: string, message: string): string {
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeMessage = escapeHtml(message);
+
   return `
     <!DOCTYPE html>
     <html>
@@ -32,17 +62,17 @@ function generateContactEmailHtml(name: string, email: string, message: string):
         <div class="body">
           <div class="field">
             <div class="field-label">Full Name</div>
-            <div class="field-value">${name}</div>
+            <div class="field-value">${safeName}</div>
           </div>
           <hr class="divider" />
           <div class="field">
             <div class="field-label">Email</div>
-            <div class="field-value"><a href="mailto:${email}" style="color:#343B95;">${email}</a></div>
+            <div class="field-value"><a href="mailto:${safeEmail}" style="color:#343B95;">${safeEmail}</a></div>
           </div>
           <hr class="divider" />
           <div class="field">
             <div class="field-label">Message / Request</div>
-            <div class="field-value">${message}</div>
+            <div class="field-value">${safeMessage}</div>
           </div>
         </div>
         <div class="footer">
@@ -56,17 +86,32 @@ function generateContactEmailHtml(name: string, email: string, message: string):
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, email, message } = body;
+    const { name, email, message, recaptchaToken } = body;
 
-    // Basic validation
+    // reCAPTCHA verification
+    if (!recaptchaToken || typeof recaptchaToken !== "string") {
+      return NextResponse.json({ error: "reCAPTCHA verification failed." }, { status: 400 });
+    }
+    const recaptchaValid = await verifyRecaptcha(recaptchaToken);
+    if (!recaptchaValid) {
+      return NextResponse.json({ error: "reCAPTCHA verification failed." }, { status: 400 });
+    }
+
+    // Field validation
     if (!name || typeof name !== "string" || name.trim().length === 0) {
       return NextResponse.json({ error: "Full name is required." }, { status: 400 });
+    }
+    if (name.trim().length > NAME_MAX) {
+      return NextResponse.json({ error: `Name must be ${NAME_MAX} characters or fewer.` }, { status: 400 });
     }
     if (!email || typeof email !== "string" || !isValidEmail(email.trim())) {
       return NextResponse.json({ error: "A valid email address is required." }, { status: 400 });
     }
     if (!message || typeof message !== "string" || message.trim().length === 0) {
       return NextResponse.json({ error: "Message is required." }, { status: 400 });
+    }
+    if (message.trim().length > MESSAGE_MAX) {
+      return NextResponse.json({ error: `Message must be ${MESSAGE_MAX} characters or fewer.` }, { status: 400 });
     }
 
     const html = generateContactEmailHtml(

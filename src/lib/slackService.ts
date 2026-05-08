@@ -58,6 +58,7 @@ function formatDateTime(dateTime: string): string {
     hour: "numeric",
     minute: "2-digit",
     timeZoneName: "short",
+    timeZone: "America/New_York",
   });
 }
 

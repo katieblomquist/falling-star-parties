@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { waitUntil } from "@vercel/functions";
 import { createHmac, timingSafeEqual } from "crypto";
 import { Client } from "@notionhq/client";
 import { logger } from "@/lib/logger";
@@ -74,9 +75,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // Acknowledge immediately (Slack requires < 3s response)
   // We'll do the work asynchronously and update the message when done.
   if (action.action_id === "update_booking") {
-    void runUpdate({ notionPageId, adminMessageTs, originalText });
+    waitUntil(runUpdate({ notionPageId, adminMessageTs, originalText }));
   } else {
-    void runFinalization({ notionPageId, adminMessageTs, originalText });
+    waitUntil(runFinalization({ notionPageId, adminMessageTs, originalText }));
   }
 
   return NextResponse.json({ ok: true });

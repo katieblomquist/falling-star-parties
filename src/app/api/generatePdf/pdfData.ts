@@ -217,6 +217,7 @@ export function formatPdfDate(dateTime: string): string {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "America/New_York",
   });
 }
 
@@ -224,6 +225,7 @@ export function formatPdfTime(dateTime: string): string {
   return new Date(dateTime).toLocaleTimeString("en-US", {
     hour: "numeric",
     minute: "2-digit",
+    timeZone: "America/New_York",
   });
 }
 
