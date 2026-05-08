@@ -6,6 +6,7 @@ import { characterList as characters, dresses, extras, packages, characterNameMa
 import { emailService } from "@/lib/emailService";  
 import { generateEmailTemplate } from "@/lib/emailTemplate";
 import { logger } from "@/lib/logger";
+import { postBookingToSlack } from "@/lib/slackService";
 
 // All environment variables will be read at runtime
 
@@ -195,6 +196,51 @@ export async function POST(request: NextRequest) {
       pageId: page.id,
       databaseId: notionDatabaseId
     });
+
+    // Post booking to Slack performer channels + admin channel
+    try {
+      const characterRealNames = (characterSelections as CharacterSelection[])
+        .map((s) => characters.find((c) => c.id === s.characterId)?.name)
+        .filter((n): n is string => Boolean(n))
+        .map((displayName) => characterNameMap[displayName] ?? displayName);
+
+      const { adminMessageTs, channelTimestamps } = await postBookingToSlack({
+        notionPageId: page.id,
+        clientFirstName: firstName ?? "",
+        clientLastName: lastName ?? "",
+        dateTime,
+        address,
+        packageId,
+        characterRealNames,
+        dressNames,
+      });
+
+      // Persist admin + per-channel message timestamps to Notion so the
+      // reaction listener can thread replies to the correct admin post.
+      const tsUpdates: Array<{ pageId: string; key: string; value: string }> = [];
+      if (adminMessageTs) {
+        tsUpdates.push({ pageId: page.id, key: "Slack Admin TS", value: adminMessageTs });
+      }
+      for (const [charName, ts] of Object.entries(channelTimestamps)) {
+        tsUpdates.push({ pageId: page.id, key: `Slack ${charName} TS`, value: ts });
+      }
+      for (const update of tsUpdates) {
+        await notion.pages.update({
+          page_id: update.pageId,
+          properties: {
+            [update.key]: { rich_text: [{ text: { content: update.value } }] },
+          },
+        });
+      }
+
+      requestLogger.info("Slack posts sent", { pageId: page.id, adminMessageTs });
+    } catch (slackError) {
+      // Non-fatal — log and continue
+      requestLogger.error("Failed to post to Slack", {
+        email,
+        errorMessage: slackError instanceof Error ? slackError.message : String(slackError),
+      }, slackError);
+    }
 
     // Send email notification
     let emailResult: { success: boolean; error?: string } = { success: false };
