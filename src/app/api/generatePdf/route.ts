@@ -61,7 +61,7 @@ export function notionPageToPdfData(page: NotionPage): PdfEventData & { clientEm
 
   const clientFullName = getTitleProp(props, "Client name");
   const clientFirstName = clientFullName.split(" ")[0] ?? clientFullName;
-  const clientLastName = clientFullName.split(" ").slice(1).join(" ") || clientFirstName;
+  const clientLastName = clientFullName.split(" ").slice(1).join(" ") || "";
   const clientEmail = getEmailProp(props, "Email");
 
   const packageName = getSelectProp(props, "Event Package");
