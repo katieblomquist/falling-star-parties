@@ -54,7 +54,14 @@ const CHANNEL_TO_CHARACTER: Record<string, string> = {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const rawBody = await request.text();
 
-  // ── URL verification challenge (one-time Slack setup) ───────────────────
+  // ── Verify Slack signature ───────────────────────────────────────────────
+  const valid = await verifySlackSignature(request, rawBody);
+  if (!valid) {
+    logger.warn("Invalid Slack signature on events endpoint");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // ── Parse body ───────────────────────────────────────────────────────────
   let body: Record<string, unknown>;
   try {
     body = JSON.parse(rawBody);
@@ -62,15 +69,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
+  // ── URL verification challenge (one-time Slack setup) ───────────────────
   if (body.type === "url_verification") {
     return NextResponse.json({ challenge: body.challenge });
-  }
-
-  // ── Verify Slack signature ───────────────────────────────────────────────
-  const valid = await verifySlackSignature(request, rawBody);
-  if (!valid) {
-    logger.warn("Invalid Slack signature on events endpoint");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const event = body.event as Record<string, unknown> | undefined;

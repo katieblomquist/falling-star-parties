@@ -75,10 +75,11 @@ export async function POST(request: NextRequest) {
       requestLogger.warn("Missing captcha token", { email });
       return NextResponse.json({ error: "CAPTCHA verification failed." }, { status: 400 });
     }
-    const recaptchaRes = await fetch(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${recaptchaSecret}&response=${captchaToken}`,
-      { method: "POST" }
-    );
+    const recaptchaRes = await fetch("https://www.google.com/recaptcha/api/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ secret: recaptchaSecret, response: captchaToken }).toString(),
+    });
     if (!recaptchaRes.ok) {
       requestLogger.error("reCAPTCHA siteverify request failed", { status: recaptchaRes.status });
       return NextResponse.json({ error: "Internal server error" }, { status: 500 });

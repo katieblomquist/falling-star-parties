@@ -64,6 +64,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   const notionPageId = action.value as string;
+
+  // Validate that the page ID is a UUID before passing to Notion
+  const UUID_RE = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
+  if (!notionPageId || !UUID_RE.test(notionPageId)) {
+    logger.warn("Invalid notionPageId in Slack action payload", { notionPageId });
+    return NextResponse.json({ error: "Invalid page ID" }, { status: 400 });
+  }
   const message = payload.message as Record<string, unknown> | undefined;
   const adminMessageTs = message?.ts as string | undefined;
 
@@ -125,28 +132,36 @@ async function runFinalization(opts: {
       squareInvoiceUrl: squareResult.invoiceUrl,
     });
 
-    // 4. Append finalization note to Notion page
-    await notion.blocks.children.append({
-      block_id: notionPageId,
-      children: [
-        {
-          object: "block",
-          type: "paragraph",
-          paragraph: {
-            rich_text: [
-              {
-                type: "text",
-                text: {
-                  content: `Finalization triggered — ${new Date().toLocaleString("en-US", {
-                    timeZone: "America/New_York",
-                  })} | Square Invoice: ${squareResult.invoiceUrl} | Gmail Draft: ${gmailResult.draftId}`,
-                },
-              },
-            ],
-          },
+    // 4. Append finalization note to Notion page + store Square invoice URL
+    await Promise.all([
+      notion.pages.update({
+        page_id: notionPageId,
+        properties: {
+          "Retainer Invoice": { url: squareResult.invoiceUrl },
         },
-      ],
-    });
+      }),
+      notion.blocks.children.append({
+        block_id: notionPageId,
+        children: [
+          {
+            object: "block",
+            type: "paragraph",
+            paragraph: {
+              rich_text: [
+                {
+                  type: "text",
+                  text: {
+                    content: `Finalization triggered — ${new Date().toLocaleString("en-US", {
+                      timeZone: "America/New_York",
+                    })} | Square Invoice: ${squareResult.invoiceUrl} | Gmail Draft: ${gmailResult.draftId}`,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      }),
+    ]);
 
     // 5. Update admin Slack message
     if (adminMessageTs) {
@@ -188,22 +203,17 @@ async function runFinalization(opts: {
 // Update logic — regenerates PDF + Gmail draft only (no new Square invoice)
 // ---------------------------------------------------------------------------
 
-/** Reads Notion block children to find the Square invoice URL from the most
- *  recent finalization note, so we can reuse it in the updated Gmail draft. */
+/** Reads the Square invoice URL from the dedicated Notion page property set
+ *  during finalization. Falls back to undefined if the property is absent. */
 async function getSquareInvoiceUrlFromNotion(
   notion: Client,
   notionPageId: string
 ): Promise<string | undefined> {
   try {
-    const blocks = await notion.blocks.children.list({ block_id: notionPageId });
-    // Walk in reverse to find the most recent finalization note
-    for (const block of [...blocks.results].reverse()) {
-      if (!("type" in block) || block.type !== "paragraph") continue;
-      const texts = (block as { type: "paragraph"; paragraph: { rich_text: Array<{ plain_text: string }> } }).paragraph.rich_text;
-      const content = texts.map((t) => t.plain_text).join("");
-      const match = content.match(/Square Invoice: (https?:\/\/\S+)/);
-      if (match) return match[1];
-    }
+    const page = await notion.pages.retrieve({ page_id: notionPageId });
+    const props = (page as Record<string, unknown>).properties as Record<string, unknown>;
+    const prop = props["Retainer Invoice"] as { url?: string | null } | undefined;
+    return prop?.url ?? undefined;
   } catch {
     // best effort
   }
