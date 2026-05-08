@@ -1,0 +1,257 @@
+import { google } from "googleapis";
+import { readFileSync } from "fs";
+import { join } from "path";
+import { logger } from "@/lib/logger";
+
+// ---------------------------------------------------------------------------
+// OAuth2 client
+// ---------------------------------------------------------------------------
+
+function getOAuth2Client() {
+  const clientId = process.env.GMAIL_CLIENT_ID;
+  const clientSecret = process.env.GMAIL_CLIENT_SECRET;
+  const refreshToken = process.env.GMAIL_REFRESH_TOKEN;
+
+  if (!clientId || !clientSecret || !refreshToken) {
+    throw new Error(
+      "Missing Gmail OAuth2 credentials. Ensure GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, and GMAIL_REFRESH_TOKEN are set."
+    );
+  }
+
+  const oauth2Client = new google.auth.OAuth2(
+    clientId,
+    clientSecret,
+    "https://developers.google.com/oauthplayground"
+  );
+
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
+  return oauth2Client;
+}
+
+// ---------------------------------------------------------------------------
+// Email HTML template — soft & whimsical
+// ---------------------------------------------------------------------------
+
+function buildFinalizationEmailHtml(
+  clientFirstName: string,
+  squareInvoiceUrl: string,
+  logoBase64: string
+): string {
+  const logoSrc = `data:image/png;base64,${logoBase64}`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Booking Finalization - Falling Star Parties</title>
+</head>
+<body style="margin:0;padding:0;background-color:#ffffff;font-family:'Georgia',serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff;padding:32px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;">
+
+          <!-- Logo header -->
+          <tr>
+            <td align="center" style="background-color:#ffffff;padding:32px 40px 24px;">
+              <img src="${logoSrc}" alt="Falling Star Parties" width="160" style="display:block;margin:0 auto;" />
+            </td>
+          </tr>
+
+          <!-- Title band -->
+          <tr>
+            <td align="center" style="background-color:#ffffff;padding:8px 40px 14px;">
+              <p style="margin:0;font-size:22px;font-weight:bold;color:#343B95;letter-spacing:0.5px;">
+                Your Booking Finalization
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:28px 44px 10px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#2a2a2a;line-height:1.7;">
+                Hi ${clientFirstName}!
+              </p>
+              <p style="margin:0 0 16px;font-size:15px;color:#444444;line-height:1.8;">
+                Thank you for inviting Falling Star Parties to be part of your family's celebration!
+                I've attached your <strong>Event Finalization Letter</strong> with all the key details and pricing.
+              </p>
+              <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;">
+                After you've reviewed it, please complete your event retainer via the link below
+                within <strong>48 hours</strong> to secure your magical date. If you have any questions
+                or need to request changes along the way, feel free to reach out - we're excited to
+                help bring your vision to life!
+              </p>
+            </td>
+          </tr>
+
+          <!-- CTA Button -->
+          <tr>
+            <td align="center" style="padding:4px 44px 28px;">
+              <a href="${squareInvoiceUrl}"
+                 style="display:inline-block;background-color:#343B95;color:#ffffff;font-size:13px;font-weight:bold;
+                        text-decoration:none;padding:10px 24px;border-radius:50px;letter-spacing:0.5px;">
+                Complete Event Retainer
+              </a>
+            </td>
+          </tr>
+
+          <!-- Signature -->
+          <tr>
+            <td style="padding:24px 44px 32px;">
+              <p style="margin:0 0 4px;font-size:15px;color:#444444;line-height:1.8;">Warm Wishes,</p>
+              <p style="margin:0 0 2px;font-size:16px;font-weight:bold;color:#343B95;">Katelyn Winner</p>
+              <p style="margin:0;font-size:14px;color:#888888;">Owner &#10024; Falling Star Parties LLC</p>
+            </td>
+          </tr>
+
+        </table>
+
+        <!-- Footer note -->
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;margin-top:0;">
+          <tr>
+            <td align="center" style="background-color:#eeeef8;font-size:12px;color:#7878aa;padding:14px 20px;border-radius:0 0 8px 8px;">
+              Falling Star Parties LLC &nbsp;|&nbsp; (443) 327-9751 &nbsp;|&nbsp; info@fallingstarparties.com
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`;
+}
+
+// ---------------------------------------------------------------------------
+// MIME helpers
+// ---------------------------------------------------------------------------
+
+/** RFC 2047 encode a header value so non-ASCII characters survive SMTP. */
+function encodeSubject(subject: string): string {
+  return `=?UTF-8?B?${Buffer.from(subject).toString("base64")}?=`;
+}
+
+/** Encode a string to base64url (Gmail API requirement). */
+function toBase64Url(str: string): string {
+  return Buffer.from(str).toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+/** Build a MIME multipart/mixed message with HTML body + PDF attachment. */
+function buildMimeMessage(opts: {
+  to: string;
+  from: string;
+  subject: string;
+  htmlBody: string;
+  pdfBuffer: Buffer;
+  pdfFilename: string;
+}): string {
+  const boundary = `----=_Part_${Date.now()}`;
+
+  const mime = [
+    `MIME-Version: 1.0`,
+    `To: ${opts.to}`,
+    `From: ${opts.from}`,
+    `Subject: ${encodeSubject(opts.subject)}`,
+    `Content-Type: multipart/mixed; boundary="${boundary}"`,
+    ``,
+    `--${boundary}`,
+    `Content-Type: text/html; charset="UTF-8"`,
+    `Content-Transfer-Encoding: base64`,
+    ``,
+    Buffer.from(opts.htmlBody).toString("base64"),
+    ``,
+    `--${boundary}`,
+    `Content-Type: application/pdf; name="${opts.pdfFilename}"`,
+    `Content-Transfer-Encoding: base64`,
+    `Content-Disposition: attachment; filename="${opts.pdfFilename}"`,
+    ``,
+    opts.pdfBuffer.toString("base64"),
+    ``,
+    `--${boundary}--`,
+  ].join("\r\n");
+
+  return mime;
+}
+
+// ---------------------------------------------------------------------------
+// Public API
+// ---------------------------------------------------------------------------
+
+export interface GmailDraftResult {
+  draftId: string;
+}
+
+/**
+ * Creates a Gmail draft in the info@fallingstarparties.com inbox addressed
+ * to the client, with the finalization PDF attached and the Square invoice
+ * link as a CTA button in the email body.
+ */
+export async function createFinalizationDraft(opts: {
+  clientEmail: string;
+  clientFirstName: string;
+  clientLastName: string;
+  eventDate: string;
+  pdfBuffer: Buffer;
+  squareInvoiceUrl: string;
+}): Promise<GmailDraftResult> {
+  const auth = getOAuth2Client();
+  const gmail = google.gmail({ version: "v1", auth });
+
+  const fromAddress = "info@fallingstarparties.com";
+  const subject = "Your Booking Finalization - Falling Star Parties";
+
+  // Embed logo as base64 data URI so it renders without Gmail's image blocking
+  const logoBase64 = readFileSync(join(process.cwd(), "public", "logo.png")).toString("base64");
+
+  const htmlBody = buildFinalizationEmailHtml(
+    opts.clientFirstName,
+    opts.squareInvoiceUrl,
+    logoBase64
+  );
+
+  // Build a human-readable date string for the PDF filename (e.g. "July 13 2025")
+  const dateLabel = opts.eventDate
+    ? new Date(opts.eventDate).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        timeZone: "America/New_York",
+      })
+    : "Finalization";
+
+  const pdfFilename = `${opts.clientLastName} Finalization - ${dateLabel}.pdf`;
+
+  const mimeMessage = buildMimeMessage({
+    to: opts.clientEmail,
+    from: `Falling Star Parties <${fromAddress}>`,
+    subject,
+    htmlBody,
+    pdfBuffer: opts.pdfBuffer,
+    pdfFilename,
+  });
+
+  const encodedMessage = toBase64Url(mimeMessage);
+
+  const draft = await gmail.users.drafts.create({
+    userId: "me",
+    requestBody: {
+      message: { raw: encodedMessage },
+    },
+  });
+
+  const draftId = draft.data.id;
+  if (!draftId) throw new Error("Gmail draft created but no draft ID returned.");
+
+  logger.info("Gmail finalization draft created", {
+    draftId,
+    clientEmail: opts.clientEmail,
+    pdfFilename,
+  });
+
+  return { draftId };
+}
