@@ -54,13 +54,6 @@ const CHANNEL_TO_CHARACTER: Record<string, string> = {
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const rawBody = await request.text();
 
-  // ── Verify Slack signature ───────────────────────────────────────────────
-  const valid = await verifySlackSignature(request, rawBody);
-  if (!valid) {
-    logger.warn("Invalid Slack signature on events endpoint");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   // ── Parse body ───────────────────────────────────────────────────────────
   let body: Record<string, unknown>;
   try {
@@ -70,8 +63,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // ── URL verification challenge (one-time Slack setup) ───────────────────
+  // Safe to handle without sig verification — the challenge just echoes a value.
   if (body.type === "url_verification") {
     return NextResponse.json({ challenge: body.challenge });
+  }
+
+  // ── Verify Slack signature ───────────────────────────────────────────────
+  const valid = await verifySlackSignature(request, rawBody);
+  if (!valid) {
+    logger.warn("Invalid Slack signature on events endpoint");
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const event = body.event as Record<string, unknown> | undefined;
