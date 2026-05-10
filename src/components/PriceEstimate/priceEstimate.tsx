@@ -112,6 +112,7 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
             }
         }
         fetchTravelCost();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [locationLat, locationLng]);
 
     // Recalculate total whenever dependencies change

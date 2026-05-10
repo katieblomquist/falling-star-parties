@@ -110,7 +110,6 @@ export async function renderPdfBuffer(
   const charImageSrc = imageToDataUrl(path.join(publicDir, "pdfImages", charInfo.imageFile));
 
   const element = React.createElement(PdfTemplate, { data, logoSrc, charImageSrc });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const buffer = await renderToBuffer(element as any);
   return Buffer.from(buffer);
 }

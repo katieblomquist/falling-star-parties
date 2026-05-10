@@ -366,6 +366,7 @@ export function PdfTemplate({ data, logoSrc, charImageSrc }: PdfTemplateProps) {
 
           {/* Left column */}
           <View style={styles.leftCol}>
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
             <Image style={styles.logo} src={logoUrl} />
 
             <Text style={styles.introText}>{introText}</Text>
@@ -403,6 +404,7 @@ export function PdfTemplate({ data, logoSrc, charImageSrc }: PdfTemplateProps) {
 
           {/* Right column — extends to page edge */}
           <View style={styles.rightCol}>
+            {/* eslint-disable-next-line jsx-a11y/alt-text */}
             <Image style={styles.charImage} src={charImageUrl} />
             <PricingCard lines={pricingLines} total={total} />
             <View style={styles.contactBox}>
