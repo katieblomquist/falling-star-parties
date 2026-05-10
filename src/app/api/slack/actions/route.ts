@@ -4,9 +4,9 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { Client } from "@notionhq/client";
 import { logger } from "@/lib/logger";
 import { renderPdfBuffer, notionPageToPdfData } from "@/app/api/generatePdf/route";
-import { createRetainerInvoice } from "@/lib/squareService";
-import { createFinalizationDraft } from "@/lib/gmailService";
-import { markFinalizedInSlack } from "@/lib/slackService";
+import { createRetainerInvoice, createFinalInvoice } from "@/lib/squareService";
+import { createFinalizationDraft, createFinalInvoiceDraft } from "@/lib/gmailService";
+import { markFinalizedInSlack, markFinalInvoiceSent } from "@/lib/slackService";
 
 // ---------------------------------------------------------------------------
 // Slack signature verification
@@ -59,7 +59,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const actions = payload.actions as Array<Record<string, unknown>> | undefined;
   const action = actions?.[0];
-  if (action?.action_id !== "finalize_booking" && action?.action_id !== "update_booking") {
+  if (
+    action?.action_id !== "finalize_booking" &&
+    action?.action_id !== "update_booking" &&
+    action?.action_id !== "send_final_invoice"
+  ) {
     return NextResponse.json({ ok: true });
   }
 
@@ -83,6 +87,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // We'll do the work asynchronously and update the message when done.
   if (action.action_id === "update_booking") {
     waitUntil(runUpdate({ notionPageId, adminMessageTs, originalText }));
+  } else if (action.action_id === "send_final_invoice") {
+    // For thread replies, message.ts is the reply ts; message.thread_ts is the parent
+    const promptMessageTs = adminMessageTs; // the thread reply message to update
+    const parentTs = message?.thread_ts as string | undefined; // the top-level admin message
+    waitUntil(runFinalInvoice({ notionPageId, promptMessageTs, parentTs }));
   } else {
     waitUntil(runFinalization({ notionPageId, adminMessageTs, originalText }));
   }
@@ -132,12 +141,13 @@ async function runFinalization(opts: {
       squareInvoiceUrl: squareResult.invoiceUrl,
     });
 
-    // 4. Append finalization note to Notion page + store Square invoice URL
+    // 4. Append finalization note to Notion page + store Square invoice URL + invoice ID
     await Promise.all([
       notion.pages.update({
         page_id: notionPageId,
         properties: {
           "Retainer Invoice": { url: squareResult.invoiceUrl },
+          "Square Retainer Invoice ID": { rich_text: [{ text: { content: squareResult.invoiceId } }] },
         },
       }),
       notion.blocks.children.append({
@@ -303,6 +313,118 @@ async function runUpdate(opts: {
             text: `⚠️ Update failed: ${err instanceof Error ? err.message : String(err)}`,
           });
         }
+      } catch {
+        // best effort
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Final invoice logic — creates Square final invoice + Gmail draft
+// ---------------------------------------------------------------------------
+
+async function runFinalInvoice(opts: {
+  notionPageId: string;
+  promptMessageTs: string | undefined; // ts of the thread reply prompt message
+  parentTs: string | undefined;        // ts of the top-level admin message (thread parent)
+}) {
+  const { notionPageId, promptMessageTs, parentTs } = opts;
+
+  const notionKey = process.env.NOTION_KEY;
+  const adminChannelId = process.env.SLACK_ADMIN_CHANNEL_ID;
+  if (!notionKey) {
+    logger.error("Missing NOTION_KEY in runFinalInvoice", { notionPageId });
+    return;
+  }
+  if (!adminChannelId) {
+    logger.error("Missing SLACK_ADMIN_CHANNEL_ID in runFinalInvoice", { notionPageId });
+    return;
+  }
+
+  try {
+    const notion = new Client({ auth: notionKey });
+
+    // 1. Fetch Notion page
+    const page = await notion.pages.retrieve({ page_id: notionPageId });
+    const data = notionPageToPdfData(page);
+
+    logger.info("Starting final invoice flow", { notionPageId, clientEmail: data.clientEmail });
+
+    // 2. Generate PDF while Square invoice is being created
+    const pdfBuffer = await renderPdfBuffer(data);
+
+    // 3. Create Square final invoice
+    const squareResult = await createFinalInvoice(data, data.clientEmail, data.dateTime);
+
+    // 4. Create Gmail draft with final invoice link
+    const gmailResult = await createFinalInvoiceDraft({
+      clientEmail: data.clientEmail,
+      clientFirstName: data.clientFirstName,
+      clientLastName: data.clientLastName,
+      eventDate: data.dateTime,
+      pdfBuffer,
+      squareInvoiceUrl: squareResult.invoiceUrl,
+    });
+
+    // 5. Update Notion with final invoice details
+    await Promise.all([
+      notion.pages.update({
+        page_id: notionPageId,
+        properties: {
+          "Final Invoice": { url: squareResult.invoiceUrl },
+          "Final Invoice ID": { rich_text: [{ text: { content: squareResult.invoiceId } }] },
+        },
+      }),
+      notion.blocks.children.append({
+        block_id: notionPageId,
+        children: [
+          {
+            object: "block",
+            type: "paragraph",
+            paragraph: {
+              rich_text: [
+                {
+                  type: "text",
+                  text: {
+                    content: `Final invoice sent — ${new Date().toLocaleString("en-US", {
+                      timeZone: "America/New_York",
+                    })} | Square Invoice: ${squareResult.invoiceUrl} | Gmail Draft: ${gmailResult.draftId}`,
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      }),
+    ]);
+
+    // 6. Update the Slack thread reply to confirm
+    if (promptMessageTs) {
+      await markFinalInvoiceSent(adminChannelId, parentTs ?? promptMessageTs, promptMessageTs);
+    }
+
+    logger.info("Final invoice flow complete", {
+      notionPageId,
+      squareInvoiceId: squareResult.invoiceId,
+      gmailDraftId: gmailResult.draftId,
+    });
+  } catch (err) {
+    logger.error("Final invoice flow failed", {
+      notionPageId,
+      errorMessage: err instanceof Error ? err.message : String(err),
+    }, err);
+
+    // Post error to Slack thread
+    if (promptMessageTs || parentTs) {
+      try {
+        const { WebClient } = await import("@slack/web-api");
+        const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
+        await slack.chat.postMessage({
+          channel: adminChannelId,
+          thread_ts: parentTs ?? promptMessageTs,
+          text: `⚠️ Final invoice failed: ${err instanceof Error ? err.message : String(err)}`,
+        });
       } catch {
         // best effort
       }

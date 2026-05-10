@@ -9,7 +9,7 @@ import SubmissionError from "@/components/bookingForm/SubmissionError/submission
 import EventOptions from "@/components/bookingForm/EventOptions/eventOptions";
 import EventDetails from "@/components/bookingForm/EventDetails/eventDetails";
 import TimeLocation from "@/components/bookingForm/TimeLocation/timeLocation";
-import { useForm, useWatch, FormProvider } from "react-hook-form";
+import { useForm, useWatch, FormProvider, useFormContext } from "react-hook-form";
 import ReviewRequest from "@/components/bookingForm/ReviewRequest/reviewRequest";
 import { DateTime } from "luxon";
 import NavBar from "@/components/navbar/navbar";
@@ -48,6 +48,7 @@ export type FormValues = {
     PhotoPref: string,
     AdditionalInfo?: string,
     AgreeToTOS: boolean,
+    TravelFee?: number,
 }
 
 export function mapFormValuesToRequestBody(formValues: FormValues) {
@@ -83,6 +84,7 @@ export function mapFormValuesToRequestBody(formValues: FormValues) {
 
         additionalInfo: formValues.AdditionalInfo || null,
         agreeToTos: formValues.AgreeToTOS,
+        travelFee: formValues.TravelFee ?? 0,
     };
 }
 
@@ -126,6 +128,7 @@ export default function Book() {
         handleSubmit,
         control,
         resetField,
+        setValue,
         formState: { errors }
     } = methods;
 
@@ -279,7 +282,7 @@ export default function Book() {
                             )}
 
                             {!isLoading && !isSubmitted && !submissionError && (
-                                <PriceEstimate controller={control} />
+                                <PriceEstimate controller={control} onTravelFeeChange={(fee) => setValue("TravelFee", fee)} />
                             )}
                         </div>
                     </form>

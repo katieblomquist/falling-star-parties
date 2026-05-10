@@ -248,3 +248,86 @@ export async function markFinalizedInSlack(
     ],
   });
 }
+
+// ---------------------------------------------------------------------------
+// Final invoice prompt — posted as a thread reply when retainer is paid
+// ---------------------------------------------------------------------------
+
+/**
+ * Posts a thread reply to the admin booking message when the retainer is paid,
+ * prompting Katie to send the final invoice with a single button click.
+ */
+export async function postFinalInvoicePrompt(
+  adminChannelId: string,
+  adminTs: string,
+  notionPageId: string
+): Promise<void> {
+  const slack = getClient();
+
+  await slack.chat.postMessage({
+    channel: adminChannelId,
+    thread_ts: adminTs,
+    text: "💰 Retainer paid! Ready to send the final invoice.",
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: "💰 *Retainer paid!* Ready to send the final invoice.",
+        },
+      },
+      {
+        type: "actions",
+        elements: [
+          {
+            type: "button",
+            text: { type: "plain_text", text: "Send Final Invoice", emoji: true },
+            style: "primary",
+            action_id: "send_final_invoice",
+            value: notionPageId,
+          },
+        ],
+      },
+    ],
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Mark final invoice sent — updates the thread reply after button is clicked
+// ---------------------------------------------------------------------------
+
+/**
+ * Updates the final invoice thread reply to confirm the invoice was sent
+ * and removes the button.
+ */
+export async function markFinalInvoiceSent(
+  adminChannelId: string,
+  threadTs: string,
+  promptMessageTs: string
+): Promise<void> {
+  const slack = getClient();
+
+  const timestamp = new Date().toLocaleString("en-US", {
+    timeZone: "America/New_York",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  await slack.chat.update({
+    channel: adminChannelId,
+    ts: promptMessageTs,
+    text: `✅ Final invoice sent — Gmail draft ready in your inbox.`,
+    blocks: [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `✅ *Final invoice sent ${timestamp}* — Gmail draft ready in your inbox.`,
+        },
+      },
+    ],
+  });
+}

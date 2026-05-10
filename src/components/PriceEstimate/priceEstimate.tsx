@@ -9,11 +9,12 @@ import { IconChevronDown, IconChevronUp } from "@tabler/icons-react";
 import { packages, extras } from "@/app/content";
 import { DateTime, Interval } from "luxon";
 
-export default function PriceEstimate(props: { controller: Control<FormValues, any> }) {
+export default function PriceEstimate(props: { controller: Control<FormValues, any>, onTravelFeeChange?: (fee: number) => void }) {
 
     const [popupActive, activate] = useState(false);
 
     const control = props.controller;
+    const onTravelFeeChange = props.onTravelFeeChange;
     const selectedEventType = useWatch({ control, name: "EventType" });
     const date = useWatch({ control, name: "Date" });
     const eventPackage = useWatch({ control, name: "Package" });
@@ -100,15 +101,20 @@ export default function PriceEstimate(props: { controller: Control<FormValues, a
                     );
                     if (res.ok) {
                         const data = await res.json();
-                        setTravelCost(data.fee ?? 0);
+                        const fee = data.fee ?? 0;
+                        setTravelCost(fee);
+                        onTravelFeeChange?.(fee);
                     } else {
                         setTravelCost(0);
+                        onTravelFeeChange?.(0);
                     }
                 } catch {
                     setTravelCost(0);
+                    onTravelFeeChange?.(0);
                 }
             } else {
                 setTravelCost(0);
+                onTravelFeeChange?.(0);
             }
         }
         fetchTravelCost();
