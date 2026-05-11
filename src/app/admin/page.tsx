@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, CSSProperties } from "react";
 
 type Status =
   | { type: "idle" }
@@ -145,7 +145,7 @@ export default function AdminPage() {
 // Inline styles (no CSS module needed for an internal tool)
 // ---------------------------------------------------------------------------
 
-const styles: Record<string, React.CSSProperties> = {
+const styles: Record<string, CSSProperties> = {
   page: {
     minHeight: "100vh",
     background: "#f5f5fb",
