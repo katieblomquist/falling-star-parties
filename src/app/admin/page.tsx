@@ -14,11 +14,13 @@ export default function AdminPage() {
   const [status, setStatus] = useState<Status>({ type: "idle" });
 
   async function trigger(action: "retainer" | "final-invoice") {
-    const id = notionPageId.trim().replace(
-      /^https:\/\/www\.notion\.so\/[^/]+\/[^?#]+-([a-f0-9]{32}).*$/i,
-      (_, hex) =>
-        `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
-    );
+    // Extract a 32-char hex ID from anywhere in the input (handles full notion.so URLs
+    // with one or two path segments, query params, etc.) and convert to UUID format.
+    const raw = notionPageId.trim();
+    const hexMatch = raw.match(/([a-f0-9]{32})(?:[^a-f0-9]|$)/i);
+    const id = hexMatch
+      ? `${hexMatch[1].slice(0, 8)}-${hexMatch[1].slice(8, 12)}-${hexMatch[1].slice(12, 16)}-${hexMatch[1].slice(16, 20)}-${hexMatch[1].slice(20)}`
+      : raw; // fall through as-is (may already be a UUID with dashes)
 
     setStatus({ type: "loading", action });
 
