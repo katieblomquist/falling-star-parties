@@ -5,11 +5,6 @@ import { runFinalization, runFinalInvoice, runUpdate } from "@/lib/bookingAction
 
 // ---------------------------------------------------------------------------
 // Internal auth verification
-//
-// Requests must include an X-Internal-Signature header containing an HMAC-SHA256
-// of the raw JSON body, signed with SLACK_SIGNING_SECRET. This secret is already
-// proven to be available in the Lambda runtime (Slack signature verification works),
-// so we reuse it here rather than adding a new env var.
 // ---------------------------------------------------------------------------
 
 function verifyInternalSignature(rawBody: string, signature: string | null): boolean {
@@ -25,9 +20,16 @@ function verifyInternalSignature(rawBody: string, signature: string | null): boo
 
 // ---------------------------------------------------------------------------
 // Route handler
+//
+// Returns a streaming response so the Lambda stays alive while doing the work.
+// The Slack actions handler awaits only the response *headers* (which arrive
+// immediately once we enqueue the first chunk), then cancels the body and
+// returns { ok: true } to Slack well within the 3-second window.
+// This Lambda continues running — API Gateway does not cancel it when the
+// client disconnects — and closes the stream when the work is complete.
 // ---------------------------------------------------------------------------
 
-export async function POST(request: NextRequest): Promise<NextResponse> {
+export async function POST(request: NextRequest): Promise<Response> {
   const rawBody = await request.text();
   const signature = request.headers.get("x-internal-signature");
 
@@ -57,26 +59,42 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Invalid or missing notionPageId" }, { status: 400 });
   }
 
-  if (action === "retainer") {
-    logger.info("Background: retainer finalization", { notionPageId });
-    const result = await runFinalization({ notionPageId, adminMessageTs, originalText });
-    if (!result.success) return NextResponse.json({ error: result.error }, { status: 500 });
-    return NextResponse.json({ ok: true, squareInvoiceUrl: result.squareInvoiceUrl, gmailDraftId: result.gmailDraftId });
-  }
+  const encoder = new TextEncoder();
 
-  if (action === "update") {
-    logger.info("Background: update booking", { notionPageId });
-    const result = await runUpdate({ notionPageId, adminMessageTs, originalText });
-    if (!result.success) return NextResponse.json({ error: result.error }, { status: 500 });
-    return NextResponse.json({ ok: true, gmailDraftId: result.gmailDraftId });
-  }
+  const stream = new ReadableStream({
+    async start(controller) {
+      // Enqueue immediately so the caller's `await fetch()` unblocks as soon
+      // as the response headers + this first chunk arrive (~50ms intra-AWS).
+      controller.enqueue(encoder.encode(JSON.stringify({ accepted: true })));
 
-  if (action === "final-invoice") {
-    logger.info("Background: final invoice", { notionPageId });
-    const result = await runFinalInvoice({ notionPageId, promptMessageTs, parentTs });
-    if (!result.success) return NextResponse.json({ error: result.error }, { status: 500 });
-    return NextResponse.json({ ok: true, squareInvoiceUrl: result.squareInvoiceUrl, gmailDraftId: result.gmailDraftId });
-  }
+      try {
+        if (action === "retainer") {
+          logger.info("Background: retainer finalization", { notionPageId });
+          await runFinalization({ notionPageId, adminMessageTs, originalText });
+        } else if (action === "update") {
+          logger.info("Background: update booking", { notionPageId });
+          await runUpdate({ notionPageId, adminMessageTs, originalText });
+        } else if (action === "final-invoice") {
+          logger.info("Background: final invoice", { notionPageId });
+          await runFinalInvoice({ notionPageId, promptMessageTs, parentTs });
+        } else {
+          logger.warn("Background: unknown action", { action });
+        }
+      } catch (err) {
+        logger.error("Background action failed", {
+          action,
+          notionPageId,
+          errorMessage: err instanceof Error ? err.message : String(err),
+        }, err);
+      } finally {
+        // Closing the stream allows the Lambda to terminate cleanly.
+        controller.close();
+      }
+    },
+  });
 
-  return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+  return new Response(stream, {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }

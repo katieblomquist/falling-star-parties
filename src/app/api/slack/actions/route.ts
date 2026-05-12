@@ -29,14 +29,14 @@ async function verifySlackSignature(request: NextRequest, rawBody: string): Prom
 }
 
 // ---------------------------------------------------------------------------
-// Fire-and-forget helper
+// Background dispatcher
 //
-// Fires a POST to /api/slack/background which runs in its own Lambda invocation,
-// completely independent of this one. The request is signed with
-// SLACK_SIGNING_SECRET (already proven available in production). We await with
-// a short abort timeout — just long enough to ensure the HTTP request has been
-// transmitted (~50ms intra-AWS) — then return to Slack well within its 3-second
-// window. The receiving Lambda continues running to completion regardless.
+// The background endpoint returns a streaming response and immediately writes
+// its first chunk, so `await fetch()` here resolves as soon as the response
+// headers + first chunk arrive (~50ms intra-AWS) — not when the body is fully
+// consumed. We cancel the body immediately so we're not waiting for the stream
+// to close. The background Lambda keeps the stream open while it does the work
+// and API Gateway does not cancel it when we disconnect.
 // ---------------------------------------------------------------------------
 
 async function dispatchToBackground(
@@ -52,23 +52,22 @@ async function dispatchToBackground(
   const payload = JSON.stringify(body);
   const signature = createHmac("sha256", secret).update(payload).digest("hex");
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 500);
-
   try {
-    await fetch(`${baseUrl}/api/slack/background`, {
+    const response = await fetch(`${baseUrl}/api/slack/background`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "x-internal-signature": signature,
       },
       body: payload,
-      signal: controller.signal,
     });
-  } catch {
-    // AbortError is expected — the request was sent, we just stopped waiting.
-  } finally {
-    clearTimeout(timeout);
+    // Cancel the body immediately — we don't need to read it and we don't want
+    // to block waiting for the stream to close (that's where the work happens).
+    await response.body?.cancel();
+  } catch (err) {
+    logger.error("Failed to dispatch to background endpoint", {
+      errorMessage: err instanceof Error ? err.message : String(err),
+    });
   }
 }
 
