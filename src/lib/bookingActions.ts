@@ -262,3 +262,88 @@ export async function runFinalInvoice(opts: {
     return { success: false, error };
   }
 }
+
+// ---------------------------------------------------------------------------
+// runRetainerEmailOnly — regenerates PDF + Gmail draft, reuses existing Square
+// invoice URL from the Notion "Retainer Invoice" property (no new invoice)
+// ---------------------------------------------------------------------------
+
+export async function runRetainerEmailOnly(opts: {
+  notionPageId: string;
+  adminMessageTs?: string;
+  originalText?: string;
+}): Promise<ActionResult> {
+  const { notionPageId, adminMessageTs, originalText = "" } = opts;
+
+  const notionKey = process.env.NOTION_KEY;
+  if (!notionKey) {
+    logger.error("Missing NOTION_KEY in runRetainerEmailOnly", { notionPageId });
+    return { success: false, error: "Server configuration error: missing NOTION_KEY" };
+  }
+
+  try {
+    const notion = new Client({ auth: notionKey });
+
+    const page = await notion.pages.retrieve({ page_id: notionPageId });
+    const data = notionPageToPdfData(page);
+
+    logger.info("Starting retainer email-only update", { notionPageId, clientEmail: data.clientEmail });
+
+    // Read the existing Square invoice URL from the Notion property
+    const props = (page as Record<string, unknown>).properties as Record<string, unknown>;
+    const retainerProp = props["Retainer Invoice"] as { url?: string | null } | undefined;
+    const squareInvoiceUrl =
+      retainerProp?.url ??
+      process.env.SQUARE_DASHBOARD_URL ??
+      "https://squareup.com/dashboard/invoices";
+
+    const pdfBuffer = await renderPdfBuffer(data);
+
+    const gmailResult = await createFinalizationDraft({
+      clientEmail: data.clientEmail,
+      clientFirstName: data.clientFirstName,
+      clientLastName: data.clientLastName,
+      eventDate: data.dateTime,
+      pdfBuffer,
+      squareInvoiceUrl,
+    });
+
+    await notion.blocks.children.append({
+      block_id: notionPageId,
+      children: [
+        {
+          object: "block",
+          type: "paragraph",
+          paragraph: {
+            rich_text: [
+              {
+                type: "text",
+                text: {
+                  content: `Retainer email re-sent (PDF only) — ${new Date().toLocaleString("en-US", {
+                    timeZone: "America/New_York",
+                  })} | Gmail Draft: ${gmailResult.draftId}`,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    if (adminMessageTs) {
+      await markFinalizedInSlack(adminMessageTs, originalText, notionPageId);
+    }
+
+    logger.info("Retainer email-only update complete", {
+      notionPageId,
+      gmailDraftId: gmailResult.draftId,
+      squareInvoiceUrl,
+    });
+
+    return { success: true, squareInvoiceUrl, gmailDraftId: gmailResult.draftId };
+  } catch (err) {
+    const error = err instanceof Error ? err.message : String(err);
+    logger.error("Retainer email-only update failed", { notionPageId, errorMessage: error }, err);
+    return { success: false, error };
+  }
+}

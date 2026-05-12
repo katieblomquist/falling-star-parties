@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
 import { logger } from "@/lib/logger";
-import { runFinalization, runFinalInvoice } from "@/lib/bookingActions";
+import { runFinalization, runFinalInvoice, runRetainerEmailOnly } from "@/lib/bookingActions";
 
 const UUID_RE = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
 
@@ -62,5 +62,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
   }
 
-  return NextResponse.json({ error: "Unknown action. Use 'retainer' or 'final-invoice'." }, { status: 400 });
+  if (action === "retainer-email-only") {
+    logger.info("Admin trigger: retainer email only", { notionPageId });
+    const result = await runRetainerEmailOnly({ notionPageId });
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: 500 });
+    }
+    return NextResponse.json({
+      ok: true,
+      squareInvoiceUrl: result.squareInvoiceUrl,
+      gmailDraftId: result.gmailDraftId,
+    });
+  }
+
+  return NextResponse.json({ error: "Unknown action. Use 'retainer', 'retainer-email-only', or 'final-invoice'." }, { status: 400 });
 }
+

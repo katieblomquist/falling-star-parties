@@ -13,7 +13,7 @@ export default function AdminPage() {
   const [notionPageId, setNotionPageId] = useState("");
   const [status, setStatus] = useState<Status>({ type: "idle" });
 
-  async function trigger(action: "retainer" | "final-invoice") {
+  async function trigger(action: "retainer" | "retainer-email-only" | "final-invoice") {
     // Extract a 32-char hex ID from anywhere in the input (handles full notion.so URLs
     // with one or two path segments, query params, etc.) and convert to UUID format.
     const raw = notionPageId.trim();
@@ -94,6 +94,14 @@ export default function AdminPage() {
           </button>
 
           <button
+            style={{ ...styles.button, ...styles.buttonGray }}
+            onClick={() => trigger("retainer-email-only")}
+            disabled={loading || !notionPageId.trim() || !secret}
+          >
+            {loading && status.action === "retainer-email-only" ? "Working..." : "Redo Email & PDF Only"}
+          </button>
+
+          <button
             style={{ ...styles.button, ...styles.buttonPurple }}
             onClick={() => trigger("final-invoice")}
             disabled={loading || !notionPageId.trim() || !secret}
@@ -104,8 +112,14 @@ export default function AdminPage() {
 
         {status.type === "success" && (
           <div style={{ ...styles.banner, ...styles.bannerSuccess }}>
-            <strong>{status.action === "retainer" ? "Retainer" : "Final invoice"} done!</strong>
-            {status.squareInvoiceUrl && (
+            <strong>
+              {status.action === "retainer"
+                ? "Retainer done!"
+                : status.action === "retainer-email-only"
+                ? "Email & PDF re-sent!"
+                : "Final invoice done!"}
+            </strong>
+            {status.squareInvoiceUrl && status.action !== "retainer-email-only" && (
               <p style={styles.bannerLine}>
                 Square invoice:{" "}
                 <a href={status.squareInvoiceUrl} target="_blank" rel="noreferrer" style={styles.link}>
@@ -221,6 +235,10 @@ const styles: Record<string, CSSProperties> = {
   },
   buttonBlue: {
     background: "#343B95",
+    color: "#fff",
+  },
+  buttonGray: {
+    background: "#6b7280",
     color: "#fff",
   },
   buttonPurple: {
