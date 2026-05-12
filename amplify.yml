@@ -15,7 +15,7 @@ frontend:
         - env | grep -e GMAIL_CLIENT_ID -e GMAIL_CLIENT_SECRET -e GMAIL_REFRESH_TOKEN >> .env.production
         - env | grep -e PDF_SECRET -e ADMIN_SECRET >> .env.production
         - env | grep -e NEXT_PUBLIC_ >> .env.production
-        - npm run build
+        - NODE_OPTIONS=--max-old-space-size=4096 npm run build
   artifacts:
     baseDirectory: .next
     files:
