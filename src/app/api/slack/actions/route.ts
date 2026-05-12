@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
+import { Client } from "@upstash/qstash";
 import { logger } from "@/lib/logger";
 
 // ---------------------------------------------------------------------------
@@ -29,43 +30,32 @@ async function verifySlackSignature(request: NextRequest, rawBody: string): Prom
 }
 
 // ---------------------------------------------------------------------------
-// Background dispatcher
+// Background dispatcher via QStash
 //
-// The background endpoint returns a streaming response and immediately writes
-// its first chunk, so `await fetch()` here resolves as soon as the response
-// headers + first chunk arrive (~50ms intra-AWS) — not when the body is fully
-// consumed. We cancel the body immediately so we're not waiting for the stream
-// to close. The background Lambda keeps the stream open while it does the work
-// and API Gateway does not cancel it when we disconnect.
+// QStash accepts the job in ~50ms and returns immediately. It then delivers
+// the payload to /api/slack/background as an independent HTTP request with its
+// own Lambda invocation — no 3-second Slack timeout pressure.
 // ---------------------------------------------------------------------------
 
 async function dispatchToBackground(
-  baseUrl: string,
   body: Record<string, unknown>
 ): Promise<void> {
-  const secret = process.env.SLACK_SIGNING_SECRET;
-  if (!secret) {
-    logger.error("Missing SLACK_SIGNING_SECRET — cannot dispatch background action");
+  const token = process.env.QSTASH_TOKEN;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  if (!token || !appUrl) {
+    logger.error("Missing QSTASH_TOKEN or NEXT_PUBLIC_APP_URL — cannot dispatch background action");
     return;
   }
 
-  const payload = JSON.stringify(body);
-  const signature = createHmac("sha256", secret).update(payload).digest("hex");
+  const client = new Client({ token });
+  const destination = `${appUrl}/api/slack/background`;
 
   try {
-    const response = await fetch(`${baseUrl}/api/slack/background`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-internal-signature": signature,
-      },
-      body: payload,
-    });
-    // Cancel the body immediately — we don't need to read it and we don't want
-    // to block waiting for the stream to close (that's where the work happens).
-    await response.body?.cancel();
+    await client.publishJSON({ url: destination, body });
+    logger.info("Dispatched background job via QStash", { destination, action: body.action });
   } catch (err) {
-    logger.error("Failed to dispatch to background endpoint", {
+    logger.error("Failed to dispatch to QStash", {
       errorMessage: err instanceof Error ? err.message : String(err),
     });
   }
@@ -119,15 +109,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const originalText =
     (messageBlocks?.[0]?.text as Record<string, unknown>)?.text as string ?? "";
 
-  // Derive base URL from the incoming request so this works in any environment.
-  const { protocol, host } = new URL(request.url);
-  const baseUrl = `${protocol}//${host}`;
-
-  // Dispatch background work to /api/admin/trigger (its own Lambda invocation).
-  // We acknowledge Slack immediately — the trigger endpoint handles all the
-  // heavy lifting (Notion, Square, Gmail) and updates the Slack message itself.
+  // Dispatch background work to QStash — returns in ~50ms so we can
+  // acknowledge Slack well within the 3-second window.
   if (action.action_id === "update_booking") {
-    await dispatchToBackground(baseUrl, {
+    await dispatchToBackground({
       action: "update",
       notionPageId,
       adminMessageTs,
@@ -136,14 +121,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } else if (action.action_id === "send_final_invoice") {
     const promptMessageTs = adminMessageTs;
     const parentTs = message?.thread_ts as string | undefined;
-    await dispatchToBackground(baseUrl, {
+    await dispatchToBackground({
       action: "final-invoice",
       notionPageId,
       promptMessageTs,
       parentTs,
     });
   } else {
-    await dispatchToBackground(baseUrl, {
+    await dispatchToBackground({
       action: "retainer",
       notionPageId,
       adminMessageTs,

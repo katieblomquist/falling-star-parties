@@ -1,19 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createHmac, timingSafeEqual } from "crypto";
+import { Receiver } from "@upstash/qstash";
 import { logger } from "@/lib/logger";
 import { runFinalization, runFinalInvoice, runUpdate } from "@/lib/bookingActions";
 
 // ---------------------------------------------------------------------------
-// Internal auth verification
+// QStash signature verification
 // ---------------------------------------------------------------------------
 
-function verifyInternalSignature(rawBody: string, signature: string | null): boolean {
-  const secret = process.env.SLACK_SIGNING_SECRET;
-  if (!secret || !signature) return false;
+async function verifyQStashSignature(request: NextRequest, rawBody: string): Promise<boolean> {
+  const currentKey = process.env.QSTASH_CURRENT_SIGNING_KEY;
+  const nextKey = process.env.QSTASH_NEXT_SIGNING_KEY;
+
+  if (!currentKey || !nextKey) {
+    logger.error("Missing QSTASH signing keys");
+    return false;
+  }
+
+  const receiver = new Receiver({ currentSigningKey: currentKey, nextSigningKey: nextKey });
+
   try {
-    const expected = createHmac("sha256", secret).update(rawBody).digest("hex");
-    return timingSafeEqual(Buffer.from(expected), Buffer.from(signature));
-  } catch {
+    await receiver.verify({
+      signature: request.headers.get("upstash-signature") ?? "",
+      body: rawBody,
+    });
+    return true;
+  } catch (err) {
+    logger.warn("QStash signature verification failed", {
+      errorMessage: err instanceof Error ? err.message : String(err),
+    });
     return false;
   }
 }
@@ -21,20 +35,15 @@ function verifyInternalSignature(rawBody: string, signature: string | null): boo
 // ---------------------------------------------------------------------------
 // Route handler
 //
-// Returns a streaming response so the Lambda stays alive while doing the work.
-// The Slack actions handler awaits only the response *headers* (which arrive
-// immediately once we enqueue the first chunk), then cancels the body and
-// returns { ok: true } to Slack well within the 3-second window.
-// This Lambda continues running — API Gateway does not cancel it when the
-// client disconnects — and closes the stream when the work is complete.
+// Called by QStash as an independent HTTP request — no Slack timeout pressure.
+// Simply runs the work and returns when done. QStash handles retries if we
+// return a non-2xx status.
 // ---------------------------------------------------------------------------
 
-export async function POST(request: NextRequest): Promise<Response> {
+export async function POST(request: NextRequest): Promise<NextResponse> {
   const rawBody = await request.text();
-  const signature = request.headers.get("x-internal-signature");
 
-  if (!verifyInternalSignature(rawBody, signature)) {
-    logger.warn("Invalid internal signature on background endpoint");
+  if (!await verifyQStashSignature(request, rawBody)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -59,42 +68,29 @@ export async function POST(request: NextRequest): Promise<Response> {
     return NextResponse.json({ error: "Invalid or missing notionPageId" }, { status: 400 });
   }
 
-  const encoder = new TextEncoder();
+  try {
+    if (action === "retainer") {
+      logger.info("Background: retainer finalization", { notionPageId });
+      await runFinalization({ notionPageId, adminMessageTs, originalText });
+    } else if (action === "update") {
+      logger.info("Background: update booking", { notionPageId });
+      await runUpdate({ notionPageId, adminMessageTs, originalText });
+    } else if (action === "final-invoice") {
+      logger.info("Background: final invoice", { notionPageId });
+      await runFinalInvoice({ notionPageId, promptMessageTs, parentTs });
+    } else {
+      logger.warn("Background: unknown action", { action });
+      return NextResponse.json({ error: "Unknown action" }, { status: 400 });
+    }
+  } catch (err) {
+    logger.error("Background action failed", {
+      action,
+      notionPageId,
+      errorMessage: err instanceof Error ? err.message : String(err),
+    }, err);
+    // Return 500 so QStash retries the job
+    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+  }
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      // Enqueue immediately so the caller's `await fetch()` unblocks as soon
-      // as the response headers + this first chunk arrive (~50ms intra-AWS).
-      controller.enqueue(encoder.encode(JSON.stringify({ accepted: true })));
-
-      try {
-        if (action === "retainer") {
-          logger.info("Background: retainer finalization", { notionPageId });
-          await runFinalization({ notionPageId, adminMessageTs, originalText });
-        } else if (action === "update") {
-          logger.info("Background: update booking", { notionPageId });
-          await runUpdate({ notionPageId, adminMessageTs, originalText });
-        } else if (action === "final-invoice") {
-          logger.info("Background: final invoice", { notionPageId });
-          await runFinalInvoice({ notionPageId, promptMessageTs, parentTs });
-        } else {
-          logger.warn("Background: unknown action", { action });
-        }
-      } catch (err) {
-        logger.error("Background action failed", {
-          action,
-          notionPageId,
-          errorMessage: err instanceof Error ? err.message : String(err),
-        }, err);
-      } finally {
-        // Closing the stream allows the Lambda to terminate cleanly.
-        controller.close();
-      }
-    },
-  });
-
-  return new Response(stream, {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+  return NextResponse.json({ ok: true });
 }
