@@ -14,7 +14,7 @@ frontend:
         - env | grep -e SQUARE_ACCESS_TOKEN -e SQUARE_LOCATION_ID -e SQUARE_WEBHOOK_SIGNATURE_KEY >> .env.production
         - env | grep -e GMAIL_CLIENT_ID -e GMAIL_CLIENT_SECRET -e GMAIL_REFRESH_TOKEN >> .env.production
         - env | grep -e PDF_SECRET -e ADMIN_SECRET >> .env.production
-        - env | grep -e QSTASH_TOKEN -e QSTASH_CURRENT_SIGNING_KEY -e QSTASH_NEXT_SIGNING_KEY >> .env.production
+        - env | grep -e QSTASH_TOKEN -e QSTASH_CURRENT_SIGNING_KEY -e QSTASH_NEXT_SIGNING_KEY -e QSTASH_URL >> .env.production
         - env | grep -e NEXT_PUBLIC_ >> .env.production
         - NODE_OPTIONS=--max-old-space-size=4096 npm run build
   artifacts:

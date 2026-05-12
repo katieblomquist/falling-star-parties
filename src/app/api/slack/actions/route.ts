@@ -48,7 +48,8 @@ async function dispatchToBackground(
     return;
   }
 
-  const client = new Client({ token });
+  const baseUrl = process.env.QSTASH_URL ?? "https://qstash.upstash.io";
+  const client = new Client({ token, baseUrl });
   const destination = `${appUrl}/api/slack/background`;
 
   try {
