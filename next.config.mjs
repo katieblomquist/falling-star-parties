@@ -9,8 +9,6 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ["@react-pdf/renderer", "@react-pdf/reconciler"],
   },
-  // Transpile the ESM-only @react-pdf packages so webpack can bundle them for
-  // client components (e.g. the dev-only /preview-pdf page) without erroring.
-  transpilePackages: ["@react-pdf/renderer", "@react-pdf/reconciler"],
+
 };
 export default nextConfig;
