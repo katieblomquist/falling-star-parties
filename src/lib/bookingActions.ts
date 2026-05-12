@@ -264,6 +264,111 @@ export async function runFinalInvoice(opts: {
 }
 
 // ---------------------------------------------------------------------------
+// runUpdate — regenerates PDF + Gmail draft only, reuses existing Square invoice
+// (no new invoice created — used when booking details change after finalization)
+// ---------------------------------------------------------------------------
+
+export async function runUpdate(opts: {
+  notionPageId: string;
+  /** Slack ts of the admin message to update on success (optional). */
+  adminMessageTs?: string;
+  /** Original Slack message text to preserve on update (optional). */
+  originalText?: string;
+}): Promise<ActionResult> {
+  const { notionPageId, adminMessageTs, originalText = "" } = opts;
+
+  const notionKey = process.env.NOTION_KEY;
+  if (!notionKey) {
+    logger.error("Missing NOTION_KEY in runUpdate", { notionPageId });
+    return { success: false, error: "Server configuration error: missing NOTION_KEY" };
+  }
+
+  try {
+    const notion = new Client({ auth: notionKey });
+
+    // 1. Fetch Notion page
+    const page = await notion.pages.retrieve({ page_id: notionPageId });
+    const data = notionPageToPdfData(page);
+
+    logger.info("Starting update (PDF + Gmail draft only)", { notionPageId, clientEmail: data.clientEmail });
+
+    // 2. Read the existing Square invoice URL from Notion
+    const props = (page as Record<string, unknown>).properties as Record<string, unknown>;
+    const retainerProp = props["Retainer Invoice"] as { url?: string | null } | undefined;
+    const squareInvoiceUrl =
+      retainerProp?.url ??
+      process.env.SQUARE_DASHBOARD_URL ??
+      "https://squareup.com/dashboard/invoices";
+
+    // 3. Generate PDF + create Gmail draft
+    const pdfBuffer = await renderPdfBuffer(data);
+
+    const gmailResult = await createFinalizationDraft({
+      clientEmail: data.clientEmail,
+      clientFirstName: data.clientFirstName,
+      clientLastName: data.clientLastName,
+      eventDate: data.dateTime,
+      pdfBuffer,
+      squareInvoiceUrl,
+    });
+
+    // 4. Append audit log to Notion
+    await notion.blocks.children.append({
+      block_id: notionPageId,
+      children: [
+        {
+          object: "block",
+          type: "paragraph",
+          paragraph: {
+            rich_text: [
+              {
+                type: "text",
+                text: {
+                  content: `Update triggered — ${new Date().toLocaleString("en-US", {
+                    timeZone: "America/New_York",
+                  })} | Gmail Draft: ${gmailResult.draftId}`,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    // 5. Update Slack admin message (if triggered from Slack)
+    if (adminMessageTs) {
+      await markFinalizedInSlack(adminMessageTs, originalText, notionPageId);
+    }
+
+    logger.info("Update complete", { notionPageId, gmailDraftId: gmailResult.draftId });
+
+    return { success: true, gmailDraftId: gmailResult.draftId };
+  } catch (err) {
+    const error = err instanceof Error ? err.message : String(err);
+    logger.error("Update failed", { notionPageId, errorMessage: error }, err);
+
+    if (adminMessageTs) {
+      try {
+        const { WebClient } = await import("@slack/web-api");
+        const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
+        const adminChannelId = process.env.SLACK_ADMIN_CHANNEL_ID;
+        if (adminChannelId) {
+          await slack.chat.postMessage({
+            channel: adminChannelId,
+            thread_ts: adminMessageTs,
+            text: `⚠️ Update failed: ${error}`,
+          });
+        }
+      } catch {
+        // best effort
+      }
+    }
+
+    return { success: false, error };
+  }
+}
+
+// ---------------------------------------------------------------------------
 // runRetainerEmailOnly — regenerates PDF + Gmail draft, reuses existing Square
 // invoice URL from the Notion "Retainer Invoice" property (no new invoice)
 // ---------------------------------------------------------------------------

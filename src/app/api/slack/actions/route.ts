@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { waitUntil } from "@vercel/functions";
 import { createHmac, timingSafeEqual } from "crypto";
-import { Client } from "@notionhq/client";
 import { logger } from "@/lib/logger";
-import { renderPdfBuffer, notionPageToPdfData } from "@/app/api/generatePdf/route";
-import { createFinalizationDraft } from "@/lib/gmailService";
-import { markFinalizedInSlack } from "@/lib/slackService";
-import { runFinalization, runFinalInvoice } from "@/lib/bookingActions";
 
 // ---------------------------------------------------------------------------
 // Slack signature verification
@@ -31,6 +25,45 @@ async function verifySlackSignature(request: NextRequest, rawBody: string): Prom
     return timingSafeEqual(Buffer.from(computedSig), Buffer.from(slackSignature));
   } catch {
     return false;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Fire-and-forget helper
+//
+// Fires a POST to /api/admin/trigger which runs in its own Lambda invocation,
+// completely independent of this one. We await the fetch with an abort timeout
+// so we're sure the HTTP request has been transmitted before we return to Slack
+// (Slack requires a < 3s acknowledgment). Aborting stops us from waiting for
+// the response — the receiving Lambda continues running to completion regardless.
+// ---------------------------------------------------------------------------
+
+async function dispatchToAdminTrigger(
+  baseUrl: string,
+  body: Record<string, unknown>
+): Promise<void> {
+  const secret = process.env.ADMIN_SECRET;
+  if (!secret) {
+    logger.error("Missing ADMIN_SECRET — cannot dispatch background action");
+    return;
+  }
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 2500);
+
+  try {
+    await fetch(`${baseUrl}/api/admin/trigger`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...body, secret }),
+      signal: controller.signal,
+    });
+  } catch {
+    // AbortError is expected — the request was sent, we just stopped waiting.
+    // Any other error means the dispatch itself failed; the Slack error handler
+    // in the run* function will post a thread warning if it has context.
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
@@ -75,138 +108,44 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     logger.warn("Invalid notionPageId in Slack action payload", { notionPageId });
     return NextResponse.json({ error: "Invalid page ID" }, { status: 400 });
   }
+
   const message = payload.message as Record<string, unknown> | undefined;
   const adminMessageTs = message?.ts as string | undefined;
-
-  // Extract the original text from the message to preserve it on update
   const messageBlocks = message?.blocks as Array<Record<string, unknown>> | undefined;
   const originalText =
     (messageBlocks?.[0]?.text as Record<string, unknown>)?.text as string ?? "";
 
-  // Acknowledge immediately (Slack requires < 3s response)
-  // We'll do the work asynchronously and update the message when done.
+  // Derive base URL from the incoming request so this works in any environment.
+  const { protocol, host } = new URL(request.url);
+  const baseUrl = `${protocol}//${host}`;
+
+  // Dispatch background work to /api/admin/trigger (its own Lambda invocation).
+  // We acknowledge Slack immediately — the trigger endpoint handles all the
+  // heavy lifting (Notion, Square, Gmail) and updates the Slack message itself.
   if (action.action_id === "update_booking") {
-    waitUntil(runUpdate({ notionPageId, adminMessageTs, originalText }));
+    await dispatchToAdminTrigger(baseUrl, {
+      action: "update",
+      notionPageId,
+      adminMessageTs,
+      originalText,
+    });
   } else if (action.action_id === "send_final_invoice") {
-    // For thread replies, message.ts is the reply ts; message.thread_ts is the parent
-    const promptMessageTs = adminMessageTs; // the thread reply message to update
-    const parentTs = message?.thread_ts as string | undefined; // the top-level admin message
-    waitUntil(runFinalInvoice({ notionPageId, promptMessageTs, parentTs }));
+    const promptMessageTs = adminMessageTs;
+    const parentTs = message?.thread_ts as string | undefined;
+    await dispatchToAdminTrigger(baseUrl, {
+      action: "final-invoice",
+      notionPageId,
+      promptMessageTs,
+      parentTs,
+    });
   } else {
-    waitUntil(runFinalization({ notionPageId, adminMessageTs, originalText }));
+    await dispatchToAdminTrigger(baseUrl, {
+      action: "retainer",
+      notionPageId,
+      adminMessageTs,
+      originalText,
+    });
   }
 
   return NextResponse.json({ ok: true });
-}
-
-// ---------------------------------------------------------------------------
-// Update logic — regenerates PDF + Gmail draft only (no new Square invoice)
-// (Stays local to this file since it's Slack-specific)
-// ---------------------------------------------------------------------------
-
-/** Reads the Square invoice URL from the dedicated Notion page property set
- *  during finalization. Falls back to undefined if the property is absent. */
-async function getSquareInvoiceUrlFromNotion(
-  notion: Client,
-  notionPageId: string
-): Promise<string | undefined> {
-  try {
-    const page = await notion.pages.retrieve({ page_id: notionPageId });
-    const props = (page as Record<string, unknown>).properties as Record<string, unknown>;
-    const prop = props["Retainer Invoice"] as { url?: string | null } | undefined;
-    return prop?.url ?? undefined;
-  } catch {
-    // best effort
-  }
-  return undefined;
-}
-
-async function runUpdate(opts: {
-  notionPageId: string;
-  adminMessageTs: string | undefined;
-  originalText: string;
-}) {
-  const { notionPageId, adminMessageTs, originalText } = opts;
-
-  const notionKey = process.env.NOTION_KEY;
-  if (!notionKey) {
-    logger.error("Missing NOTION_KEY in update", { notionPageId });
-    return;
-  }
-
-  try {
-    const notion = new Client({ auth: notionKey });
-
-    const page = await notion.pages.retrieve({ page_id: notionPageId });
-    const data = notionPageToPdfData(page);
-
-    logger.info("Starting update (PDF + Gmail draft only)", { notionPageId, clientEmail: data.clientEmail });
-
-    // Re-use the existing Square invoice URL from the original finalization note.
-    const squareInvoiceUrl =
-      (await getSquareInvoiceUrlFromNotion(notion, notionPageId)) ??
-      process.env.SQUARE_DASHBOARD_URL ??
-      "https://squareup.com/dashboard/invoices";
-
-    const pdfBuffer = await renderPdfBuffer(data);
-
-    const gmailResult = await createFinalizationDraft({
-      clientEmail: data.clientEmail,
-      clientFirstName: data.clientFirstName,
-      clientLastName: data.clientLastName,
-      eventDate: data.dateTime,
-      pdfBuffer,
-      squareInvoiceUrl,
-    });
-
-    await notion.blocks.children.append({
-      block_id: notionPageId,
-      children: [
-        {
-          object: "block",
-          type: "paragraph",
-          paragraph: {
-            rich_text: [
-              {
-                type: "text",
-                text: {
-                  content: `Update triggered — ${new Date().toLocaleString("en-US", {
-                    timeZone: "America/New_York",
-                  })} | Gmail Draft: ${gmailResult.draftId}`,
-                },
-              },
-            ],
-          },
-        },
-      ],
-    });
-
-    if (adminMessageTs) {
-      await markFinalizedInSlack(adminMessageTs, originalText, notionPageId);
-    }
-
-    logger.info("Update complete", { notionPageId, gmailDraftId: gmailResult.draftId });
-  } catch (err) {
-    logger.error("Update failed", {
-      notionPageId,
-      errorMessage: err instanceof Error ? err.message : String(err),
-    }, err);
-
-    if (adminMessageTs) {
-      try {
-        const { WebClient } = await import("@slack/web-api");
-        const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
-        const adminChannelId = process.env.SLACK_ADMIN_CHANNEL_ID;
-        if (adminChannelId) {
-          await slack.chat.postMessage({
-            channel: adminChannelId,
-            thread_ts: adminMessageTs,
-            text: `⚠️ Update failed: ${err instanceof Error ? err.message : String(err)}`,
-          });
-        }
-      } catch {
-        // best effort
-      }
-    }
-  }
 }
