@@ -31,38 +31,42 @@ async function verifySlackSignature(request: NextRequest, rawBody: string): Prom
 // ---------------------------------------------------------------------------
 // Fire-and-forget helper
 //
-// Fires a POST to /api/admin/trigger which runs in its own Lambda invocation,
-// completely independent of this one. We await the fetch with a short abort
-// timeout — just long enough to ensure the HTTP request has been transmitted
-// (intra-AWS HTTPS takes ~50ms). We abort before the response arrives so we
-// return to Slack well within its 3-second acknowledgment window. The receiving
-// Lambda continues running to completion regardless of the abort.
+// Fires a POST to /api/slack/background which runs in its own Lambda invocation,
+// completely independent of this one. The request is signed with
+// SLACK_SIGNING_SECRET (already proven available in production). We await with
+// a short abort timeout — just long enough to ensure the HTTP request has been
+// transmitted (~50ms intra-AWS) — then return to Slack well within its 3-second
+// window. The receiving Lambda continues running to completion regardless.
 // ---------------------------------------------------------------------------
 
-async function dispatchToAdminTrigger(
+async function dispatchToBackground(
   baseUrl: string,
   body: Record<string, unknown>
 ): Promise<void> {
-  const secret = process.env.ADMIN_SECRET;
+  const secret = process.env.SLACK_SIGNING_SECRET;
   if (!secret) {
-    logger.error("Missing ADMIN_SECRET — cannot dispatch background action");
+    logger.error("Missing SLACK_SIGNING_SECRET — cannot dispatch background action");
     return;
   }
+
+  const payload = JSON.stringify(body);
+  const signature = createHmac("sha256", secret).update(payload).digest("hex");
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 500);
 
   try {
-    await fetch(`${baseUrl}/api/admin/trigger`, {
+    await fetch(`${baseUrl}/api/slack/background`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...body, secret }),
+      headers: {
+        "Content-Type": "application/json",
+        "x-internal-signature": signature,
+      },
+      body: payload,
       signal: controller.signal,
     });
   } catch {
     // AbortError is expected — the request was sent, we just stopped waiting.
-    // Any other error means the dispatch itself failed; the Slack error handler
-    // in the run* function will post a thread warning if it has context.
   } finally {
     clearTimeout(timeout);
   }
@@ -124,7 +128,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // We acknowledge Slack immediately — the trigger endpoint handles all the
   // heavy lifting (Notion, Square, Gmail) and updates the Slack message itself.
   if (action.action_id === "update_booking") {
-    await dispatchToAdminTrigger(baseUrl, {
+    await dispatchToBackground(baseUrl, {
       action: "update",
       notionPageId,
       adminMessageTs,
@@ -133,14 +137,14 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   } else if (action.action_id === "send_final_invoice") {
     const promptMessageTs = adminMessageTs;
     const parentTs = message?.thread_ts as string | undefined;
-    await dispatchToAdminTrigger(baseUrl, {
+    await dispatchToBackground(baseUrl, {
       action: "final-invoice",
       notionPageId,
       promptMessageTs,
       parentTs,
     });
   } else {
-    await dispatchToAdminTrigger(baseUrl, {
+    await dispatchToBackground(baseUrl, {
       action: "retainer",
       notionPageId,
       adminMessageTs,
