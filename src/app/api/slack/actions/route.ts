@@ -4,9 +4,9 @@ import { createHmac, timingSafeEqual } from "crypto";
 import { Client } from "@notionhq/client";
 import { logger } from "@/lib/logger";
 import { renderPdfBuffer, notionPageToPdfData } from "@/app/api/generatePdf/route";
-import { createRetainerInvoice } from "@/lib/squareService";
 import { createFinalizationDraft } from "@/lib/gmailService";
 import { markFinalizedInSlack } from "@/lib/slackService";
+import { runFinalization, runFinalInvoice } from "@/lib/bookingActions";
 
 // ---------------------------------------------------------------------------
 // Slack signature verification
@@ -59,7 +59,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
   const actions = payload.actions as Array<Record<string, unknown>> | undefined;
   const action = actions?.[0];
-  if (action?.action_id !== "finalize_booking" && action?.action_id !== "update_booking") {
+  if (
+    action?.action_id !== "finalize_booking" &&
+    action?.action_id !== "update_booking" &&
+    action?.action_id !== "send_final_invoice"
+  ) {
     return NextResponse.json({ ok: true });
   }
 
@@ -83,6 +87,11 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   // We'll do the work asynchronously and update the message when done.
   if (action.action_id === "update_booking") {
     waitUntil(runUpdate({ notionPageId, adminMessageTs, originalText }));
+  } else if (action.action_id === "send_final_invoice") {
+    // For thread replies, message.ts is the reply ts; message.thread_ts is the parent
+    const promptMessageTs = adminMessageTs; // the thread reply message to update
+    const parentTs = message?.thread_ts as string | undefined; // the top-level admin message
+    waitUntil(runFinalInvoice({ notionPageId, promptMessageTs, parentTs }));
   } else {
     waitUntil(runFinalization({ notionPageId, adminMessageTs, originalText }));
   }
@@ -91,116 +100,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 }
 
 // ---------------------------------------------------------------------------
-// Finalization logic (runs after Slack ack)
-// ---------------------------------------------------------------------------
-
-async function runFinalization(opts: {
-  notionPageId: string;
-  adminMessageTs: string | undefined;
-  originalText: string;
-}) {
-  const { notionPageId, adminMessageTs, originalText } = opts;
-
-  const notionKey = process.env.NOTION_KEY;
-  if (!notionKey) {
-    logger.error("Missing NOTION_KEY in finalization", { notionPageId });
-    return;
-  }
-
-  try {
-    const notion = new Client({ auth: notionKey });
-
-    // 1. Fetch Notion page
-    const page = await notion.pages.retrieve({ page_id: notionPageId });
-    const data = notionPageToPdfData(page);
-
-    logger.info("Starting finalization", { notionPageId, clientEmail: data.clientEmail });
-
-    // 2. Generate PDF + create Square invoice in parallel
-    const [pdfBuffer, squareResult] = await Promise.all([
-      renderPdfBuffer(data),
-      createRetainerInvoice(data.clientFirstName, data.clientLastName, data.clientEmail),
-    ]);
-
-    // 3. Create Gmail draft
-    const gmailResult = await createFinalizationDraft({
-      clientEmail: data.clientEmail,
-      clientFirstName: data.clientFirstName,
-      clientLastName: data.clientLastName,
-      eventDate: data.dateTime,
-      pdfBuffer,
-      squareInvoiceUrl: squareResult.invoiceUrl,
-    });
-
-    // 4. Append finalization note to Notion page + store Square invoice URL
-    await Promise.all([
-      notion.pages.update({
-        page_id: notionPageId,
-        properties: {
-          "Retainer Invoice": { url: squareResult.invoiceUrl },
-        },
-      }),
-      notion.blocks.children.append({
-        block_id: notionPageId,
-        children: [
-          {
-            object: "block",
-            type: "paragraph",
-            paragraph: {
-              rich_text: [
-                {
-                  type: "text",
-                  text: {
-                    content: `Finalization triggered — ${new Date().toLocaleString("en-US", {
-                      timeZone: "America/New_York",
-                    })} | Square Invoice: ${squareResult.invoiceUrl} | Gmail Draft: ${gmailResult.draftId}`,
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      }),
-    ]);
-
-    // 5. Update admin Slack message
-    if (adminMessageTs) {
-      await markFinalizedInSlack(adminMessageTs, originalText, notionPageId);
-    }
-
-    logger.info("Finalization complete", {
-      notionPageId,
-      squareInvoiceId: squareResult.invoiceId,
-      gmailDraftId: gmailResult.draftId,
-    });
-  } catch (err) {
-    logger.error("Finalization failed", {
-      notionPageId,
-      errorMessage: err instanceof Error ? err.message : String(err),
-    }, err);
-
-    // Update admin message to show failure
-    if (adminMessageTs) {
-      try {
-        const { WebClient } = await import("@slack/web-api");
-        const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
-        const adminChannelId = process.env.SLACK_ADMIN_CHANNEL_ID;
-        if (adminChannelId) {
-          await slack.chat.postMessage({
-            channel: adminChannelId,
-            thread_ts: adminMessageTs,
-            text: `⚠️ Finalization failed: ${err instanceof Error ? err.message : String(err)}`,
-          });
-        }
-      } catch {
-        // best effort
-      }
-    }
-  }
-}
-
-// ---------------------------------------------------------------------------
 // Update logic — regenerates PDF + Gmail draft only (no new Square invoice)
+// (Stays local to this file since it's Slack-specific)
 // ---------------------------------------------------------------------------
 
 /** Reads the Square invoice URL from the dedicated Notion page property set

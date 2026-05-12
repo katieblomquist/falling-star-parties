@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
       additionalInfo,
       agreeToTos,
       captchaToken,
+      travelFee,
     } = body;
 
     // Verify reCAPTCHA token server-side
@@ -164,6 +165,10 @@ export async function POST(request: NextRequest) {
 
     if (typeof numChildren === "number") {
       properties["Number of Children"] = { number: numChildren };
+    }
+
+    if (typeof travelFee === "number" && travelFee > 0) {
+      properties["Travel Fee"] = { number: travelFee };
     }
 
     // Read environment variables at runtime to ensure they're available

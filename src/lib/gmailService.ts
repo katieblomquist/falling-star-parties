@@ -255,3 +255,186 @@ export async function createFinalizationDraft(opts: {
 
   return { draftId };
 }
+
+// ---------------------------------------------------------------------------
+// Final invoice email HTML template
+// ---------------------------------------------------------------------------
+
+function buildFinalInvoiceEmailHtml(
+  clientFirstName: string,
+  squareInvoiceUrl: string,
+  logoBase64: string
+): string {
+  const logoSrc = `data:image/png;base64,${logoBase64}`;
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Final Invoice - Falling Star Parties</title>
+</head>
+<body style="margin:0;padding:0;background-color:#ffffff;font-family:'Georgia',serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#ffffff;padding:32px 0;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#ffffff;">
+
+          <!-- Logo header -->
+          <tr>
+            <td align="center" style="background-color:#ffffff;padding:32px 40px 24px;">
+              <img src="${logoSrc}" alt="Falling Star Parties" width="160" style="display:block;margin:0 auto;" />
+            </td>
+          </tr>
+
+          <!-- Title band -->
+          <tr>
+            <td align="center" style="background-color:#ffffff;padding:8px 40px 14px;">
+              <p style="margin:0;font-size:22px;font-weight:bold;color:#343B95;letter-spacing:0.5px;">
+                Your Final Invoice
+              </p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:28px 44px 10px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#2a2a2a;line-height:1.7;">
+                Hi ${clientFirstName}!
+              </p>
+              <p style="margin:0 0 16px;font-size:15px;color:#444444;line-height:1.8;">
+                Thank you for booking your magical celebration with Falling Star Parties! With your retainer secured,
+                we're delighted to begin preparing the enchantment that will bring your child's dreams to life.
+              </p>
+              <p style="margin:0 0 16px;font-size:15px;color:#444444;line-height:1.8;">
+                If you have any questions or would like to request changes to your event before the big day, please
+                don't hesitate to reach out — we're here to make every moment truly enchanting. We'll also reach out
+                about one week before your celebration to confirm all the details and ensure everything is perfectly
+                in place for your magical day.
+              </p>
+              <p style="margin:0 0 16px;font-size:15px;color:#444444;line-height:1.8;">
+                Your final invoice is linked below. This will need to be completed at least <strong>2 days prior to
+                your event</strong>, though you're welcome to make partial payments at any time before then.
+              </p>
+              <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;">
+                A quick note about gratuity — it's never required, but it is always a lovely way to show appreciation
+                to your performer for bringing the magic to life! You can easily add a tip to your final invoice, or,
+                if you prefer, you may offer a cash tip directly to your performer on the day of the event.
+              </p>
+              <p style="margin:0 0 24px;font-size:15px;color:#444444;line-height:1.8;">
+                We can't wait to help make your celebration unforgettable!
+              </p>
+            </td>
+          </tr>
+
+          <!-- CTA Button -->
+          <tr>
+            <td align="center" style="padding:4px 44px 28px;">
+              <a href="${squareInvoiceUrl}"
+                 style="display:inline-block;background-color:#343B95;color:#ffffff;font-size:13px;font-weight:bold;
+                        text-decoration:none;padding:10px 24px;border-radius:50px;letter-spacing:0.5px;">
+                Complete Final Balance
+              </a>
+            </td>
+          </tr>
+
+          <!-- Signature -->
+          <tr>
+            <td style="padding:24px 44px 32px;">
+              <p style="margin:0 0 4px;font-size:15px;color:#444444;line-height:1.8;">Pixie dust and warm wishes,</p>
+              <p style="margin:0 0 2px;font-size:16px;font-weight:bold;color:#343B95;">Katelyn</p>
+              <p style="margin:0;font-size:14px;color:#888888;">Owner &#10024; Falling Star Parties LLC</p>
+            </td>
+          </tr>
+
+        </table>
+
+        <!-- Footer note -->
+        <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;margin-top:0;">
+          <tr>
+            <td align="center" style="background-color:#eeeef8;font-size:12px;color:#7878aa;padding:14px 20px;border-radius:0 0 8px 8px;">
+              Falling Star Parties LLC &nbsp;|&nbsp; (443) 327-9751 &nbsp;|&nbsp; info@fallingstarparties.com
+            </td>
+          </tr>
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>`;
+}
+
+// ---------------------------------------------------------------------------
+// Public API — final invoice draft
+// ---------------------------------------------------------------------------
+
+/**
+ * Creates a Gmail draft for the final balance invoice, addressed to the
+ * client with the Square final invoice link as a CTA button. The same
+ * finalization PDF is re-attached for reference.
+ */
+export async function createFinalInvoiceDraft(opts: {
+  clientEmail: string;
+  clientFirstName: string;
+  clientLastName: string;
+  eventDate: string;
+  pdfBuffer: Buffer;
+  squareInvoiceUrl: string;
+}): Promise<GmailDraftResult> {
+  const auth = getOAuth2Client();
+  const gmail = google.gmail({ version: "v1", auth });
+
+  const fromAddress = "info@fallingstarparties.com";
+  const subject = "Your Final Invoice - Falling Star Parties";
+
+  const logoBase64 = readFileSync(join(process.cwd(), "public", "logo.png")).toString("base64");
+
+  const htmlBody = buildFinalInvoiceEmailHtml(
+    opts.clientFirstName,
+    opts.squareInvoiceUrl,
+    logoBase64
+  );
+
+  const dateLabel = opts.eventDate
+    ? new Date(opts.eventDate).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+        timeZone: "America/New_York",
+      })
+    : "Event";
+
+  const pdfFilename = `${opts.clientLastName} Finalization - ${dateLabel}.pdf`;
+
+  const mimeMessage = buildMimeMessage({
+    to: opts.clientEmail,
+    from: `Falling Star Parties <${fromAddress}>`,
+    subject,
+    htmlBody,
+    pdfBuffer: opts.pdfBuffer,
+    pdfFilename,
+  });
+
+  const encodedMessage = toBase64Url(mimeMessage);
+
+  const draft = await gmail.users.drafts.create({
+    userId: "me",
+    requestBody: {
+      message: { raw: encodedMessage },
+    },
+  });
+
+  const draftId = draft.data.id;
+  if (!draftId) throw new Error("Gmail final invoice draft created but no draft ID returned.");
+
+  logger.info("Gmail final invoice draft created", {
+    draftId,
+    clientEmail: opts.clientEmail,
+    pdfFilename,
+  });
+
+  return { draftId };
+}
