@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createHmac, timingSafeEqual } from "crypto";
 import { Client } from "@notionhq/client";
 import { logger } from "@/lib/logger";
-import { postFinalInvoicePrompt } from "@/lib/slackService";
+import { Client as QStashClient } from "@upstash/qstash";
 
 // ---------------------------------------------------------------------------
 // Square webhook signature verification
@@ -36,11 +36,8 @@ function verifySquareSignature(
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const rawBody = await request.text();
 
-  // Reconstruct the full webhook URL (Square requires this for signature verification)
-  const webhookUrl =
-    process.env.NEXT_PUBLIC_SITE_URL
-      ? `${process.env.NEXT_PUBLIC_SITE_URL}/api/square/webhook`
-      : `https://fallingstarparties.com/api/square/webhook`;
+  // Square requires the exact registered webhook URL for signature verification
+  const webhookUrl = "https://www.fallingstarparties.com/api/square/webhook";
 
   const signatureHeader = request.headers.get("x-square-hmacsha256-signature");
   const isValid = verifySquareSignature(rawBody, signatureHeader, webhookUrl);
@@ -138,8 +135,25 @@ async function handleRetainerPaid(event: Record<string, any>): Promise<void> {
 
   logger.info("Square webhook: marked retainer paid in Notion", { pageId });
 
-  // Post the final invoice prompt to Slack admin thread
-  await postFinalInvoicePrompt(adminChannelId, adminTs, pageId);
+  // Auto-dispatch final invoice generation via QStash
+  const qstashToken = process.env.QSTASH_TOKEN;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
-  logger.info("Square webhook: posted final invoice prompt to Slack", { pageId, adminTs });
+  if (!qstashToken || !appUrl) {
+    logger.error("Square webhook: missing QSTASH_TOKEN or NEXT_PUBLIC_APP_URL — cannot dispatch final invoice", { pageId });
+    return;
+  }
+
+  const qstash = new QStashClient({ token: qstashToken });
+  await qstash.publishJSON({
+    url: `${appUrl}/api/slack/background`,
+    body: {
+      action: "final-invoice",
+      notionPageId: pageId,
+      promptMessageTs: adminTs,
+      parentTs: adminTs,
+    },
+  });
+
+  logger.info("Square webhook: dispatched final invoice job via QStash", { pageId });
 }
