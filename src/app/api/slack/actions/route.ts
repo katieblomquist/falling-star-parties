@@ -32,10 +32,11 @@ async function verifySlackSignature(request: NextRequest, rawBody: string): Prom
 // Fire-and-forget helper
 //
 // Fires a POST to /api/admin/trigger which runs in its own Lambda invocation,
-// completely independent of this one. We await the fetch with an abort timeout
-// so we're sure the HTTP request has been transmitted before we return to Slack
-// (Slack requires a < 3s acknowledgment). Aborting stops us from waiting for
-// the response — the receiving Lambda continues running to completion regardless.
+// completely independent of this one. We await the fetch with a short abort
+// timeout — just long enough to ensure the HTTP request has been transmitted
+// (intra-AWS HTTPS takes ~50ms). We abort before the response arrives so we
+// return to Slack well within its 3-second acknowledgment window. The receiving
+// Lambda continues running to completion regardless of the abort.
 // ---------------------------------------------------------------------------
 
 async function dispatchToAdminTrigger(
@@ -49,7 +50,7 @@ async function dispatchToAdminTrigger(
   }
 
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 2500);
+  const timeout = setTimeout(() => controller.abort(), 500);
 
   try {
     await fetch(`${baseUrl}/api/admin/trigger`, {
