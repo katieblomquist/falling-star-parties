@@ -64,14 +64,20 @@ export function notionPageToPdfData(page: NotionPage): PdfEventData & { clientEm
   const clientLastName = clientFullName.split(" ").slice(1).join(" ") || "";
   const clientEmail = getEmailProp(props, "Email");
 
-  const packageName = getSelectProp(props, "Event Package");
-  // Match package by formatted name or raw title
-  const pkg = packages.find(
-    (p) => p.title === packageName || `${p.title} - ${p.duration.replace(" Minutes", " Min")}` === packageName
-  );
-  const packageId = pkg?.id ?? 0;
-
   const eventType = getSelectProp(props, "Event Type");
+  const packageName = getSelectProp(props, "Event Package");
+
+  // Match package by event type + title (or formatted label), so that
+  // Charity and Public event packages with identical titles resolve correctly.
+  const pkg = packages.find(
+    (p) =>
+      p.type === eventType &&
+      (p.title === packageName ||
+        `${p.title} - ${p.duration.replace(" Minutes", " Min")}` === packageName)
+  );
+  // -1 signals "no valid package found" — resolvePackage will surface a clear
+  // error in the PDF rather than silently falling back to the Dream package.
+  const packageId = pkg?.id ?? -1;
   const characterRealNames = getMultiSelectProp(props, "Characters");
   const dressNamesProp = getMultiSelectProp(props, "Dress");
   const extrasTitles = getMultiSelectProp(props, "Extras");

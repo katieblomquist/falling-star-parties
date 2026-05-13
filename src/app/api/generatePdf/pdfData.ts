@@ -147,6 +147,18 @@ export function resolveCharacters(realNames: string[]): PdfCharacterInfo {
 
 /** Resolve package info from packageId + eventType. */
 export function resolvePackage(packageId: number, eventType: string): PdfPackageInfo {
+  // packageId of -1 means the Notion "Event Package" / "Event Type" fields
+  // did not match any known package — surface a clear label instead of
+  // silently rendering the wrong package content.
+  if (packageId === -1) {
+    return {
+      title: "Unknown Package — check Notion Event Package & Event Type fields",
+      duration: "",
+      activities: [],
+      basePrice: 0,
+    };
+  }
+
   const pkg = packages.find((p) => p.id === packageId);
   if (!pkg) {
     return { title: "Event", duration: "", activities: [], basePrice: 0 };
