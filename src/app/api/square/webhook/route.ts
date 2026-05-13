@@ -43,7 +43,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   const isValid = verifySquareSignature(rawBody, signatureHeader, webhookUrl);
 
   if (!isValid) {
-    logger.warn("Square webhook: invalid signature");
+    const signingKey = process.env.SQUARE_WEBHOOK_SIGNATURE_KEY;
+    logger.warn("Square webhook: invalid signature", {
+      webhookUrl,
+      hasSigningKey: !!signingKey,
+      signingKeyLength: signingKey?.length ?? 0,
+      signatureHeaderLength: signatureHeader?.length ?? 0,
+      rawBodyLength: rawBody.length,
+      rawBodyPreview: rawBody.slice(0, 50),
+    });
     return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
@@ -55,7 +63,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
   }
 
   // Respond immediately — Square expects a 200 quickly
-  // Only handle invoice.payment_made
+  logger.info("Square webhook: event received", { eventType: event.type, eventId: event.event_id });
+
   if (event.type !== "invoice.payment_made") {
     return NextResponse.json({ ok: true });
   }
@@ -64,8 +73,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     eventId: event.event_id,
   });
 
-  // Run the rest asynchronously so we don't block the response
-  handleRetainerPaid(event).catch((err) => {
+  await handleRetainerPaid(event).catch((err) => {
     logger.error("Square webhook: handleRetainerPaid threw", {
       errorMessage: err instanceof Error ? err.message : String(err),
     }, err);
