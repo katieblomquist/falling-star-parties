@@ -10,11 +10,11 @@ import { logger } from "@/lib/logger";
 function getOAuth2Client() {
   const clientId = process.env.GMAIL_CLIENT_ID;
   const clientSecret = process.env.GMAIL_CLIENT_SECRET;
-  const refreshToken = process.env.GMAIL_REFRESH_TOKEN;
+  const refreshToken = process.env.GOOGLE_REFRESH_TOKEN;
 
   if (!clientId || !clientSecret || !refreshToken) {
     throw new Error(
-      "Missing Gmail OAuth2 credentials. Ensure GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, and GMAIL_REFRESH_TOKEN are set."
+      "Missing Gmail OAuth2 credentials. Ensure GMAIL_CLIENT_ID, GMAIL_CLIENT_SECRET, and GOOGLE_REFRESH_TOKEN are set."
     );
   }
 

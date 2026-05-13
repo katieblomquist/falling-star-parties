@@ -6,7 +6,7 @@ import fs from "fs";
 import path from "path";
 import { PdfTemplate } from "./pdfTemplate";
 import { PdfEventData, resolveCharacters } from "./pdfData";
-import { packages, characterNameMap, dresses, extras } from "@/app/content";
+import { packages, characterNameMap, dresses, extras, packageNameMap } from "@/app/content";
 import { logger } from "@/lib/logger";
 
 function imageToDataUrl(filePath: string): string {
@@ -56,6 +56,16 @@ function getEmailProp(props: Record<string, unknown>, key: string): string {
   return p?.email ?? "";
 }
 
+function getPhoneProp(props: Record<string, unknown>, key: string): string {
+  const p = props[key] as { phone_number?: string } | undefined;
+  return p?.phone_number ?? "";
+}
+
+function getRelationProp(props: Record<string, unknown>, key: string): string[] {
+  const p = props[key] as { relation?: Array<{ id: string }> } | undefined;
+  return p?.relation?.map((r) => r.id) ?? [];
+}
+
 export function notionPageToPdfData(page: NotionPage): PdfEventData & { clientEmail: string; clientFirstName: string } {
   const props = (page as Record<string, unknown>).properties as Record<string, unknown>;
 
@@ -67,14 +77,31 @@ export function notionPageToPdfData(page: NotionPage): PdfEventData & { clientEm
   const eventType = getSelectProp(props, "Event Type");
   const packageName = getSelectProp(props, "Event Package");
 
-  // Match package by event type + title (or formatted label), so that
-  // Charity and Public event packages with identical titles resolve correctly.
-  const pkg = packages.find(
-    (p) =>
-      p.type === eventType &&
-      (p.title === packageName ||
-        `${p.title} - ${p.duration.replace(" Minutes", " Min")}` === packageName)
-  );
+  // Match package by event type + title. Three match conditions handle the
+  // different formats a package name may be stored in Notion:
+  //   1. Raw title:              "Two Hour Meet and Greet"
+  //   2. Title + duration label: "Two Hour Meet and Greet - 120 Min"
+  //   3. packageNameMap value:   "Meet and Greet - 120 Min"  ← what createEvent stores
+  // Type-aware lookup runs first so Charity / Public packages with identical
+  // titles resolve to the correct one. Falls back to title-only if the Notion
+  // "Event Type" field is blank or doesn't exactly match a package type string.
+  const titleMatch = (p: { title: string; duration: string }) =>
+    p.title === packageName ||
+    `${p.title} - ${p.duration.replace(" Minutes", " Min")}` === packageName ||
+    packageNameMap[p.title] === packageName;
+
+  const typeAwarePkg = packages.find((p) => p.type === eventType && titleMatch(p));
+  const pkg = typeAwarePkg ?? packages.find((p) => titleMatch(p));
+
+  if (!typeAwarePkg && pkg) {
+    logger.warn("Package resolved via title-only fallback — Event Type may be missing or mismatched in Notion", {
+      notionEventType: eventType,
+      notionPackageName: packageName,
+      resolvedPackageId: pkg.id,
+      resolvedPackageType: pkg.type,
+    });
+  }
+
   // -1 signals "no valid package found" — resolvePackage will surface a clear
   // error in the PDF rather than silently falling back to the Dream package.
   const packageId = pkg?.id ?? -1;
@@ -99,6 +126,8 @@ export function notionPageToPdfData(page: NotionPage): PdfEventData & { clientEm
     dressNames: dressNamesProp,
     extrasTitles,
     travelFee,
+    phone: getPhoneProp(props, "Phone"),
+    assignedPerformers: getRelationProp(props, "Assigned Performer"),
   };
 }
 

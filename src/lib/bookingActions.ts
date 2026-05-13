@@ -10,6 +10,7 @@ import { renderPdfBuffer, notionPageToPdfData } from "@/app/api/generatePdf/rout
 import { createRetainerInvoice, createFinalInvoice } from "@/lib/squareService";
 import { createFinalizationDraft, createFinalInvoiceDraft } from "@/lib/gmailService";
 import { markFinalizedInSlack, markFinalInvoiceSent } from "@/lib/slackService";
+import { createBookingCalendarEvent } from "@/lib/googleCalendarService";
 
 // ---------------------------------------------------------------------------
 // Return types
@@ -186,35 +187,42 @@ export async function runFinalInvoice(opts: {
       squareInvoiceUrl: squareResult.invoiceUrl,
     });
 
-    // 5. Update Notion with final invoice details
-    await Promise.all([
-      notion.pages.update({
-        page_id: notionPageId,
-        properties: {
-          "Final Invoice": { url: squareResult.invoiceUrl },
-          "Final Invoice ID": { rich_text: [{ text: { content: squareResult.invoiceId } }] },
-        },
-      }),
-      notion.blocks.children.append({
-        block_id: notionPageId,
-        children: [
-          {
-            object: "block",
-            type: "paragraph",
-            paragraph: {
-              rich_text: [
-                {
-                  type: "text",
-                  text: {
-                    content: `Final invoice sent — ${new Date().toLocaleString("en-US", {
-                      timeZone: "America/New_York",
-                    })} | Square Invoice: ${squareResult.invoiceUrl} | Gmail Draft: ${gmailResult.draftId}`,
-                  },
-                },
-              ],
-            },
+    // 5. Update Notion with final invoice details + create Google Calendar event in parallel
+    const [, calendarResult] = await Promise.all([
+      Promise.all([
+        notion.pages.update({
+          page_id: notionPageId,
+          properties: {
+            "Final Invoice": { url: squareResult.invoiceUrl },
+            "Final Invoice ID": { rich_text: [{ text: { content: squareResult.invoiceId } }] },
           },
-        ],
+        }),
+        notion.blocks.children.append({
+          block_id: notionPageId,
+          children: [
+            {
+              object: "block",
+              type: "paragraph",
+              paragraph: {
+                rich_text: [
+                  {
+                    type: "text",
+                    text: {
+                      content: `Final invoice sent — ${new Date().toLocaleString("en-US", {
+                        timeZone: "America/New_York",
+                      })} | Square Invoice: ${squareResult.invoiceUrl} | Gmail Draft: ${gmailResult.draftId}`,
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        }),
+      ]),
+      createBookingCalendarEvent(data).catch((err) => {
+        // Calendar creation is non-blocking — log the error but don't fail the invoice flow
+        logger.error("Google Calendar event creation failed (non-fatal)", { notionPageId }, err);
+        return null;
       }),
     ]);
 
@@ -230,6 +238,7 @@ export async function runFinalInvoice(opts: {
       notionPageId,
       squareInvoiceId: squareResult.invoiceId,
       gmailDraftId: gmailResult.draftId,
+      calendarEventId: calendarResult?.eventId ?? "not created",
     });
 
     return {

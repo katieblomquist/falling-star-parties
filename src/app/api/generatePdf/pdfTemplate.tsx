@@ -394,6 +394,9 @@ export function PdfTemplate({ data, logoSrc, charImageSrc }: PdfTemplateProps) {
             {pkgInfo.activities.map((activity, i) => (
               <Bullet key={i} text={activity} />
             ))}
+            {data.extrasTitles.map((extra, i) => (
+              <Bullet key={`extra-${i}`} text={extra} />
+            ))}
 
             {/* Day of Your Visit */}
             <Text style={styles.subHeading}>The Day of Your Visit</Text>

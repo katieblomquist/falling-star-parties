@@ -17,4 +17,6 @@ export const mockEventData: PdfEventData = {
   dressNames: [],
   extrasTitles: ["Storybook Keepsake"],
   travelFee: 25,
+  phone: "(410) 555-1234",
+  assignedPerformers: [],
 };

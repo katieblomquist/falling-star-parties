@@ -30,6 +30,12 @@ export interface PdfEventData {
 
   // Travel fee (0 = omit)
   travelFee: number;
+
+  // Contact
+  phone: string;
+
+  // Assigned performers (relation page IDs from Notion)
+  assignedPerformers: string[];
 }
 
 export interface PdfPricingLine {
@@ -181,6 +187,9 @@ export function buildPricingLines(data: PdfEventData): {
   lines: PdfPricingLine[];
   total: number;
 } {
+  // packageId of -1 means no matching package was found during Notion extraction.
+  // Return empty so the PDF pricing card shows nothing rather than wrong data.
+  if (data.packageId === -1) return { lines: [], total: 0 };
   const pkg = packages.find((p) => p.id === data.packageId);
   if (!pkg) return { lines: [], total: 0 };
 
@@ -189,11 +198,12 @@ export function buildPricingLines(data: PdfEventData): {
   // Base price
   lines.push({ label: "Base Visit Price", amount: pkg.cost });
 
-  // Additional character (if 2+)
-  if (data.characterRealNames.length >= 2) {
+  // Additional characters (each beyond the first)
+  const extraCharCount = data.characterRealNames.length - 1;
+  if (extraCharCount >= 1) {
     lines.push({
-      label: "Second Character Add-On",
-      amount: pkg.additionalCharacterCost,
+      label: `Additional Character${extraCharCount > 1 ? "s" : ""} (${extraCharCount})`,
+      amount: pkg.additionalCharacterCost * extraCharCount,
     });
   }
 
