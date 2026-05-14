@@ -328,7 +328,6 @@ export async function createFinalInvoice(
           requestType: "BALANCE",
           dueDate: dueDateStr,
           tippingEnabled: true,
-          allowPartialPayment: true,
           reminders: [
             {
               relativeScheduledDays: -4,
