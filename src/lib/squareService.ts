@@ -202,8 +202,8 @@ export async function createRetainerInvoice(
  * directly from content.ts so pricing stays in one place. The $50 retainer
  * already paid is subtracted from the base package price.
  *
- * Tipping and partial payments are enabled. Due date is 2 days before the
- * event date.
+ * Tipping and partial payments are both enabled. Due date is set to 48 hours
+ * before the event start time.
  */
 export async function createFinalInvoice(
   data: PdfEventData,
@@ -304,11 +304,11 @@ export async function createFinalInvoice(
   if (!orderId) throw new Error("Failed to create Square order for final invoice.");
 
   // ---------------------------------------------------------------------------
-  // Due date: 2 days before the event
+  // Due date: 48 hours before the event start time
   // ---------------------------------------------------------------------------
 
   const eventDate = new Date(eventDateIso);
-  const dueDate = new Date(eventDate.getTime() - 2 * 24 * 60 * 60 * 1000);
+  const dueDate = new Date(eventDate.getTime() - 48 * 60 * 60 * 1000);
   // If due date is in the past (e.g. test bookings), fall back to 48 hrs from now
   const effectiveDueDate =
     dueDate > new Date() ? dueDate : new Date(Date.now() + 48 * 60 * 60 * 1000);
@@ -328,11 +328,22 @@ export async function createFinalInvoice(
           requestType: "BALANCE",
           dueDate: dueDateStr,
           tippingEnabled: true,
+          allowPartialPayment: true,
           reminders: [
+            {
+              relativeScheduledDays: -4,
+              message:
+                "Friendly reminder: your final balance for your Falling Star Parties event is due in 4 days. Please complete it to confirm your magical celebration!",
+            },
             {
               relativeScheduledDays: -2,
               message:
                 "Friendly reminder: your final balance for your Falling Star Parties event is due in 2 days. Please complete it to confirm your magical celebration!",
+            },
+            {
+              relativeScheduledDays: -1,
+              message:
+                "Friendly reminder: your final balance for your Falling Star Parties event is due tomorrow. Please complete it to confirm your magical celebration!",
             },
             {
               relativeScheduledDays: 0,
