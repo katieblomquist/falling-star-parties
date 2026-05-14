@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { timingSafeEqual } from "crypto";
 import { logger } from "@/lib/logger";
-import { runFinalization, runFinalInvoice, runRetainerEmailOnly, runUpdate } from "@/lib/bookingActions";
+import { runFinalization, runFinalInvoice, runRetainerEmailOnly, runUpdate, runPreEventReminder } from "@/lib/bookingActions";
 
 const UUID_RE = /^[0-9a-f]{8}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{4}-?[0-9a-f]{12}$/i;
 
@@ -95,6 +95,15 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
   }
 
-  return NextResponse.json({ error: "Unknown action. Use 'retainer', 'update', 'retainer-email-only', or 'final-invoice'." }, { status: 400 });
+  if (action === "pre-event-reminder") {
+    logger.info("Admin trigger: pre-event reminder", { notionPageId });
+    const result = await runPreEventReminder({ notionPageId });
+    if (!result.success) {
+      return NextResponse.json({ error: result.error }, { status: 500 });
+    }
+    return NextResponse.json({ ok: true, gmailDraftId: result.gmailDraftId });
+  }
+
+  return NextResponse.json({ error: "Unknown action. Use 'retainer', 'update', 'retainer-email-only', 'final-invoice', or 'pre-event-reminder'." }, { status: 400 });
 }
 

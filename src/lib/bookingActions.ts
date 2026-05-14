@@ -7,10 +7,13 @@
 import { Client } from "@notionhq/client";
 import { logger } from "@/lib/logger";
 import { renderPdfBuffer, notionPageToPdfData } from "@/app/api/generatePdf/route";
-import { createRetainerInvoice, createFinalInvoice } from "@/lib/squareService";
-import { createFinalizationDraft, createFinalInvoiceDraft } from "@/lib/gmailService";
+import { createRetainerInvoice, createFinalInvoice, getInvoicePaidStatus } from "@/lib/squareService";
+import { createFinalizationDraft, createFinalInvoiceDraft, createPreEventConfirmationDraft } from "@/lib/gmailService";
 import { markFinalizedInSlack, markFinalInvoiceSent } from "@/lib/slackService";
 import { createBookingCalendarEvent } from "@/lib/googleCalendarService";
+import { packages } from "@/app/content";
+import { Client as QStashClient } from "@upstash/qstash";
+import { resolveCharacters } from "@/app/api/generatePdf/pdfData";
 
 // ---------------------------------------------------------------------------
 // Return types
@@ -232,6 +235,41 @@ export async function runFinalInvoice(opts: {
       if (adminChannelId) {
         await markFinalInvoiceSent(adminChannelId, parentTs ?? promptMessageTs, promptMessageTs);
       }
+    }
+
+    // 7. Schedule the 1-week pre-event reminder via QStash (if event is > 7 days away)
+    const eventDate = new Date(data.dateTime);
+    const reminderTime = new Date(eventDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const now = new Date();
+
+    if (reminderTime > now) {
+      const qstashToken = process.env.QSTASH_TOKEN;
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+      if (qstashToken && appUrl) {
+        try {
+          const qstash = new QStashClient({ token: qstashToken });
+          await qstash.publishJSON({
+            url: `${appUrl}/api/slack/background`,
+            body: { action: "pre-event-reminder", notionPageId },
+            notBefore: Math.floor(reminderTime.getTime() / 1000),
+          });
+          logger.info("Scheduled pre-event reminder via QStash", {
+            notionPageId,
+            reminderTime: reminderTime.toISOString(),
+          });
+        } catch (err) {
+          // Non-fatal — log but don't fail the invoice flow
+          logger.error("Failed to schedule pre-event reminder (non-fatal)", { notionPageId }, err);
+        }
+      } else {
+        logger.warn("Skipping pre-event reminder scheduling — missing QSTASH_TOKEN or NEXT_PUBLIC_APP_URL");
+      }
+    } else {
+      logger.info("Skipping pre-event reminder scheduling — event is less than 7 days away", {
+        notionPageId,
+        eventDate: eventDate.toISOString(),
+      });
     }
 
     logger.info("Final invoice flow complete", {
@@ -458,6 +496,125 @@ export async function runRetainerEmailOnly(opts: {
   } catch (err) {
     const error = err instanceof Error ? err.message : String(err);
     logger.error("Retainer email-only update failed", { notionPageId, errorMessage: error }, err);
+    return { success: false, error };
+  }
+}
+
+// ---------------------------------------------------------------------------
+// runPreEventReminder — 1-week pre-event confirmation + optional invoice nudge
+//
+// Fired by the delayed QStash job scheduled in runFinalInvoice(). Checks
+// whether the final invoice is paid, then creates a Gmail draft confirmation
+// for Katie to review and send, and posts a Slack alert.
+// ---------------------------------------------------------------------------
+
+export async function runPreEventReminder(opts: {
+  notionPageId: string;
+}): Promise<ActionResult> {
+  const { notionPageId } = opts;
+
+  const notionKey = process.env.NOTION_KEY;
+  if (!notionKey) {
+    logger.error("Missing NOTION_KEY in runPreEventReminder", { notionPageId });
+    return { success: false, error: "Server configuration error: missing NOTION_KEY" };
+  }
+
+  try {
+    const notion = new Client({ auth: notionKey });
+
+    // 1. Fetch Notion page
+    const page = await notion.pages.retrieve({ page_id: notionPageId });
+    const data = notionPageToPdfData(page);
+
+    logger.info("Starting pre-event reminder", { notionPageId, clientEmail: data.clientEmail });
+
+    // 2. Read final invoice ID and URL from Notion page properties
+    const props = (page as Record<string, unknown>).properties as Record<string, unknown>;
+    const finalInvoiceIdProp = props["Final Invoice ID"] as
+      | { rich_text?: Array<{ plain_text?: string }> }
+      | undefined;
+    const finalInvoiceUrlProp = props["Final Invoice"] as { url?: string | null } | undefined;
+    const finalInvoiceId = finalInvoiceIdProp?.rich_text?.[0]?.plain_text ?? null;
+    const finalInvoiceUrl = finalInvoiceUrlProp?.url ?? null;
+
+    // 3. Check whether the final invoice is paid
+    let isPaid = false;
+    if (finalInvoiceId) {
+      isPaid = await getInvoicePaidStatus(finalInvoiceId);
+    } else {
+      logger.warn("No Final Invoice ID found on Notion page — treating as unpaid", { notionPageId });
+    }
+
+    // 4. Resolve package duration for end-time calculation
+    const pkg = packages.find((p) => p.id === data.packageId);
+    const durationMatch = pkg?.duration?.match(/(\d+)/);
+    const packageDurationMinutes = durationMatch ? parseInt(durationMatch[1], 10) : 60;
+
+    // 5. Build joined character display names (in-house names e.g. "Ice Queen & Snow Princess")
+    const characterNames = resolveCharacters(data.characterRealNames).displayName;
+
+    // 6. Create Gmail confirmation draft
+    const gmailResult = await createPreEventConfirmationDraft({
+      clientEmail: data.clientEmail,
+      clientFirstName: data.clientFirstName,
+      clientLastName: data.clientLastName,
+      childName: data.childName,
+      eventDateIso: data.dateTime,
+      packageDurationMinutes,
+      characterNames,
+      address: data.address,
+      extrasTitles: data.extrasTitles,
+      numChildren: data.numChildren,
+      // Pass null if paid so the email omits the invoice CTA
+      finalInvoiceUrl: isPaid ? null : (finalInvoiceUrl ?? null),
+    });
+
+    // 7. Append audit note to Notion page
+    await notion.blocks.children.append({
+      block_id: notionPageId,
+      children: [
+        {
+          object: "block",
+          type: "paragraph",
+          paragraph: {
+            rich_text: [
+              {
+                type: "text",
+                text: {
+                  content: `1-week pre-event reminder triggered — ${new Date().toLocaleString("en-US", {
+                    timeZone: "America/New_York",
+                  })} | Final invoice ${isPaid ? "PAID" : "UNPAID"} | Gmail Draft: ${gmailResult.draftId}`,
+                },
+              },
+            ],
+          },
+        },
+      ],
+    });
+
+    // 8. Post Slack notification to admin channel
+    const adminChannelId = process.env.SLACK_ADMIN_CHANNEL_ID;
+    if (adminChannelId) {
+      const { WebClient } = await import("@slack/web-api");
+      const slack = new WebClient(process.env.SLACK_BOT_TOKEN);
+      const clientName = `${data.clientFirstName} ${data.clientLastName}`;
+      const slackText = isPaid
+        ? `📋 1-week confirmation draft created for *${clientName}* — invoice already paid. Review and send from Gmail.`
+        : `📋 1-week reminder draft created for *${clientName}* — final invoice is still unpaid. Review and send from Gmail.`;
+
+      await slack.chat.postMessage({ channel: adminChannelId, text: slackText });
+    }
+
+    logger.info("Pre-event reminder complete", {
+      notionPageId,
+      gmailDraftId: gmailResult.draftId,
+      invoicePaid: isPaid,
+    });
+
+    return { success: true, gmailDraftId: gmailResult.draftId };
+  } catch (err) {
+    const error = err instanceof Error ? err.message : String(err);
+    logger.error("Pre-event reminder failed", { notionPageId, errorMessage: error }, err);
     return { success: false, error };
   }
 }

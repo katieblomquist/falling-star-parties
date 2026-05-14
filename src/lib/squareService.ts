@@ -390,3 +390,22 @@ export async function createFinalInvoice(
 
   return { invoiceId: invoice.id, invoiceUrl };
 }
+
+// ---------------------------------------------------------------------------
+// Invoice paid status check — used by pre-event reminder automation
+// ---------------------------------------------------------------------------
+
+/**
+ * Returns true if the given Square invoice has been fully paid.
+ * A status of "PAID" means the full balance was collected. Any other status
+ * (UNPAID, PARTIALLY_PAID, SCHEDULED, etc.) is treated as unpaid.
+ */
+export async function getInvoicePaidStatus(invoiceId: string): Promise<boolean> {
+  const squareClient = getSquareClient();
+  const result = await squareClient.invoices.get({ invoiceId });
+  const status = result.invoice?.status;
+
+  logger.info("Checked Square invoice paid status", { invoiceId, status });
+
+  return status === "PAID";
+}

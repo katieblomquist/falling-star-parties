@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Receiver } from "@upstash/qstash";
 import { logger } from "@/lib/logger";
-import { runFinalization, runFinalInvoice, runUpdate } from "@/lib/bookingActions";
+import { runFinalization, runFinalInvoice, runUpdate, runPreEventReminder } from "@/lib/bookingActions";
 
 // ---------------------------------------------------------------------------
 // QStash signature verification
@@ -78,6 +78,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     } else if (action === "final-invoice") {
       logger.info("Background: final invoice", { notionPageId });
       await runFinalInvoice({ notionPageId, promptMessageTs, parentTs });
+    } else if (action === "pre-event-reminder") {
+      logger.info("Background: pre-event reminder", { notionPageId });
+      await runPreEventReminder({ notionPageId });
     } else {
       logger.warn("Background: unknown action", { action });
       return NextResponse.json({ error: "Unknown action" }, { status: 400 });

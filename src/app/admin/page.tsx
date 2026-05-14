@@ -13,7 +13,7 @@ export default function AdminPage() {
   const [notionPageId, setNotionPageId] = useState("");
   const [status, setStatus] = useState<Status>({ type: "idle" });
 
-  async function trigger(action: "retainer" | "retainer-email-only" | "final-invoice") {
+  async function trigger(action: "retainer" | "retainer-email-only" | "final-invoice" | "pre-event-reminder") {
     // Extract a 32-char hex ID from anywhere in the input (handles full notion.so URLs
     // with one or two path segments, query params, etc.) and convert to UUID format.
     const raw = notionPageId.trim();
@@ -108,6 +108,14 @@ export default function AdminPage() {
           >
             {loading && status.action === "final-invoice" ? "Working..." : "Send Final Invoice & Email"}
           </button>
+
+          <button
+            style={{ ...styles.button, ...styles.buttonTeal }}
+            onClick={() => trigger("pre-event-reminder")}
+            disabled={loading || !notionPageId.trim() || !secret}
+          >
+            {loading && status.action === "pre-event-reminder" ? "Working..." : "Test 1-Week Reminder Draft"}
+          </button>
         </div>
 
         {status.type === "success" && (
@@ -117,6 +125,8 @@ export default function AdminPage() {
                 ? "Retainer done!"
                 : status.action === "retainer-email-only"
                 ? "Email & PDF re-sent!"
+                : status.action === "pre-event-reminder"
+                ? "1-week reminder draft created!"
                 : "Final invoice done!"}
             </strong>
             {status.squareInvoiceUrl && status.action !== "retainer-email-only" && (
@@ -243,6 +253,10 @@ const styles: Record<string, CSSProperties> = {
   },
   buttonPurple: {
     background: "#7c3aed",
+    color: "#fff",
+  },
+  buttonTeal: {
+    background: "#0d9488",
     color: "#fff",
   },
   banner: {
