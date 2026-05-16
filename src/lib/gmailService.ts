@@ -1,4 +1,5 @@
-import { google } from "googleapis";
+import { gmail } from "@googleapis/gmail";
+import { OAuth2Client } from "google-auth-library";
 import { readFileSync } from "fs";
 import { join } from "path";
 import { logger } from "@/lib/logger";
@@ -18,7 +19,7 @@ function getOAuth2Client() {
     );
   }
 
-  const oauth2Client = new google.auth.OAuth2(
+  const oauth2Client = new OAuth2Client(
     clientId,
     clientSecret,
     "https://developers.google.com/oauthplayground"
@@ -200,7 +201,7 @@ export async function createFinalizationDraft(opts: {
   squareInvoiceUrl: string;
 }): Promise<GmailDraftResult> {
   const auth = getOAuth2Client();
-  const gmail = google.gmail({ version: "v1", auth });
+  const gmailClient = gmail({ version: "v1", auth });
 
   const fromAddress = "info@fallingstarparties.com";
   const subject = "Your Booking Finalization - Falling Star Parties";
@@ -237,7 +238,7 @@ export async function createFinalizationDraft(opts: {
 
   const encodedMessage = toBase64Url(mimeMessage);
 
-  const draft = await gmail.users.drafts.create({
+  const draft = await gmailClient.users.drafts.create({
     userId: "me",
     requestBody: {
       message: { raw: encodedMessage },
@@ -385,7 +386,7 @@ export async function createFinalInvoiceDraft(opts: {
   squareInvoiceUrl: string;
 }): Promise<GmailDraftResult> {
   const auth = getOAuth2Client();
-  const gmail = google.gmail({ version: "v1", auth });
+  const gmailClient = gmail({ version: "v1", auth });
 
   const fromAddress = "info@fallingstarparties.com";
   const subject = "Your Final Invoice - Falling Star Parties";
@@ -420,7 +421,7 @@ export async function createFinalInvoiceDraft(opts: {
 
   const encodedMessage = toBase64Url(mimeMessage);
 
-  const draft = await gmail.users.drafts.create({
+  const draft = await gmailClient.users.drafts.create({
     userId: "me",
     requestBody: {
       message: { raw: encodedMessage },
@@ -666,7 +667,7 @@ export async function createPreEventConfirmationDraft(opts: {
   finalInvoiceUrl: string | null;
 }): Promise<GmailDraftResult> {
   const auth = getOAuth2Client();
-  const gmail = google.gmail({ version: "v1", auth });
+  const gmailClient = gmail({ version: "v1", auth });
 
   const fromAddress = "info@fallingstarparties.com";
   const subject = "Your event is almost here! — Falling Star Parties";
@@ -745,7 +746,7 @@ export async function createPreEventConfirmationDraft(opts: {
 
   const encodedMessage = toBase64Url(mime);
 
-  const draft = await gmail.users.drafts.create({
+  const draft = await gmailClient.users.drafts.create({
     userId: "me",
     requestBody: { message: { raw: encodedMessage } },
   });

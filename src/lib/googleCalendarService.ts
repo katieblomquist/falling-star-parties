@@ -1,4 +1,5 @@
-import { google } from "googleapis";
+import { calendar } from "@googleapis/calendar";
+import { OAuth2Client } from "google-auth-library";
 import { Client } from "@notionhq/client";
 import { logger } from "@/lib/logger";
 import { PdfEventData } from "@/app/api/generatePdf/pdfData";
@@ -19,7 +20,7 @@ function getOAuth2Client() {
     );
   }
 
-  const oauth2Client = new google.auth.OAuth2(
+  const oauth2Client = new OAuth2Client(
     clientId,
     clientSecret,
     "https://developers.google.com/oauthplayground"
@@ -139,7 +140,7 @@ export async function createBookingCalendarEvent(
   data: PdfEventData
 ): Promise<CalendarEventResult> {
   const auth = getOAuth2Client();
-  const calendar = google.calendar({ version: "v3", auth });
+  const calendarClient = calendar({ version: "v3", auth });
 
   // Resolve package duration
   const pkg = packages.find((p) => p.id === data.packageId);
@@ -160,7 +161,7 @@ export async function createBookingCalendarEvent(
 
   const description = buildEventDescription(data, performers);
 
-  const event = await calendar.events.insert({
+  const event = await calendarClient.events.insert({
     calendarId: "primary",
     sendUpdates: attendees.length ? "all" : "none",
     requestBody: {

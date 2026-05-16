@@ -7,7 +7,6 @@ const nextConfig = {
   serverExternalPackages: [
     "@react-pdf/renderer",
     "@react-pdf/reconciler",
-    "googleapis",
     "typeorm",
     "square",
     "@notionhq/client",

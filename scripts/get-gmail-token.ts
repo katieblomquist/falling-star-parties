@@ -17,7 +17,7 @@
  *      and into your Amplify environment config.
  */
 
-import { google } from "googleapis";
+import { OAuth2Client } from "google-auth-library";
 import * as readline from "readline";
 import * as dotenv from "dotenv";
 import * as path from "path";
@@ -36,7 +36,7 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
   process.exit(1);
 }
 
-const oauth2Client = new google.auth.OAuth2(
+const oauth2Client = new OAuth2Client(
   CLIENT_ID,
   CLIENT_SECRET,
   "urn:ietf:wg:oauth:2.0:oob" // OOB redirect — shows code on screen
