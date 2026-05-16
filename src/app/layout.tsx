@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { dhyana } from "./fonts";
-import "reflect-metadata"
 import ContactWidget from "@/components/ContactWidget/contactWidget";
 
 const SITE_URL = "https://fallingstarparties.com";
