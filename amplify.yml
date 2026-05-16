@@ -19,11 +19,11 @@ frontend:
         - env | grep -e QSTASH_TOKEN -e QSTASH_CURRENT_SIGNING_KEY -e QSTASH_NEXT_SIGNING_KEY -e QSTASH_URL >> .env.production
         - env | grep -e NEXT_PUBLIC_ >> .env.production
         - NODE_OPTIONS=--max-old-space-size=4096 npm run build
+        - rm -rf .next/cache
   artifacts:
     baseDirectory: .next
     files:
       - '**/*'
-      - '!cache/**/*'
   cache:
     paths:
       - node_modules/**/*
