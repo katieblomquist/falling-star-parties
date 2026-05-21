@@ -13,7 +13,7 @@ export default function AdminPage() {
   const [notionPageId, setNotionPageId] = useState("");
   const [status, setStatus] = useState<Status>({ type: "idle" });
 
-  async function trigger(action: "retainer" | "retainer-email-only" | "final-invoice" | "pre-event-reminder" | "slack-notification") {
+  async function trigger(action: "retainer" | "retainer-email-only" | "final-invoice" | "pre-event-reminder" | "slack-notification" | "last-minute-booking") {
     // Extract a 32-char hex ID from anywhere in the input (handles full notion.so URLs
     // with one or two path segments, query params, etc.) and convert to UUID format.
     const raw = notionPageId.trim();
@@ -124,6 +124,14 @@ export default function AdminPage() {
           >
             {loading && status.action === "slack-notification" ? "Working..." : "Send Slack Notification"}
           </button>
+
+          <button
+            style={{ ...styles.button, ...styles.buttonAmber }}
+            onClick={() => trigger("last-minute-booking")}
+            disabled={loading || !notionPageId.trim() || !secret}
+          >
+            {loading && status.action === "last-minute-booking" ? "Working..." : "Last-Minute: Full Payment & Email"}
+          </button>
         </div>
 
         {status.type === "success" && (
@@ -137,6 +145,8 @@ export default function AdminPage() {
                 ? "1-week reminder draft created!"
                 : status.action === "slack-notification"
                 ? "Slack notification sent!"
+                : status.action === "last-minute-booking"
+                ? "Last-minute invoice & email done!"
                 : "Final invoice done!"}
             </strong>
             {status.squareInvoiceUrl && status.action !== "retainer-email-only" && (
@@ -271,6 +281,10 @@ const styles: Record<string, CSSProperties> = {
   },
   buttonGreen: {
     background: "#16a34a",
+    color: "#fff",
+  },
+  buttonAmber: {
+    background: "#d97706",
     color: "#fff",
   },
   banner: {
