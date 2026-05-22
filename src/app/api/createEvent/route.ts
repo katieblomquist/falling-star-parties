@@ -96,30 +96,35 @@ export async function POST(request: NextRequest) {
 
     requestLogger.info("Email notification sent", { email });
 
-    // 3. Fire-and-forget POST to automation service (Notion + Slack)
+    // 3. Enqueue intake via QStash → automation service (Notion + Slack)
+    // QStash handles delivery and retries, so a sleeping Railway service is no longer a problem.
     const automationServiceUrl = process.env.AUTOMATION_SERVICE_URL;
     const automationSecret = process.env.AUTOMATION_SHARED_SECRET;
-    if (automationServiceUrl && automationSecret) {
+    const qstashUrl = process.env.QSTASH_URL;
+    const qstashToken = process.env.QSTASH_TOKEN;
+    if (automationServiceUrl && automationSecret && qstashUrl && qstashToken) {
       const payload = {
         firstName, lastName, email, phone, dateTime, address, packageId,
         characterSelections, extrasIds, eventType, childName, childAge,
         orgName, numChildren, locationPref, photoPref, additionalInfo,
         agreeToTos, travelFee,
       };
-      fetch(`${automationServiceUrl}/intake`, {
+      fetch(`${qstashUrl}/v2/publish/${automationServiceUrl}/intake`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${automationSecret}`,
+          "Authorization": `Bearer ${qstashToken}`,
+          // Forward the shared secret so the automations service can still verify the caller
+          "Upstash-Forward-Authorization": `Bearer ${automationSecret}`,
         },
         body: JSON.stringify(payload),
       }).catch((err) => {
-        requestLogger.error("Fire-and-forget to automation service failed", {
+        requestLogger.error("Failed to enqueue intake via QStash", {
           errorMessage: err instanceof Error ? err.message : String(err),
         });
       });
     } else {
-      requestLogger.warn("Automation service not configured — skipping Notion/Slack", { email });
+      requestLogger.warn("Automation service or QStash not configured — skipping Notion/Slack", { email });
     }
 
     return NextResponse.json(
