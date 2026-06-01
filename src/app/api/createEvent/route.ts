@@ -7,7 +7,7 @@ function buildQstashPublishUrl(qstashUrl: string, automationServiceUrl: string) 
   const normalizedQstashUrl = qstashUrl.replace(/\/+$/, "");
   const destinationUrl = `${automationServiceUrl.replace(/\/+$/, "")}/intake`;
 
-  return `${normalizedQstashUrl}/v2/publish/${encodeURIComponent(destinationUrl)}`;
+  return `${normalizedQstashUrl}/v2/publish/${destinationUrl}`;
 }
 
 export async function POST(request: NextRequest) {
