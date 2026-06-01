@@ -199,6 +199,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { action, notionPageId, secret } = body;
+  const normalizedSecret = typeof secret === "string" ? secret.trim() : "";
 
   if (!action || !notionPageId) {
     return NextResponse.json({ error: "Missing action or notionPageId" }, { status: 400 });
@@ -211,7 +212,7 @@ export async function POST(req: NextRequest) {
     if (!adminSecret) {
       return NextResponse.json({ error: "ADMIN_SECRET not configured" }, { status: 503 });
     }
-    if (secret.trim() !== adminSecret.trim()) {
+    if (normalizedSecret !== adminSecret.trim()) {
       console.warn("Admin trigger unauthorized at web app: ADMIN_SECRET mismatch for slack-notification action");
       return NextResponse.json(
         {
@@ -266,7 +267,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${automationSecret}`,
       },
-      body: JSON.stringify({ action, notionPageId, secret }),
+      body: JSON.stringify({ action, notionPageId, secret: normalizedSecret }),
     });
 
     const data = await upstream.json();
