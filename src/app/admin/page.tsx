@@ -34,7 +34,13 @@ export default function AdminPage() {
       const data = await res.json();
 
       if (!res.ok) {
-        setStatus({ type: "error", action, message: data.error ?? `HTTP ${res.status}` });
+        const sourceSuffix =
+          typeof data.source === "string" ? ` (source: ${data.source})` : "";
+        setStatus({
+          type: "error",
+          action,
+          message: `${data.error ?? `HTTP ${res.status}`}${sourceSuffix}`,
+        });
         return;
       }
 

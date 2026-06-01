@@ -200,16 +200,28 @@ export async function POST(req: NextRequest) {
 
   const { action, notionPageId, secret } = body;
 
-  if (!adminSecret || secret.trim() !== adminSecret.trim()) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   if (!action || !notionPageId) {
     return NextResponse.json({ error: "Missing action or notionPageId" }, { status: 400 });
   }
 
   // Slack notification: parse Notion page and POST to /intake as a new booking
   if (action === "slack-notification") {
+    // Slack notification bypasses /admin/trigger on the automation service and
+    // posts directly to /intake, so we must enforce admin auth here.
+    if (!adminSecret) {
+      return NextResponse.json({ error: "ADMIN_SECRET not configured" }, { status: 503 });
+    }
+    if (secret.trim() !== adminSecret.trim()) {
+      console.warn("Admin trigger unauthorized at web app: ADMIN_SECRET mismatch for slack-notification action");
+      return NextResponse.json(
+        {
+          error: "Unauthorized: admin password does not match web app ADMIN_SECRET.",
+          source: "web-app",
+        },
+        { status: 401 }
+      );
+    }
+
     if (!notionKey) {
       return NextResponse.json({ error: "NOTION_KEY not configured" }, { status: 503 });
     }
@@ -245,6 +257,9 @@ export async function POST(req: NextRequest) {
 
   // All other actions: forward to /admin/trigger on the automation service
   try {
+    // For forwarded actions, let the automation service enforce ADMIN_SECRET.
+    // This avoids false 401s when web and automation env vars drift.
+
     const upstream = await fetch(`${automationServiceUrl}/admin/trigger`, {
       method: "POST",
       headers: {
@@ -256,6 +271,17 @@ export async function POST(req: NextRequest) {
 
     const data = await upstream.json();
     if (!upstream.ok) {
+      if (upstream.status === 401) {
+        console.warn("Admin trigger unauthorized at automation service", { action });
+        return NextResponse.json(
+          {
+            error:
+              "Unauthorized: automation service rejected credentials. Check admin password and ADMIN_SECRET values between web app and automation service.",
+            source: "automation-service",
+          },
+          { status: 401 }
+        );
+      }
       return NextResponse.json(
         { error: data.error ?? `Upstream HTTP ${upstream.status}` },
         { status: upstream.status }
