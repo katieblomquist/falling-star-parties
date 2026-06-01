@@ -17,6 +17,7 @@ frontend:
         - env | grep -e GOOGLE_REFRESH_TOKEN -e NOTION_PERFORMERS_DB_ID >> .env.production
         - env | grep -e PDF_SECRET -e ADMIN_SECRET >> .env.production
         - env | grep -e QSTASH_TOKEN -e QSTASH_CURRENT_SIGNING_KEY -e QSTASH_NEXT_SIGNING_KEY -e QSTASH_URL >> .env.production
+        - env | grep -e AUTOMATION_SERVICE_URL -e AUTOMATION_SHARED_SECRET >> .env.production
         - env | grep -e NEXT_PUBLIC_ >> .env.production
         - NODE_OPTIONS=--max-old-space-size=4096 npm run build
         - rm -rf .next/cache

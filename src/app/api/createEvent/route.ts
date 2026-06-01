@@ -3,6 +3,13 @@ import { emailService } from "@/lib/emailService";
 import { generateEmailTemplate } from "@/lib/emailTemplate";
 import { logger } from "@/lib/logger";
 
+function buildQstashPublishUrl(qstashUrl: string, automationServiceUrl: string) {
+  const normalizedQstashUrl = qstashUrl.replace(/\/+$/, "");
+  const destinationUrl = `${automationServiceUrl.replace(/\/+$/, "")}/intake`;
+
+  return `${normalizedQstashUrl}/v2/publish/${destinationUrl}`;
+}
+
 export async function POST(request: NextRequest) {
   const requestId = logger.generateRequestId();
   const requestLogger = logger.withContext({ requestId });
@@ -96,30 +103,48 @@ export async function POST(request: NextRequest) {
 
     requestLogger.info("Email notification sent", { email });
 
-    // 3. Fire-and-forget POST to automation service (Notion + Slack)
+    // 3. Enqueue intake via QStash -> automation service (Notion + Slack)
+    // QStash handles delivery and retries, so a sleeping Railway service is no longer a problem.
     const automationServiceUrl = process.env.AUTOMATION_SERVICE_URL;
     const automationSecret = process.env.AUTOMATION_SHARED_SECRET;
-    if (automationServiceUrl && automationSecret) {
+    const qstashUrl = process.env.QSTASH_URL;
+    const qstashToken = process.env.QSTASH_TOKEN;
+    if (automationServiceUrl && automationSecret && qstashUrl && qstashToken) {
       const payload = {
         firstName, lastName, email, phone, dateTime, address, packageId,
         characterSelections, extrasIds, eventType, childName, childAge,
         orgName, numChildren, locationPref, photoPref, additionalInfo,
         agreeToTos, travelFee,
       };
-      fetch(`${automationServiceUrl}/intake`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${automationSecret}`,
-        },
-        body: JSON.stringify(payload),
-      }).catch((err) => {
-        requestLogger.error("Fire-and-forget to automation service failed", {
+      try {
+        const qstashResponse = await fetch(buildQstashPublishUrl(qstashUrl, automationServiceUrl), {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${qstashToken}`,
+            // Forward the shared secret so the automations service can still verify the caller
+            "Upstash-Forward-Authorization": `Bearer ${automationSecret}`,
+          },
+          body: JSON.stringify(payload),
+        });
+
+        if (!qstashResponse.ok) {
+          requestLogger.error("Failed to enqueue intake via QStash", {
+            status: qstashResponse.status,
+            responseBody: await qstashResponse.text(),
+          });
+        } else {
+          requestLogger.info("Intake enqueued via QStash", {
+            status: qstashResponse.status,
+          });
+        }
+      } catch (err) {
+        requestLogger.error("Failed to enqueue intake via QStash", {
           errorMessage: err instanceof Error ? err.message : String(err),
         });
-      });
+      }
     } else {
-      requestLogger.warn("Automation service not configured — skipping Notion/Slack", { email });
+      requestLogger.warn("Automation service or QStash not configured — skipping Notion/Slack", { email });
     }
 
     return NextResponse.json(
