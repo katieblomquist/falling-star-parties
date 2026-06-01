@@ -3,7 +3,7 @@ import { emailService } from "@/lib/emailService";
 import { generateEmailTemplate } from "@/lib/emailTemplate";
 import { logger } from "@/lib/logger";
 
-export function buildQstashPublishUrl(qstashUrl: string, automationServiceUrl: string) {
+function buildQstashPublishUrl(qstashUrl: string, automationServiceUrl: string) {
   const normalizedQstashUrl = qstashUrl.replace(/\/+$/, "");
   const destinationUrl = `${automationServiceUrl.replace(/\/+$/, "")}/intake`;
 
