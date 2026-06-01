@@ -200,6 +200,7 @@ export async function POST(req: NextRequest) {
 
   const { action, notionPageId, secret } = body;
   const normalizedSecret = typeof secret === "string" ? secret.trim() : "";
+  const forwardedAdminSecret = adminSecret?.trim() || normalizedSecret;
 
   if (!action || !notionPageId) {
     return NextResponse.json({ error: "Missing action or notionPageId" }, { status: 400 });
@@ -267,7 +268,7 @@ export async function POST(req: NextRequest) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${automationSecret}`,
       },
-      body: JSON.stringify({ action, notionPageId, secret: normalizedSecret }),
+      body: JSON.stringify({ action, notionPageId, secret: forwardedAdminSecret }),
     });
 
     const data = await upstream.json();
