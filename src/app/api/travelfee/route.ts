@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { logger } from "@/lib/logger";
 
 type LatLng = {
     lat: number;
@@ -19,6 +20,9 @@ type Route = {
 const METERS_IN_MILE = 1609.344;
 
 export async function GET(request: NextRequest) {
+    const requestId = logger.generateRequestId();
+    const requestLogger = logger.withContext({ requestId, operation: "travel-fee" });
+
     const { searchParams } = new URL(request.url);
     const latParam = searchParams.get("lat");
     const lngParam = searchParams.get("lng");
@@ -33,6 +37,7 @@ export async function GET(request: NextRequest) {
 
     const recaptchaSecret = process.env.RECAPTCHA_V3_SECRET_KEY;
     if (!recaptchaSecret) {
+        requestLogger.error("Travel fee lookup missing RECAPTCHA_V3_SECRET_KEY");
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
 
@@ -41,10 +46,16 @@ export async function GET(request: NextRequest) {
         { method: "POST" }
     );
     if (!recaptchaRes.ok) {
+        requestLogger.error("Travel fee reCAPTCHA siteverify failed", {
+            status: recaptchaRes.status,
+        });
         return NextResponse.json({ error: "Internal server error" }, { status: 500 });
     }
     const recaptchaData = await recaptchaRes.json();
     if (!recaptchaData.success || recaptchaData.score < 0.5) {
+        requestLogger.warn("Travel fee reCAPTCHA verification failed", {
+            score: recaptchaData.score,
+        });
         return NextResponse.json({ error: "CAPTCHA verification failed." }, { status: 403 });
     }
 
@@ -67,6 +78,7 @@ export async function GET(request: NextRequest) {
 
     const key = process.env.GOOGLE_KEY;
     if (!key) {
+        requestLogger.error("Travel fee lookup missing GOOGLE_KEY");
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }
@@ -76,6 +88,7 @@ export async function GET(request: NextRequest) {
     const katieLat = parseFloat(process.env.KATIE_LAT ?? "");
     const katieLng = parseFloat(process.env.KATIE_LONG ?? "");
     if (isNaN(katieLat) || isNaN(katieLng)) {
+        requestLogger.error("Travel fee lookup missing KATIE_LAT or KATIE_LONG");
         return NextResponse.json(
             { error: "Internal server error" },
             { status: 500 }
@@ -111,6 +124,11 @@ export async function GET(request: NextRequest) {
         }
 
         const finalFee = Math.floor(fee);
+        requestLogger.info("Travel fee calculated successfully", {
+            miles: Math.round(miles * 10) / 10,
+            tolls: routeThere.estimatedTolls.length > 0,
+            fee: finalFee,
+        });
 
         return NextResponse.json({
             fee: finalFee,
@@ -118,7 +136,9 @@ export async function GET(request: NextRequest) {
             tolls: routeThere.estimatedTolls.length > 0,
         });
     } catch (err) {
-        console.error("Travel fee calculation error:", err);
+        requestLogger.error("Travel fee calculation failed", {
+            errorMessage: err instanceof Error ? err.message : String(err),
+        }, err);
         return NextResponse.json(
             { error: "Failed to calculate travel fee" },
             { status: 500 }
