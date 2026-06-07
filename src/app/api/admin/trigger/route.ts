@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Client } from "@notionhq/client";
+import { logger } from "@/lib/logger";
 
 // ---------------------------------------------------------------------------
 // Notion property helpers
@@ -182,6 +183,9 @@ function notionPageToIntakePayload(page: { properties: Props }) {
 // ---------------------------------------------------------------------------
 
 export async function POST(req: NextRequest) {
+  const requestId = logger.generateRequestId();
+  const requestLogger = logger.withContext({ requestId, operation: "admin-trigger" });
+
   const automationServiceUrl = process.env.AUTOMATION_SERVICE_URL;
   const automationSecret = process.env.AUTOMATION_SHARED_SECRET;
   const adminSecret = process.env.ADMIN_SECRET;
@@ -194,7 +198,10 @@ export async function POST(req: NextRequest) {
   let body: { action: string; notionPageId: string; secret: string };
   try {
     body = await req.json();
-  } catch {
+  } catch (error) {
+    requestLogger.error("Admin trigger received invalid JSON body", {
+      errorMessage: error instanceof Error ? error.message : String(error),
+    }, error);
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
@@ -213,7 +220,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "ADMIN_SECRET not configured" }, { status: 503 });
     }
     if (normalizedSecret !== adminSecret.trim()) {
-      console.warn("Admin trigger unauthorized at web app: ADMIN_SECRET mismatch for slack-notification action");
+      requestLogger.warn("Admin trigger unauthorized at web app: ADMIN_SECRET mismatch for slack-notification action", {
+        action,
+        notionPageId,
+      });
       return NextResponse.json(
         {
           error: "Unauthorized: admin password does not match web app ADMIN_SECRET.",
@@ -249,6 +259,11 @@ export async function POST(req: NextRequest) {
       }
       return NextResponse.json(data);
     } catch (err) {
+      requestLogger.error("Admin trigger failed while handling slack-notification", {
+        action,
+        notionPageId,
+        errorMessage: err instanceof Error ? err.message : String(err),
+      }, err);
       return NextResponse.json(
         { error: err instanceof Error ? err.message : "Failed to parse Notion page" },
         { status: 502 }
@@ -273,7 +288,7 @@ export async function POST(req: NextRequest) {
     const data = await upstream.json();
     if (!upstream.ok) {
       if (upstream.status === 401) {
-        console.warn("Admin trigger unauthorized at automation service", { action });
+        requestLogger.warn("Admin trigger unauthorized at automation service", { action, notionPageId });
         return NextResponse.json(
           {
             error:
@@ -290,6 +305,11 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json(data);
   } catch (err) {
+    requestLogger.error("Admin trigger forwarding failed", {
+      action,
+      notionPageId,
+      errorMessage: err instanceof Error ? err.message : String(err),
+    }, err);
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Network error" },
       { status: 502 }

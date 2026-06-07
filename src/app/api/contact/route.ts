@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { emailService } from "@/lib/emailService";
+import { logger } from "@/lib/logger";
 
 const NAME_MAX = 100;
 const MESSAGE_MAX = 2000;
@@ -84,6 +85,9 @@ function generateContactEmailHtml(name: string, email: string, message: string):
 }
 
 export async function POST(request: NextRequest) {
+  const requestId = logger.generateRequestId();
+  const requestLogger = logger.withContext({ requestId, operation: "contact-submission" });
+
   try {
     const body = await request.json();
     const { name, email, message, recaptchaToken } = body;
@@ -126,8 +130,15 @@ export async function POST(request: NextRequest) {
       html,
     });
 
+    requestLogger.info("Contact form submitted successfully", {
+      email: email.trim(),
+    });
+
     return NextResponse.json({ success: true }, { status: 200 });
-  } catch {
+  } catch (error) {
+    requestLogger.error("Contact form submission failed", {
+      errorMessage: error instanceof Error ? error.message : String(error),
+    }, error);
     return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }
